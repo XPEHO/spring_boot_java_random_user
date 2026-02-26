@@ -129,6 +129,31 @@ Tests use **Testcontainers** to spin up ephemeral Docker containers for external
 
 ---
 
+## 🔎 Code Quality (SonarQube)
+
+A GitHub Actions workflow is configured in:
+
+```bash
+.github/workflows/sonar.yaml
+```
+
+### Workflow triggers
+
+- `push` on all branches
+- `pull_request`
+
+### What it runs
+
+- Java 25 setup (Temurin)
+- Maven build + tests + SonarQube analysis:
+
+```bash
+mvn clean verify sonar:sonar
+```
+
+
+---
+
 ## 📁 Project structure
 
 ```
@@ -156,7 +181,7 @@ This project consumes the public **Random User Generator** API:
 
 ## ✅ Todo
 
-- [ ] [Add Sonarqube in the project](https://github.com/XPEHO/spring_boot_java_random_user/issues/2)
+- [x] [Add Sonarqube in the project](https://github.com/XPEHO/spring_boot_java_random_user/issues/2)
 - [ ] [Add PostgreSQL database with docker](https://github.com/XPEHO/spring_boot_java_random_user/issues/6)
 - [ ] [Add this endpoint get /user/random](https://github.com/XPEHO/spring_boot_java_random_user/issues/5)
 - [ ] [Add this endpoint get /user/{id}](https://github.com/XPEHO/spring_boot_java_random_user/issues/8)
