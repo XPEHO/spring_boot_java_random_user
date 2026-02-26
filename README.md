@@ -151,6 +151,19 @@ A GitHub Actions workflow is configured in:
 mvn clean verify sonar:sonar
 ```
 
+### Generate the JaCoCo coverage report locally
+
+Run:
+
+```bash
+./mvnw clean verify
+```
+
+Generated reports:
+
+- HTML report: `target/site/jacoco/index.html`
+- XML report (used by SonarQube): `target/site/jacoco/jacoco.xml`
+
 
 ---
 
