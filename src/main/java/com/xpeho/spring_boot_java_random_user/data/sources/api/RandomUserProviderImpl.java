@@ -27,8 +27,8 @@ public class RandomUserProviderImpl implements RandomUserProvider {
         if (!response.isSuccessful() || response.body() == null) {
             throw new IOException("Failed to fetch users: " + response.code());
         }
-        return Arrays.stream(response.body().results)
-                .map(userConverter::fromApiModel)
-                .toList();
+        return Arrays.stream(response.body().getResults())
+            .map(userConverter::fromApiModel)
+            .toList();
     }
 }
