@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Test configuration generated in CI
+src/test/resources/application-test.properties
