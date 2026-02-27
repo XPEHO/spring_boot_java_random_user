@@ -1,6 +1,6 @@
-package com.xpeho.spring_boot_java_random_user.domain.entities;
+package com.xpeho.spring_boot_java_random_user.presentation.dto;
 
-public record UserEntity(
+public record UserDTO(
     Long id,
     String gender,
     String firstname,

@@ -1,24 +1,33 @@
 package com.xpeho.spring_boot_java_random_user.data.services;
 
-import com.xpeho.spring_boot_java_random_user.data.repositories.UserRepository;
+import com.xpeho.spring_boot_java_random_user.data.sources.database.UserRepository;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserEntity;
 import com.xpeho.spring_boot_java_random_user.domain.services.UserService;
+import com.xpeho.spring_boot_java_random_user.data.models.db.User;
+import com.xpeho.spring_boot_java_random_user.data.converters.UserConverter;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.StreamSupport;
+import java.util.stream.Collectors;
 
 @Service
+
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final UserConverter userConverter;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, UserConverter userConverter) {
         this.userRepository = userRepository;
+        this.userConverter = userConverter;
     }
 
     @Override
     public List<UserEntity> saveAll(List<UserEntity> users) {
-        Iterable<UserEntity> saved = userRepository.saveAll(users);
-        return saved instanceof List<UserEntity> ? (List<UserEntity>) saved :
-                java.util.stream.StreamSupport.stream(saved.spliterator(), false).toList();
+        List<User> daoUsers = users.stream().map(userConverter::toDao).toList();
+        Iterable<User> saved = userRepository.saveAll(daoUsers);
+        return StreamSupport.stream(saved.spliterator(), false)
+                .map(userConverter::toDomain)
+                .collect(Collectors.toList());
     }
 }
