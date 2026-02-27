@@ -39,4 +39,5 @@ jobs:
         run: |
           mkdir -p src/test/resources
           echo ${{ secrets.APPLICATION_TEST_PROPERTIES }} | base64 -d > src/test/resources/application-test.properties
+          echo "spring.sql.init.mode=never" >> src/test/resources/application-test.properties
           mvn clean verify sonar:sonar -Dsonar.qualitygate.wait=true
