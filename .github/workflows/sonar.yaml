@@ -38,6 +38,21 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         run: |
           mkdir -p src/test/resources
-          echo ${{ secrets.APPLICATION_TEST_PROPERTIES }} | base64 -d > src/test/resources/application-test.properties
-          echo "spring.sql.init.mode=never" >> src/test/resources/application-test.properties
-          mvn clean verify sonar:sonar -Dsonar.qualitygate.wait=true
+          if [ -n "${{ secrets.APPLICATION_TEST_PROPERTIES }}" ]; then
+            if printf '%s' "${{ secrets.APPLICATION_TEST_PROPERTIES }}" | base64 --decode > src/test/resources/application-test.properties 2>/dev/null; then
+              echo "Loaded APPLICATION_TEST_PROPERTIES as base64"
+            else
+              printf '%s\n' "${{ secrets.APPLICATION_TEST_PROPERTIES }}" > src/test/resources/application-test.properties
+              echo "Loaded APPLICATION_TEST_PROPERTIES as raw text"
+            fi
+          else
+            : > src/test/resources/application-test.properties
+          fi
+          {
+            echo "spring.datasource.url=jdbc:h2:mem:testdb;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE"
+            echo "spring.datasource.driver-class-name=org.h2.Driver"
+            echo "spring.datasource.username=sa"
+            echo "spring.datasource.password="
+            echo "spring.sql.init.mode=never"
+          } >> src/test/resources/application-test.properties
+          ./mvnw clean verify sonar:sonar -Dsonar.qualitygate.wait=true
