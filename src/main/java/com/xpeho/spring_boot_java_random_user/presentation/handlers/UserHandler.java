@@ -1,0 +1,29 @@
+package com.xpeho.spring_boot_java_random_user.presentation.handlers;
+
+import com.xpeho.spring_boot_java_random_user.domain.entities.UserEntity;
+import com.xpeho.spring_boot_java_random_user.domain.usecases.FetchAndSaveRandomUsersUseCase;
+import com.xpeho.spring_boot_java_random_user.presentation.controllers.UserController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.io.IOException;
+import java.util.List;
+
+@RestController
+public class UserHandler implements UserController {
+    private final FetchAndSaveRandomUsersUseCase fetchAndSaveRandomUsersUseCase;
+
+    public UserHandler(FetchAndSaveRandomUsersUseCase fetchAndSaveRandomUsersUseCase) {
+        this.fetchAndSaveRandomUsersUseCase = fetchAndSaveRandomUsersUseCase;
+    }
+
+    @Override
+    public ResponseEntity<List<UserEntity>> getRandomUsers(int count) {
+        try {
+            List<UserEntity> users = fetchAndSaveRandomUsersUseCase.execute(count);
+            return ResponseEntity.ok(users);
+        } catch (IOException e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+}
