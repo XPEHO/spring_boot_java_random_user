@@ -151,6 +151,28 @@ A GitHub Actions workflow is configured in:
 mvn clean verify sonar:sonar
 ```
 
+The CI command waits for the Quality Gate result:
+
+```bash
+./mvnw clean verify sonar:sonar -Dsonar.qualitygate.wait=true
+```
+
+Before running tests, the workflow recreates:
+
+```bash
+src/test/resources/application-test.properties
+```
+
+from a Base64-encoded GitHub secret.
+
+### Required GitHub Secrets
+
+- `SONAR_TOKEN`
+- `SONAR_HOST_URL`
+- `APPLICATION_TEST_PROPERTIES` (Base64-encoded `application-test.properties` content)
+
+> `GITHUB_TOKEN` is provided automatically by GitHub Actions.
+
 ### Generate the JaCoCo coverage report locally
 
 Run:
