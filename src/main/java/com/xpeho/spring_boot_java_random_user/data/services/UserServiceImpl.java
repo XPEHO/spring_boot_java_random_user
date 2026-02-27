@@ -27,7 +27,7 @@ public class UserServiceImpl implements UserService {
         List<User> daoUsers = users.stream().map(userConverter::toDao).toList();
         Iterable<User> saved = userRepository.saveAll(daoUsers);
         return StreamSupport.stream(saved.spliterator(), false)
-                .map(userConverter::toDomain)
-                .collect(Collectors.toList());
+            .map(userConverter::toDomain)
+            .toList();
     }
 }

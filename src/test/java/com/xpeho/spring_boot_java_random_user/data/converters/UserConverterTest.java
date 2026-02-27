@@ -16,18 +16,18 @@ class UserConverterTest {
     @Test
     void fromApiModel_fullData() {
         RandomUserNameDAO name = new RandomUserNameDAO();
-        name.first = "John";
-        name.last = "Doe";
-        name.title = "Mr";
+        name.setFirst("John");
+        name.setLast("Doe");
+        name.setTitle("Mr");
         RandomUserPictureDAO picture = new RandomUserPictureDAO();
-        picture.medium = "pic.jpg";
+        picture.setMedium("pic.jpg");
         RandomUserResultDAO api = new RandomUserResultDAO();
-        api.gender = "male";
-        api.name = name;
-        api.email = "john@doe.com";
-        api.phone = "1234";
-        api.picture = picture;
-        api.nat = "FR";
+        api.setGender("male");
+        api.setName(name);
+        api.setEmail("john@doe.com");
+        api.setPhone("1234");
+        api.setPicture(picture);
+        api.setNat("FR");
         UserEntity entity = converter.fromApiModel(api);
         assertNull(entity.id());
         assertEquals("male", entity.gender());
@@ -43,12 +43,12 @@ class UserConverterTest {
     @Test
     void fromApiModel_nullNameAndPicture() {
         RandomUserResultDAO api = new RandomUserResultDAO();
-        api.gender = "female";
-        api.name = null;
-        api.email = "jane@doe.com";
-        api.phone = "5678";
-        api.picture = null;
-        api.nat = "US";
+        api.setGender("female");
+        api.setName(null);
+        api.setEmail("jane@doe.com");
+        api.setPhone("5678");
+        api.setPicture(null);
+        api.setNat("US");
         UserEntity entity = converter.fromApiModel(api);
         assertNull(entity.firstname());
         assertNull(entity.lastname());

@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Collections.emptyList;
+
 @RestController
 public class UserHandler implements UserController {
 
@@ -29,7 +31,7 @@ public class UserHandler implements UserController {
     }
 
     @Override
-    public ResponseEntity<?> getRandomUsers(int count) {
+    public ResponseEntity<List<UserDTO>> getRandomUsers(int count) {
             try {
                 List<UserEntity> users = fetchAndSaveRandomUsersUseCase.execute(count);
                 List<UserDTO> dtos = users.stream().map(userConverter::toDto).toList();
@@ -37,10 +39,7 @@ public class UserHandler implements UserController {
             } catch (IOException e) {
                 logger.error("Error fetching random users: {}", e.getMessage(), e);
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .body(Map.of(
-                            "error", "External API Error",
-                            "message", "Impossible to fetch random users from the external API. Please try again later."
-                        ));
+                        .body(emptyList());
             }
     }
 }

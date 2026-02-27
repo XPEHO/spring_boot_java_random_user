@@ -38,20 +38,20 @@ public class UserConverter {
     }
     // API -> Domain
     public UserEntity fromApiModel(RandomUserResultDAO model) {
-        String firstName = model.name != null ? model.name.first : null;
-        String lastName = model.name != null ? model.name.last : null;
-        String civility = model.name != null ? model.name.title : null;
-        String picture = model.picture != null ? model.picture.medium : null;
+        String firstName = model.getName() != null ? model.getName().getFirst() : null;
+        String lastName = model.getName() != null ? model.getName().getLast() : null;
+        String civility = model.getName() != null ? model.getName().getTitle() : null;
+        String picture = model.getPicture() != null ? model.getPicture().getMedium() : null;
         return new UserEntity(
             null,
-            model.gender,
+            model.getGender(),
             firstName,
             lastName,
             civility,
-            model.email,
-            model.phone,
+            model.getEmail(),
+            model.getPhone(),
             picture,
-            model.nat
+            model.getNat()
         );
     }
 
