@@ -84,6 +84,14 @@ mvn spring-boot:run
 ### With Maven installed
 ./mvnw spring-boot:run
 ### With the Maven Wrapper (recommended)
+
+## Running PostgreSQL with Docker
+
+1. Copy the environment template and adjust values as needed:
+
+   ```bash
+   cp .env.template .env
+   # then edit .env to set database name, user, password, etc.
 ## 🚀 Running the project
 ### Properties to configure
 
