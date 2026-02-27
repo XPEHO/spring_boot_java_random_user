@@ -231,11 +231,11 @@ This project consumes the public **Random User Generator** API:
 
 - [x] [Add Sonarqube in the project](https://github.com/XPEHO/spring_boot_java_random_user/issues/2)
 - [x] [Add PostgreSQL database with docker](https://github.com/XPEHO/spring_boot_java_random_user/issues/6)
-- [ ] [Add this endpoint GET /user/random](https://github.com/XPEHO/spring_boot_java_random_user/issues/5)
-- [ ] [Add this endpoint GET /user/{id}](https://github.com/XPEHO/spring_boot_java_random_user/issues/8)
-- [ ] [Add this endpoint PUT /user/{id}](https://github.com/XPEHO/spring_boot_java_random_user/issues/9)
-- [ ] [Add this endpoint DELETE /user/{id}](https://github.com/XPEHO/spring_boot_java_random_user/issues/10)
-- [ ] [Add this endpoint POST /user](https://github.com/XPEHO/spring_boot_java_random_user/issues/11)
+- [X] [Add this endpoint get /user/random](https://github.com/XPEHO/spring_boot_java_random_user/issues/5)
+- [ ] [Add this endpoint get /user/{id}](https://github.com/XPEHO/spring_boot_java_random_user/issues/8)
+- [ ] [Add this endpoint put /user/{id}](https://github.com/XPEHO/spring_boot_java_random_user/issues/9)
+- [ ] [Add this endpoint delete /user/{id}](https://github.com/XPEHO/spring_boot_java_random_user/issues/10)
+- [ ] [Add this endpoint post /user](https://github.com/XPEHO/spring_boot_java_random_user/issues/11)
 
 ---
 
