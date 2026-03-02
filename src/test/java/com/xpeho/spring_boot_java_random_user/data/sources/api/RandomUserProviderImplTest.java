@@ -35,7 +35,7 @@ class RandomUserProviderImplTest {
         RandomUserResponse responseObj = new RandomUserResponse();
         RandomUserResultDAO dao1 = new RandomUserResultDAO();
         RandomUserResultDAO dao2 = new RandomUserResultDAO();
-        responseObj.setResults(new RandomUserResultDAO[]{dao1, dao2});
+        responseObj.setUsers(List.of(dao1, dao2));
         UserEntity entity1 = new UserEntity(null, "a", "b", "c", "d", "e", "f", "g", "h");
         UserEntity entity2 = new UserEntity(null, "i", "j", "k", "l", "m", "n", "o", "p");
         when(randomUserApi.getRandomUsers(count)).thenReturn(call);

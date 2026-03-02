@@ -6,6 +6,6 @@ import retrofit2.http.GET;
 import retrofit2.http.Query;
 
 public interface RandomUserApi {
-    @GET("/api/")
-    Call<RandomUserResponse> getRandomUsers(@Query("results") int results);
+    @GET("/users")
+    Call<RandomUserResponse> getRandomUsers(@Query("limit") int limit);
 }

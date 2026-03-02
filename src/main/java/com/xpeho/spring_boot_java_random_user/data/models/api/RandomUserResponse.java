@@ -1,13 +1,17 @@
 package com.xpeho.spring_boot_java_random_user.data.models.api;
 
-public class RandomUserResponse {
-    private RandomUserResultDAO[] results;
+import com.google.gson.annotations.SerializedName;
+import java.util.List;
 
-    public RandomUserResultDAO[] getResults() {
-        return results;
+public class RandomUserResponse {
+    @SerializedName("users")
+    private List<RandomUserResultDAO> users;
+
+    public List<RandomUserResultDAO> getUsers() {
+        return users;
     }
 
-    public void setResults(RandomUserResultDAO[] results) {
-        this.results = results;
+    public void setUsers(List<RandomUserResultDAO> users) {
+        this.users = users;
     }
 }

@@ -1,22 +1,21 @@
 package com.xpeho.spring_boot_java_random_user.data.models.api;
 
 import org.junit.jupiter.api.Test;
+import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class RandomUserResponseTest {
     @Test
-    void testGetSetResults() {
+    void testGetSetUsers() {
         RandomUserResponse response = new RandomUserResponse();
-        RandomUserResultDAO[] arr = new RandomUserResultDAO[2];
-        arr[0] = new RandomUserResultDAO();
-        arr[1] = new RandomUserResultDAO();
-        response.setResults(arr);
-        assertArrayEquals(arr, response.getResults());
+        List<RandomUserResultDAO> users = List.of(new RandomUserResultDAO(), new RandomUserResultDAO());
+        response.setUsers(users);
+        assertEquals(users, response.getUsers());
     }
 
     @Test
-    void testDefaultResultsIsNull() {
+    void testDefaultUsersIsNull() {
         RandomUserResponse response = new RandomUserResponse();
-        assertNull(response.getResults());
+        assertNull(response.getUsers());
     }
 }

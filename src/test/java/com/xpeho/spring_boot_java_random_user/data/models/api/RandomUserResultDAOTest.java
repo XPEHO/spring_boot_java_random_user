@@ -8,28 +8,27 @@ class RandomUserResultDAOTest {
     void testGetSetAllFields() {
         RandomUserResultDAO result = new RandomUserResultDAO();
         result.setGender("male");
-        RandomUserNameDAO name = new RandomUserNameDAO();
-        result.setName(name);
+        result.setFirstName("John");
+        result.setLastName("Doe");
         result.setEmail("john@doe.com");
         result.setPhone("1234");
-        RandomUserPictureDAO picture = new RandomUserPictureDAO();
-        result.setPicture(picture);
-        result.setNat("FR");
+        result.setImage("pic.jpg");
         assertEquals("male", result.getGender());
-        assertSame(name, result.getName());
+        assertEquals("John", result.getFirstName());
+        assertEquals("Doe", result.getLastName());
         assertEquals("john@doe.com", result.getEmail());
         assertEquals("1234", result.getPhone());
-        assertSame(picture, result.getPicture());
-        assertEquals("FR", result.getNat());
+        assertEquals("pic.jpg", result.getImage());
     }
+
     @Test
     void testDefaultFieldsAreNull() {
         RandomUserResultDAO result = new RandomUserResultDAO();
         assertNull(result.getGender());
-        assertNull(result.getName());
+        assertNull(result.getFirstName());
+        assertNull(result.getLastName());
         assertNull(result.getEmail());
         assertNull(result.getPhone());
-        assertNull(result.getPicture());
-        assertNull(result.getNat());
+        assertNull(result.getImage());
     }
 }

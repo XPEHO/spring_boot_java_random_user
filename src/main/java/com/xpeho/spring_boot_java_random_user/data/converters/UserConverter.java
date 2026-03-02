@@ -12,46 +12,42 @@ public class UserConverter {
     public User toDao(UserEntity entity) {
         User user = new User();
         user.setId(entity.id());
-        user.setFirstName(entity.firstname());
-        user.setLastName(entity.lastname());
+        user.setGender(entity.gender());
+        user.setFirstname(entity.firstname());
+        user.setLastname(entity.lastname());
+        user.setCivility(entity.civility());
         user.setEmail(entity.email());
-        user.setPictureUrl(entity.picture());
+        user.setPhone(entity.phone());
+        user.setPicture(entity.picture());
+        user.setNationality(entity.nat());
         return user;
     }
     // DAO -> Domain
     public UserEntity toDomain(User user) {
         return new UserEntity(
             user.getId(),
-            // gender
-            null, 
-            user.getFirstName(),
-            user.getLastName(),
-            // civility
-            null, 
+            user.getGender(),
+            user.getFirstname(),
+            user.getLastname(),
+            user.getCivility(),
             user.getEmail(),
-            // phone
-            null, 
-            user.getPictureUrl(),
-            // nat
-            null  
+            user.getPhone(),
+            user.getPicture(),
+            user.getNationality()
         );
     }
     // API -> Domain
     public UserEntity fromApiModel(RandomUserResultDAO model) {
-        String firstName = model.getName() != null ? model.getName().getFirst() : null;
-        String lastName = model.getName() != null ? model.getName().getLast() : null;
-        String civility = model.getName() != null ? model.getName().getTitle() : null;
-        String picture = model.getPicture() != null ? model.getPicture().getMedium() : null;
         return new UserEntity(
             null,
             model.getGender(),
-            firstName,
-            lastName,
-            civility,
+            model.getFirstName(),
+            model.getLastName(),
+            null,
             model.getEmail(),
             model.getPhone(),
-            picture,
-            model.getNat()
+            model.getImage(),
+            null
         );
     }
 

@@ -15,49 +15,36 @@ class UserConverterTest {
 
     @Test
     void fromApiModel_fullData() {
-        RandomUserNameDAO name = new RandomUserNameDAO();
-        name.setFirst("John");
-        name.setLast("Doe");
-        name.setTitle("Mr");
-        RandomUserPictureDAO picture = new RandomUserPictureDAO();
-        picture.setMedium("pic.jpg");
         RandomUserResultDAO api = new RandomUserResultDAO();
         api.setGender("male");
-        api.setName(name);
+        api.setFirstName("John");
+        api.setLastName("Doe");
         api.setEmail("john@doe.com");
         api.setPhone("1234");
-        api.setPicture(picture);
-        api.setNat("FR");
+        api.setImage("pic.jpg");
         UserEntity entity = converter.fromApiModel(api);
         assertNull(entity.id());
         assertEquals("male", entity.gender());
         assertEquals("John", entity.firstname());
         assertEquals("Doe", entity.lastname());
-        assertEquals("Mr", entity.civility());
         assertEquals("john@doe.com", entity.email());
         assertEquals("1234", entity.phone());
         assertEquals("pic.jpg", entity.picture());
-        assertEquals("FR", entity.nat());
     }
 
     @Test
-    void fromApiModel_nullNameAndPicture() {
+    void fromApiModel_nullFields() {
         RandomUserResultDAO api = new RandomUserResultDAO();
         api.setGender("female");
-        api.setName(null);
         api.setEmail("jane@doe.com");
         api.setPhone("5678");
-        api.setPicture(null);
-        api.setNat("US");
         UserEntity entity = converter.fromApiModel(api);
         assertNull(entity.firstname());
         assertNull(entity.lastname());
-        assertNull(entity.civility());
         assertNull(entity.picture());
         assertEquals("female", entity.gender());
         assertEquals("jane@doe.com", entity.email());
         assertEquals("5678", entity.phone());
-        assertEquals("US", entity.nat());
     }
 
     @Test
@@ -74,10 +61,10 @@ class UserConverterTest {
         assertEquals(entity.nat(), dto.nat());
         User dao = converter.toDao(entity);
         assertEquals(entity.id(), dao.getId());
-        assertEquals(entity.firstname(), dao.getFirstName());
-        assertEquals(entity.lastname(), dao.getLastName());
+        assertEquals(entity.firstname(), dao.getFirstname());
+        assertEquals(entity.lastname(), dao.getLastname());
         assertEquals(entity.email(), dao.getEmail());
-        assertEquals(entity.picture(), dao.getPictureUrl());
+        assertEquals(entity.picture(), dao.getPicture());
         UserEntity back = converter.toDomain(dao);
         assertEquals(entity.id(), back.id());
         assertEquals(entity.firstname(), back.firstname());

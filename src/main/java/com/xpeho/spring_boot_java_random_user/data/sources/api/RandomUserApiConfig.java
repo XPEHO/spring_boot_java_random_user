@@ -11,7 +11,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RandomUserApiConfig {
     @Bean
     public Retrofit randomUserRetrofit(Environment env) {
-        String baseUrl = env.getProperty("randomuser.api.base-url", "https://randomuser.me/");
+        String baseUrl = env.getProperty("randomuser.api.base-url", "https://dummyjson.com/");
         OkHttpClient client = new OkHttpClient.Builder().build();
         return new Retrofit.Builder()
                 .baseUrl(baseUrl)
