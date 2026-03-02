@@ -1,71 +1,73 @@
 # spring_boot_java_random_user
 
-Spring Boot Java project that exposes a REST API consuming the public [Random User](https://randomuser.me/) API.
-The interactive API documentation is available via **Swagger UI / OpenAPI**.
+Spring Boot REST API that consumes the public [Random User](https://randomuser.me/) API and persists data in a PostgreSQL database.
+Interactive API documentation is available via **Swagger UI / OpenAPI**.
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Technology           | Version         |
-|----------------------|-----------------|
-| Java                 | 25              |
-| Spring Boot          | 4.0.3           |
-| Spring Web MVC       | (managed by Boot) |
-| Spring Actuator      | (managed by Boot) |
-| springdoc-openapi    | 3.0.1           |
-| PostgreSQL (driver)  | (managed by Boot) |
-| Testcontainers       | (managed by Boot) |
-| Maven                | Wrapper included |
+| Technology | Version |
+|---|---|
+| Java | 25 |
+| Spring Boot | 4.0.3 |
+| Spring Web MVC | (managed by Boot) |
+| Spring Data JDBC | (managed by Boot) |
+| Spring Actuator | (managed by Boot) |
+| springdoc-openapi | 3.0.1 |
+| PostgreSQL | 15 |
+| dotenv-java | 5.2.2 |
+| Docker / Docker Compose | - |
+| Maven | Wrapper included |
 
 ---
 
 ## 📋 Prerequisites
 
-- **Java 25** (or compatible version)
+- **Java 25+**
 - **Maven** (or use the included `./mvnw` wrapper)
-- **PostgreSQL** running (if data persistence is enabled)
+- **Docker Desktop**
 
 ---
 
 ## ⚙️ Configuration
 
-The main configuration file is located at:
+### 1. Environment variables
 
-```
-src/main/resources/application.properties
-```
+Copy the template and fill in the values:
 
-### Properties to configure
-
-```properties
-spring.application.name=spring_boot_java_random_user
-
-# Swagger UI — available at /api
-springdoc.swagger-ui.path=/api
-
-# PostgreSQL datasource (add these if you use persistence)
-spring.datasource.url=jdbc:postgresql://localhost:5432/<database_name>
-spring.datasource.username=<username>
-spring.datasource.password=<password>
-spring.datasource.driver-class-name=org.postgresql.Driver
+```bash
+cp .env.template .env
 ```
 
-> ⚠️ **Common startup error**:
-> ```
-> Failed to configure a DataSource: 'url' attribute is not specified
-> and no embedded datasource could be configured.
-> Reason: Failed to determine a suitable driver class
-> ```
-> This error occurs because the PostgreSQL driver is present in the dependencies but the datasource URL is not configured.
-> **Fix**: either add the `spring.datasource.*` properties above, or exclude the DataSource auto-configuration if no database is needed:
-> ```properties
-> spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
-> ```
+`.env` content:
+
+```env
+POSTGRES_USER={POSTGRES_USER}
+POSTGRES_PASSWORD={POSTGRES_PASSWORD}
+POSTGRES_DB={POSTGRES_DB}
+POSTGRES_PORT={POSTGRES_PORT}
+```
+
+> ⚠️ The `.env` file is git-ignored. Never commit it.
+
+### 2. Test properties
+
+```bash
+cp src/test/resources/application-test.properties.template src/test/resources/application-test.properties
+```
+
+> ⚠️ This file is also git-ignored.
 
 ---
 
 ## 🚀 Running the project
+
+### Start the database
+
+```bash
+docker-compose up -d
+```
 
 ### With the Maven Wrapper (recommended)
 
@@ -86,17 +88,17 @@ mvn spring-boot:run
 java -jar target/spring_boot_java_random_user-0.0.1-SNAPSHOT.jar
 ```
 
+The application will be available at: http://localhost:8080
+
 ---
 
 ## 📖 API Documentation (Swagger UI)
-
-Once the project is running, the interactive documentation is available at:
 
 ```
 http://localhost:8080/api
 ```
 
-The raw OpenAPI specification (JSON) is available at:
+Raw OpenAPI specification (JSON):
 
 ```
 http://localhost:8080/v3/api-docs
@@ -105,8 +107,6 @@ http://localhost:8080/v3/api-docs
 ---
 
 ## 🔍 Monitoring (Actuator)
-
-Spring Boot Actuator is enabled. Health endpoints are available at:
 
 ```
 http://localhost:8080/actuator
@@ -117,25 +117,24 @@ http://localhost:8080/actuator/health
 
 ## 🧪 Tests
 
-Run unit and integration tests:
+The Maven plugin starts and stops Docker Compose automatically during tests:
 
 ```bash
-./mvnw test
+./mvnw verify
 ```
 
-Tests use **Testcontainers** to spin up ephemeral Docker containers for external dependencies (e.g. PostgreSQL).
+Execution cycle:
+1. `pre-integration-test` → `docker-compose up` (PostgreSQL starts)
+2. `integration-test` → tests run
+3. `post-integration-test` → `docker-compose down` (PostgreSQL stops)
 
-> **Prerequisite for tests**: Docker must be installed and running.
+> **Prerequisite**: Docker must be installed and running.
 
 ---
 
 ## 🔎 Code Quality (SonarQube)
 
-A GitHub Actions workflow is configured in:
-
-```bash
-.github/workflows/sonar.yaml
-```
+A GitHub Actions workflow is configured in `.github/workflows/sonar.yaml`.
 
 ### Workflow triggers
 
@@ -148,44 +147,31 @@ A GitHub Actions workflow is configured in:
 - Maven build + tests + SonarQube analysis:
 
 ```bash
-mvn clean verify sonar:sonar
-```
-
-The CI command waits for the Quality Gate result:
-
-```bash
 ./mvnw clean verify sonar:sonar -Dsonar.qualitygate.wait=true
 ```
 
-Before running tests, the workflow recreates:
-
-```bash
-src/test/resources/application-test.properties
-```
-
-from a Base64-encoded GitHub secret.
-
 ### Required GitHub Secrets
 
-- `SONAR_TOKEN`
-- `SONAR_HOST_URL`
-- `APPLICATION_TEST_PROPERTIES` (Base64-encoded `application-test.properties` content)
+| Secret | Description |
+| `APPLICATION_TEST_PROPERTIES` (Base64-encoded `application-test.properties` content)
+| `SONAR_TOKEN` | SonarQube authentication token |
+| `SONAR_HOST_URL` | SonarQube instance URL |
+| `POSTGRES_USER` | PostgreSQL user |
+| `POSTGRES_PASSWORD` | PostgreSQL password |
+| `POSTGRES_DB` | Database name |
+| `POSTGRES_PORT` | PostgreSQL port |
 
 > `GITHUB_TOKEN` is provided automatically by GitHub Actions.
 
-### Generate the JaCoCo coverage report locally
-
-Run:
+### JaCoCo coverage report (local)
 
 ```bash
 ./mvnw clean verify
 ```
 
 Generated reports:
-
-- HTML report: `target/site/jacoco/index.html`
-- XML report (used by SonarQube): `target/site/jacoco/jacoco.xml`
-
+- HTML: `target/site/jacoco/index.html`
+- XML (used by SonarQube): `target/site/jacoco/jacoco.xml`
 
 ---
 
@@ -195,13 +181,40 @@ Generated reports:
 src/
 ├── main/
 │   ├── java/com/xpeho/spring_boot_java_random_user/
-│   │   └── SpringBootJavaRandomUserApplication.java   # Entry point
+│   │   └── SpringBootJavaRandomUserApplication.java  ← Entry point, loads .env
 │   └── resources/
-│       └── application.properties                      # Configuration
+│       ├── application.properties                    ← Spring configuration
+│       └── schema.sql                                ← Database schema
 └── test/
-    └── java/com/xpeho/spring_boot_java_random_user/
-        └── SpringBootJavaRandomUserApplicationTests.java
+    ├── java/com/xpeho/spring_boot_java_random_user/
+    │   └── SpringBootJavaRandomUserApplicationTests.java
+    └── resources/
+        ├── application-test.properties               ← Test config (git-ignored)
+        └── application-test.properties.template      ← Template to copy
+.env                                                  ← Environment variables (git-ignored)
+.env.template                                         ← Template to copy
+docker-compose.yml                                    ← Local PostgreSQL
 ```
+
+---
+
+## 🗄️ Database
+
+### Schema
+
+The `user` table is created automatically on startup via `schema.sql`:
+
+| Column | Type | Description |
+|---|---|---|
+| `id` | SERIAL PK | Auto-incremented identifier |
+| `gender` | VARCHAR(20) | Gender |
+| `firstname` | VARCHAR(100) | First name (`name.first`) |
+| `lastname` | VARCHAR(100) | Last name (`name.last`) |
+| `civility` | VARCHAR(20) | Title (`name.title`) |
+| `email` | VARCHAR(255) | Email address |
+| `phone` | VARCHAR(50) | Phone number |
+| `picture` | VARCHAR(500) | Medium picture URL |
+| `nationality` | VARCHAR(10) | Nationality |
 
 ---
 
@@ -217,12 +230,12 @@ This project consumes the public **Random User Generator** API:
 ## ✅ Todo
 
 - [x] [Add Sonarqube in the project](https://github.com/XPEHO/spring_boot_java_random_user/issues/2)
-- [ ] [Add PostgreSQL database with docker](https://github.com/XPEHO/spring_boot_java_random_user/issues/6)
-- [ ] [Add this endpoint get /user/random](https://github.com/XPEHO/spring_boot_java_random_user/issues/5)
-- [ ] [Add this endpoint get /user/{id}](https://github.com/XPEHO/spring_boot_java_random_user/issues/8)
-- [ ] [Add this endpoint put /user/{id}](https://github.com/XPEHO/spring_boot_java_random_user/issues/9)
-- [ ] [Add this endpoint delete /user/{id}](https://github.com/XPEHO/spring_boot_java_random_user/issues/10)
-- [ ] [Add this endpoint post /user](https://github.com/XPEHO/spring_boot_java_random_user/issues/11)
+- [x] [Add PostgreSQL database with docker](https://github.com/XPEHO/spring_boot_java_random_user/issues/6)
+- [ ] [Add this endpoint GET /user/random](https://github.com/XPEHO/spring_boot_java_random_user/issues/5)
+- [ ] [Add this endpoint GET /user/{id}](https://github.com/XPEHO/spring_boot_java_random_user/issues/8)
+- [ ] [Add this endpoint PUT /user/{id}](https://github.com/XPEHO/spring_boot_java_random_user/issues/9)
+- [ ] [Add this endpoint DELETE /user/{id}](https://github.com/XPEHO/spring_boot_java_random_user/issues/10)
+- [ ] [Add this endpoint POST /user](https://github.com/XPEHO/spring_boot_java_random_user/issues/11)
 
 ---
 
