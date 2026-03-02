@@ -19,6 +19,7 @@ public class User {
     private String picture;
     private String nationality;
 
+    // Required by Spring Data JDBC to instantiate the entity via reflection
     public User() {}
 
     public Long getId() { return id; }

@@ -1,8 +1,6 @@
 package com.xpeho.spring_boot_java_random_user.data.converters;
 
 import com.xpeho.spring_boot_java_random_user.data.models.api.RandomUserResultDAO;
-import com.xpeho.spring_boot_java_random_user.data.models.api.RandomUserNameDAO;
-import com.xpeho.spring_boot_java_random_user.data.models.api.RandomUserPictureDAO;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserEntity;
 import com.xpeho.spring_boot_java_random_user.data.models.db.User;
 import com.xpeho.spring_boot_java_random_user.presentation.dto.UserDTO;
