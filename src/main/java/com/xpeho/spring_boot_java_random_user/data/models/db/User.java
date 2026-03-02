@@ -20,7 +20,9 @@ public class User {
     private String nationality;
 
     // Required by Spring Data JDBC to instantiate the entity via reflection
-    public User() {}
+    public User() {
+        // No initialization needed; fields are populated by Spring Data JDBC after instantiation
+    }
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
