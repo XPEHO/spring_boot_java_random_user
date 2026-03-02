@@ -28,6 +28,7 @@
 	</scm>
 	<properties>
 		<java.version>25</java.version>
+		<skipDocker>false</skipDocker>
 		<sonar.coverage.exclusions>**/*Application.java</sonar.coverage.exclusions>
 		<sonar.coverage.jacoco.xmlReportPaths>${project.build.directory}/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
 	</properties>
@@ -135,6 +136,13 @@
 				<groupId>com.dkanejs.maven.plugins</groupId>
 				<artifactId>docker-compose-maven-plugin</artifactId>
 				<version>4.0.0</version>
+				<configuration>
+					<skip>${skipDocker}</skip>
+					<composeFile>${project.basedir}/docker-compose.yml</composeFile>
+					<detachedMode>true</detachedMode>
+					<removeVolumes>false</removeVolumes>
+					<removeOrphans>true</removeOrphans>
+				</configuration>
 				<executions>
 					<!-- Clean up any leftover container from a previous run -->
 					<execution>
@@ -159,12 +167,6 @@
 						</goals>
 					</execution>
 				</executions>
-				<configuration>
-					<composeFile>${project.basedir}/docker-compose.yml</composeFile>
-					<detachedMode>true</detachedMode>
-					<removeVolumes>false</removeVolumes>
-					<removeOrphans>true</removeOrphans>
-				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.jacoco</groupId>
