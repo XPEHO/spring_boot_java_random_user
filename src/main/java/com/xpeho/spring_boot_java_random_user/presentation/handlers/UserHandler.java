@@ -3,6 +3,7 @@ package com.xpeho.spring_boot_java_random_user.presentation.handlers;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserEntity;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserRequest;
 import com.xpeho.spring_boot_java_random_user.domain.exceptions.UserNotFoundException;
+import com.xpeho.spring_boot_java_random_user.domain.usecases.CreateUserUseCase;
 import com.xpeho.spring_boot_java_random_user.domain.usecases.FetchAndSaveRandomUsersUseCase;
 import com.xpeho.spring_boot_java_random_user.domain.usecases.GetUserByIdUseCase;
 import com.xpeho.spring_boot_java_random_user.domain.usecases.UpdateRandomUserUseCase;
@@ -11,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
@@ -30,12 +32,16 @@ public class UserHandler implements UserController {
     public UserHandler(
             FetchAndSaveRandomUsersUseCase fetchAndSaveRandomUsersUseCase,
             UpdateRandomUserUseCase updateRandomUserUseCase,
-            GetUserByIdUseCase getUserByIdUseCase
+            GetUserByIdUseCase getUserByIdUseCase,
+            CreateUserUseCase createUserUseCase
     ) {
         this.fetchAndSaveRandomUsersUseCase = fetchAndSaveRandomUsersUseCase;
         this.updateRandomUserUseCase = updateRandomUserUseCase;
         this.getUserByIdUseCase = getUserByIdUseCase;
+        this.createUserUseCase = createUserUseCase;
+        
     }
+    
 
     @Override
     public ResponseEntity<List<UserEntity>> getRandomUsers(int count) {
@@ -59,15 +65,21 @@ public class UserHandler implements UserController {
         }
     }
 
-        @Override
-        public ResponseEntity<UserEntity> getUserById(int id) {
-            try {
-                UserEntity user = getUserByIdUseCase.execute(id);
-                return ResponseEntity.ok(user);
-            } catch (UserNotFoundException e) {
-                logger.warn("warning: the requested user does not exist : {}", e.getMessage(), e);
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-            }
+    @Override
+    public ResponseEntity<UserEntity> getUserById(int id) {
+        try {
+            UserEntity user = getUserByIdUseCase.execute(id);
+            return ResponseEntity.ok(user);
+        } catch (UserNotFoundException e) {
+            logger.warn("warning: the requested user does not exist : {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
+    }
 
+
+    @Override
+    public ResponseEntity<UserEntity> createUser(@RequestBody UserRequest user) {
+        UserEntity createdUser = createUserUseCase.execute(user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
+    }
 }

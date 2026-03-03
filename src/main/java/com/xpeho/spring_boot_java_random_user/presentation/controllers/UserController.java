@@ -9,6 +9,7 @@ import jakarta.validation.constraints.Min;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -76,4 +77,16 @@ public interface UserController {
             @RequestBody
             UserRequest user
     );
+
+    @PostMapping("")
+    @Operation(
+        summary = "Create a user",
+        description = "Creates a new user in the database.",
+        parameters = {
+            @Parameter(name = "UserRequest", description = "User data to persist")
+        }
+    )
+    @ApiResponse(responseCode = "201", description = "User successfully created")
+    @ApiResponse(responseCode = "500", description = "Internal server error")
+    ResponseEntity<UserEntity> createUser(@RequestBody UserRequest user);
 }

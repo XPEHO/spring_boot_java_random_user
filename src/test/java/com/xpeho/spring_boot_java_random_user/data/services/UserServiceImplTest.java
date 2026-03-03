@@ -65,7 +65,6 @@ class UserServiceImplTest {
         UserEntity input = new UserEntity(3L, "female", "Alice", "Smith", "Mrs", "alice@smith.com", "5678", "new-pic.jpg", "US");
 
         User daoToSave = new User();
-        daoToSave.setId(3L);
         daoToSave.setFirstname("Alice");
 
         User savedDao = new User();
