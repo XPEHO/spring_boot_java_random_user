@@ -1,6 +1,7 @@
 package com.xpeho.spring_boot_java_random_user;
 
 import com.xpeho.spring_boot_java_random_user.data.sources.database.UserRepository;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,7 +22,8 @@ class SpringBootJavaRandomUserApplicationTests {
 	UserRepository userRepository;
 
 	@Test
-	void contextLoads() {
+	@DisplayName("Spring context should load successfully")
+	void springContextShouldLoadSuccessfully() {
 		assertThat(applicationContext).isNotNull();
 	}
 

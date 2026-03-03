@@ -5,6 +5,7 @@ import com.xpeho.spring_boot_java_random_user.data.models.api.RandomUserResponse
 import com.xpeho.spring_boot_java_random_user.data.models.api.RandomUserResultDAO;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserEntity;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -30,7 +31,8 @@ class RandomUserProviderImplTest {
     }
 
     @Test
-    void fetchRandomUsers_success() throws IOException {
+    @DisplayName("Should fetch and convert users successfully")
+    void shouldFetchAndConvertUsersSuccessfully() throws IOException {
         int count = 2;
         RandomUserResponse responseObj = new RandomUserResponse();
         RandomUserResultDAO dao1 = new RandomUserResultDAO();
@@ -50,7 +52,8 @@ class RandomUserProviderImplTest {
     }
 
     @Test
-    void fetchRandomUsers_unsuccessfulResponse_throwsIOException() throws IOException {
+    @DisplayName("Should throw IOException when API returns error")
+    void shouldThrowIOExceptionWhenApiReturnsError() throws IOException {
         int count = 1;
         when(randomUserApi.getRandomUsers(count)).thenReturn(call);
         when(call.execute()).thenReturn(Response.error(500, okhttp3.ResponseBody.create(null, "error")));
@@ -58,7 +61,8 @@ class RandomUserProviderImplTest {
     }
 
     @Test
-    void fetchRandomUsers_nullBody_throwsIOException() throws IOException {
+    @DisplayName("Should throw IOException when response body is null")
+    void shouldThrowIOExceptionWhenResponseBodyIsNull() throws IOException {
         int count = 1;
         when(randomUserApi.getRandomUsers(count)).thenReturn(call);
         when(call.execute()).thenReturn(Response.success(null));

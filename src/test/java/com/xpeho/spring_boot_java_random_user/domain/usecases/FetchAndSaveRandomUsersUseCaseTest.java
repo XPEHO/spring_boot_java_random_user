@@ -4,6 +4,7 @@ import com.xpeho.spring_boot_java_random_user.domain.entities.UserEntity;
 import com.xpeho.spring_boot_java_random_user.domain.services.RandomUserProvider;
 import com.xpeho.spring_boot_java_random_user.domain.services.UserService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -26,7 +27,8 @@ class FetchAndSaveRandomUsersUseCaseTest {
     }
 
     @Test
-    void testSuccessfulApiResponse() throws IOException {
+    @DisplayName("Should fetch users from API and save them")
+    void shouldFetchUsersFromApiAndSaveThem() throws IOException {
         List<UserEntity> fetched = List.of(new UserEntity(
                 1L, "male", "John", "Doe", "Mr", "john@doe.com", "1234", "pic.jpg", "FR"
         ));        when(randomUserProvider.fetchRandomUsers(2)).thenReturn(fetched);
@@ -38,14 +40,16 @@ class FetchAndSaveRandomUsersUseCaseTest {
     }
 
     @Test
-    void testApiThrowsIOException() throws IOException {
+    @DisplayName("Should propagate IOException when API fails")
+    void shouldPropagateIOExceptionWhenApiFails() throws IOException {
         when(randomUserProvider.fetchRandomUsers(1)).thenThrow(new IOException("API error"));
         IOException ex = assertThrows(IOException.class, () -> useCase.execute(1));
         assertEquals("API error", ex.getMessage());
     }
 
     @Test
-    void testNullResponse() throws IOException {
+    @DisplayName("Should handle null response gracefully")
+    void shouldHandleNullResponseGracefully() throws IOException {
         when(randomUserProvider.fetchRandomUsers(1)).thenReturn(null);
         when(userService.saveAll(null)).thenReturn(null);
         List<UserEntity> result = useCase.execute(1);
@@ -53,7 +57,8 @@ class FetchAndSaveRandomUsersUseCaseTest {
     }
 
     @Test
-    void testEmptyResultArray() throws IOException {
+    @DisplayName("Should return empty list when no users found")
+    void shouldReturnEmptyListWhenNoUsersFound() throws IOException {
         when(randomUserProvider.fetchRandomUsers(0)).thenReturn(Collections.emptyList());
         when(userService.saveAll(Collections.emptyList())).thenReturn(Collections.emptyList());
         List<UserEntity> result = useCase.execute(0);

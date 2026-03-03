@@ -1,11 +1,13 @@
 package com.xpeho.spring_boot_java_random_user.data.models.api;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class RandomUserNameDAOTest {
     @Test
-    void testGetSetAllFields() {
+    @DisplayName("Should store and return all name fields")
+    void shouldStoreAndReturnAllNameFields() {
         RandomUserNameDAO name = new RandomUserNameDAO();
         name.setFirst("John");
         name.setLast("Doe");
@@ -15,7 +17,8 @@ class RandomUserNameDAOTest {
         assertEquals("Mr", name.getTitle());
     }
     @Test
-    void testDefaultFieldsAreNull() {
+    @DisplayName("Should have null fields by default")
+    void shouldHaveNullFieldsByDefault() {
         RandomUserNameDAO name = new RandomUserNameDAO();
         assertNull(name.getFirst());
         assertNull(name.getLast());
