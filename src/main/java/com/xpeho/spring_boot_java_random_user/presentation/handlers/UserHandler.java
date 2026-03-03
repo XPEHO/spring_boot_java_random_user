@@ -9,8 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
@@ -46,11 +44,12 @@ public class UserHandler implements UserController {
             }
     }
     @Override
-    public ResponseEntity<UserEntity> updateRandomUser(@PathVariable int id, @RequestBody UserEntity user) {
+    public ResponseEntity<UserEntity> updateRandomUser(int id, UserEntity user) {
         try {
             UserEntity savedUser = updateRandomUserUseCase.execute(id, user);
             return ResponseEntity.ok(savedUser);
         } catch (UserNotFoundException e) {
+            logger.warn("warning: the requested user does not exist : {}", e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }

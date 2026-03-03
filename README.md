@@ -152,6 +152,40 @@ Raw OpenAPI specification (JSON):
 http://localhost:8080/v3/api-docs
 ```
 
+### Available endpoints
+
+#### Generate and persist random users
+
+```http
+GET /random-users?count=500
+```
+
+#### Update an existing user
+
+```http
+PUT /random-users/{id}
+Content-Type: application/json
+```
+
+Example body:
+
+```json
+{
+  "gender": "female",
+  "firstname": "Albert",
+  "lastname": "Bing",
+  "civility": "Mrs",
+  "email": "albert.bing@example.com",
+  "phone": "123456789",
+  "picture": "pic.jpg",
+  "nat": "FR"
+}
+```
+
+Responses:
+- `200` if the user was updated successfully
+- `404` if the user id does not exist
+
 ---
 
 ## 🔍 Monitoring (Actuator)
@@ -281,7 +315,7 @@ This project consumes the public **Random User Generator** API:
 - [x] [Add PostgreSQL database with docker](https://github.com/XPEHO/spring_boot_java_random_user/issues/6)
 - [X] [Add this endpoint get /user/random](https://github.com/XPEHO/spring_boot_java_random_user/issues/5)
 - [ ] [Add this endpoint get /user/{id}](https://github.com/XPEHO/spring_boot_java_random_user/issues/8)
-- [ ] [Add this endpoint put /user/{id}](https://github.com/XPEHO/spring_boot_java_random_user/issues/9)
+- [X] [Add this endpoint put /user/{id}](https://github.com/XPEHO/spring_boot_java_random_user/issues/9)
 - [ ] [Add this endpoint delete /user/{id}](https://github.com/XPEHO/spring_boot_java_random_user/issues/10)
 - [ ] [Add this endpoint post /user](https://github.com/XPEHO/spring_boot_java_random_user/issues/11)
 

@@ -57,7 +57,7 @@ class UpdateRandomUserUseCaseTest {
     @Test
     @DisplayName("Should throw when updating a user that does not exist")
     void shouldThrowWhenUserDoesNotExist() {
-        UserEntity payload = new UserEntity(
+        UserEntity entity = new UserEntity(
             null, "female", "Alice", "Smith", "Mrs", "alice@smith.com", "5678", "new-pic.jpg", "US"
         );
 
@@ -65,7 +65,7 @@ class UpdateRandomUserUseCaseTest {
 
         UserNotFoundException exception = assertThrows(
             UserNotFoundException.class,
-            () -> useCase.execute(99, payload)
+            () -> useCase.execute(99, entity)
         );
 
         assertEquals("User not found with id: 99", exception.getMessage());
