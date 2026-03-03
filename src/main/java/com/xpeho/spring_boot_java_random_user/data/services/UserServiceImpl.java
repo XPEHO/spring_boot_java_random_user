@@ -8,6 +8,7 @@ import com.xpeho.spring_boot_java_random_user.data.converters.UserConverter;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.StreamSupport;
 
 @Service
@@ -28,5 +29,17 @@ public class UserServiceImpl implements UserService {
         return StreamSupport.stream(saved.spliterator(), false)
             .map(userConverter::toDomain)
             .toList();
+    }
+
+    @Override
+    public Optional<UserEntity> getById(long id) {
+        return userRepository.findById(id)
+            .map(userConverter::toDomain);
+    }
+
+    @Override
+    public UserEntity save(UserEntity user) {
+        User savedUser = userRepository.save(userConverter.toDao(user));
+        return userConverter.toDomain(savedUser);
     }
 }
