@@ -16,7 +16,7 @@ public class UpdateRandomUserUseCase {
 
     public UserEntity execute(int id, UserRequest user) {
         UserEntity existingUser = userService.getById(id)
-            .orElseThrow(() -> new UserNotFoundException(id));
+            .orElseThrow(() -> new UserNotFoundException("User with id " + id + " not found"));
 
         UserEntity updatedUser = new UserEntity(
             existingUser.id(),

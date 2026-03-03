@@ -41,6 +41,23 @@ public interface UserController {
         @Max(5000)
         int count
     );
+
+    @GetMapping("/{id}")
+    @Operation(
+            summary = "Get user by id",
+            description = "Given a user by id, return the user if it exists in the database",
+            parameters = {
+                    @Parameter(name = "id", description = "id of the requested user")
+            }
+    )
+    @ApiResponse(responseCode = "200", description = "User successfully found and returned")
+    @ApiResponse(responseCode = "404", description = "The requested user does not exist")
+    @ApiResponse(responseCode = "500", description = "Internal server error")
+    ResponseEntity<UserEntity> getUserById(
+            @PathVariable
+            int id
+    );
+
     @PutMapping("/{id}")
     @Operation(
             summary = "Modify a random user",
