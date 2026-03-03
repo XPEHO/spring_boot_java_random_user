@@ -58,6 +58,54 @@ cp src/test/resources/application-test.properties.template src/test/resources/ap
 ```
 
 > ⚠️ This file is also git-ignored.
+But for credentials and local overrides, use:
+
+```
+src/main/resources/application-local.properties
+```
+
+### Example for application.properties
+
+```properties
+spring.application.name=spring_boot_java_random_user
+springdoc.swagger-ui.path=/api
+spring.datasource.url=jdbc:postgresql://localhost:5432/<database_name>
+spring.datasource.driver-class-name=org.postgresql.Driver
+```
+
+### Local credentials & security
+
+To avoid exposing database credentials in source code, create a `.env` file at the project root.
+
+Then, in `src/main/resources/application-local.properties`:
+
+```properties
+spring.datasource.username=${DB_USER}
+spring.datasource.password=${DB_PASSWORD}
+```
+
+Both `.env` and `application-local.properties` are in `.gitignore` (already set).
+
+To activate the local profile in IntelliJ or VS Code, add this environment variable to your run configuration:
+
+```
+SPRING_PROFILES_ACTIVE=local
+```
+
+This way, each developer can use their own credentials without risk of leaking them to GitHub.
+
+
+> ⚠️ **Common startup error**:
+> ```
+> Failed to configure a DataSource: 'url' attribute is not specified
+> and no embedded datasource could be configured.
+> Reason: Failed to determine a suitable driver class
+> ```
+> This error occurs because the PostgreSQL driver is present in the dependencies but the datasource URL is not configured.
+> **Fix**: either add the `spring.datasource.*` properties above, or exclude the DataSource auto-configuration if no database is needed:
+> ```properties
+> spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+> ```
 
 ---
 
@@ -231,11 +279,11 @@ This project consumes the public **Random User Generator** API:
 
 - [x] [Add Sonarqube in the project](https://github.com/XPEHO/spring_boot_java_random_user/issues/2)
 - [x] [Add PostgreSQL database with docker](https://github.com/XPEHO/spring_boot_java_random_user/issues/6)
-- [ ] [Add this endpoint GET /user/random](https://github.com/XPEHO/spring_boot_java_random_user/issues/5)
-- [ ] [Add this endpoint GET /user/{id}](https://github.com/XPEHO/spring_boot_java_random_user/issues/8)
-- [ ] [Add this endpoint PUT /user/{id}](https://github.com/XPEHO/spring_boot_java_random_user/issues/9)
-- [ ] [Add this endpoint DELETE /user/{id}](https://github.com/XPEHO/spring_boot_java_random_user/issues/10)
-- [ ] [Add this endpoint POST /user](https://github.com/XPEHO/spring_boot_java_random_user/issues/11)
+- [X] [Add this endpoint get /user/random](https://github.com/XPEHO/spring_boot_java_random_user/issues/5)
+- [ ] [Add this endpoint get /user/{id}](https://github.com/XPEHO/spring_boot_java_random_user/issues/8)
+- [ ] [Add this endpoint put /user/{id}](https://github.com/XPEHO/spring_boot_java_random_user/issues/9)
+- [ ] [Add this endpoint delete /user/{id}](https://github.com/XPEHO/spring_boot_java_random_user/issues/10)
+- [ ] [Add this endpoint post /user](https://github.com/XPEHO/spring_boot_java_random_user/issues/11)
 
 ---
 
