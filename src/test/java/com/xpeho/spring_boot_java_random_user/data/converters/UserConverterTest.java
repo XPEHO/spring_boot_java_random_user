@@ -3,7 +3,6 @@ package com.xpeho.spring_boot_java_random_user.data.converters;
 import com.xpeho.spring_boot_java_random_user.data.models.api.RandomUserResultDAO;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserEntity;
 import com.xpeho.spring_boot_java_random_user.data.models.db.User;
-import com.xpeho.spring_boot_java_random_user.presentation.dto.UserDTO;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -46,17 +45,8 @@ class UserConverterTest {
     }
 
     @Test
-    void toDto_and_toDao_and_toDomain() {
+    void toDao_and_toDomain() {
         UserEntity entity = new UserEntity(1L, "male", "John", "Doe", "Mr", "john@doe.com", "1234", "pic.jpg", "FR");
-        UserDTO dto = converter.toDto(entity);
-        assertEquals(entity.id(), dto.id());
-        assertEquals(entity.firstname(), dto.firstname());
-        assertEquals(entity.lastname(), dto.lastname());
-        assertEquals(entity.civility(), dto.civility());
-        assertEquals(entity.email(), dto.email());
-        assertEquals(entity.phone(), dto.phone());
-        assertEquals(entity.picture(), dto.picture());
-        assertEquals(entity.nat(), dto.nat());
         User dao = converter.toDao(entity);
         assertEquals(entity.id(), dao.getId());
         assertEquals(entity.firstname(), dao.getFirstname());

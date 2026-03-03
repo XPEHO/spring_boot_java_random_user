@@ -3,7 +3,6 @@ import com.xpeho.spring_boot_java_random_user.data.models.api.RandomUserResultDA
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserEntity;
 import com.xpeho.spring_boot_java_random_user.data.models.db.User;
 import org.springframework.stereotype.Service;
-import com.xpeho.spring_boot_java_random_user.presentation.dto.UserDTO;
 
 
 @Service
@@ -48,21 +47,6 @@ public class UserConverter {
             model.getPhone(),
             model.getImage(),
             null
-        );
-    }
-
-    // Domain -> DTO
-    public UserDTO toDto(UserEntity entity) {
-        return new UserDTO(
-            entity.id(),
-            entity.gender(),
-            entity.firstname(),
-            entity.lastname(),
-            entity.civility(),
-            entity.email(),
-            entity.phone(),
-            entity.picture(),
-            entity.nat()
         );
     }
 }

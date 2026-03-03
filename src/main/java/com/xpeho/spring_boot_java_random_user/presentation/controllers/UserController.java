@@ -2,7 +2,7 @@ package com.xpeho.spring_boot_java_random_user.presentation.controllers;
 
 import org.springframework.http.ResponseEntity;
 import java.util.List;
-import com.xpeho.spring_boot_java_random_user.presentation.dto.UserDTO;
+import com.xpeho.spring_boot_java_random_user.domain.entities.UserEntity;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,7 +31,7 @@ public interface UserController {
     @ApiResponse(responseCode = "200", description = "List of users successfully fetched and saved")
     @ApiResponse(responseCode = "500", description = "Internal server error")
     @ApiResponse(responseCode = "503", description = "External service unavailable")
-    ResponseEntity<List<UserDTO>> getRandomUsers(
+    ResponseEntity<List<UserEntity>> getRandomUsers(
         @RequestParam(defaultValue = "500")
         @Min(1)
         @Max(5000)
