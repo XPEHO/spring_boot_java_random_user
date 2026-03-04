@@ -1,6 +1,7 @@
 package com.xpeho.spring_boot_java_random_user.presentation.handlers;
 
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserEntity;
+import com.xpeho.spring_boot_java_random_user.domain.entities.UserRequest;
 import com.xpeho.spring_boot_java_random_user.domain.exceptions.UserNotFoundException;
 import com.xpeho.spring_boot_java_random_user.domain.usecases.FetchAndSaveRandomUsersUseCase;
 import com.xpeho.spring_boot_java_random_user.domain.usecases.UpdateRandomUserUseCase;
@@ -44,7 +45,7 @@ public class UserHandler implements UserController {
             }
     }
     @Override
-    public ResponseEntity<UserEntity> updateRandomUser(int id, UserEntity user) {
+    public ResponseEntity<UserEntity> updateRandomUser(int id, UserRequest user) {
         try {
             UserEntity savedUser = updateRandomUserUseCase.execute(id, user);
             return ResponseEntity.ok(savedUser);

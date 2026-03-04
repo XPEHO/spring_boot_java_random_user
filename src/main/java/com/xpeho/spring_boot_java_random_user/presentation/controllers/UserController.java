@@ -1,5 +1,6 @@
 package com.xpeho.spring_boot_java_random_user.presentation.controllers;
 
+import com.xpeho.spring_boot_java_random_user.domain.entities.UserRequest;
 import org.springframework.http.ResponseEntity;
 import java.util.List;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserEntity;
@@ -56,6 +57,6 @@ public interface UserController {
             @PathVariable
             int id,
             @RequestBody
-            UserEntity user
+            UserRequest user
     );
 }

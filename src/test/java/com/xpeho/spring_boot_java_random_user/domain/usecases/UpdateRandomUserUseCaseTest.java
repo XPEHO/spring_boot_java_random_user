@@ -1,6 +1,7 @@
 package com.xpeho.spring_boot_java_random_user.domain.usecases;
 
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserEntity;
+import com.xpeho.spring_boot_java_random_user.domain.entities.UserRequest;
 import com.xpeho.spring_boot_java_random_user.domain.exceptions.UserNotFoundException;
 import com.xpeho.spring_boot_java_random_user.domain.services.UserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,8 +34,8 @@ class UpdateRandomUserUseCaseTest {
         UserEntity existingUser = new UserEntity(
             42L, "male", "John", "Doe", "Mr", "john@doe.com", "1234", "pic.jpg", "FR"
         );
-        UserEntity payload = new UserEntity(
-            null, "female", "Alice", "Smith", "Mrs", "alice@smith.com", "5678", "new-pic.jpg", "US"
+        UserRequest request = new UserRequest(
+            "female", "Alice", "Smith", "Mrs", "alice@smith.com", "5678", "new-pic.jpg", "US"
         );
         UserEntity savedUser = new UserEntity(
             42L, "female", "Alice", "Smith", "Mrs", "alice@smith.com", "5678", "new-pic.jpg", "US"
@@ -45,7 +46,7 @@ class UpdateRandomUserUseCaseTest {
             42L, "female", "Alice", "Smith", "Mrs", "alice@smith.com", "5678", "new-pic.jpg", "US"
         ))).thenReturn(savedUser);
 
-        UserEntity result = useCase.execute(42, payload);
+        UserEntity result = useCase.execute(42, request);
 
         assertEquals(savedUser, result);
         verify(userService).getById(42);
@@ -57,15 +58,15 @@ class UpdateRandomUserUseCaseTest {
     @Test
     @DisplayName("Should throw when updating a user that does not exist")
     void shouldThrowWhenUserDoesNotExist() {
-        UserEntity entity = new UserEntity(
-            null, "female", "Alice", "Smith", "Mrs", "alice@smith.com", "5678", "new-pic.jpg", "US"
+        UserRequest request = new UserRequest(
+            "female", "Alice", "Smith", "Mrs", "alice@smith.com", "5678", "new-pic.jpg", "US"
         );
 
         when(userService.getById(99)).thenReturn(Optional.empty());
 
         UserNotFoundException exception = assertThrows(
             UserNotFoundException.class,
-            () -> useCase.execute(99, entity)
+            () -> useCase.execute(99, request)
         );
 
         assertEquals("User not found with id: 99", exception.getMessage());
