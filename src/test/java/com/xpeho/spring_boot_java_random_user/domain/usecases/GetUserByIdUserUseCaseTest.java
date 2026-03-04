@@ -12,7 +12,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class GetUserByIdUserUseCaseTest {
+class GetUserByIdUseCaseTest {
     private UserService userService;
     private GetUserByIdUseCase useCase;
 
