@@ -16,18 +16,18 @@ public class UpdateRandomUserUseCase {
 
     public UserEntity execute(int id, UserRequest user) {
         UserEntity existingUser = userService.getById(id)
-            .orElseThrow(() -> new UserNotFoundException("User with id " + id + " not found"));
+                .orElseThrow(() -> new UserNotFoundException(id));
 
         UserEntity updatedUser = new UserEntity(
-            existingUser.id(),
-            user.gender(),
-            user.firstname(),
-            user.lastname(),
-            user.civility(),
-            user.email(),
-            user.phone(),
-            user.picture(),
-            user.nat()
+                existingUser.id(),
+                user.gender(),
+                user.firstname(),
+                user.lastname(),
+                user.civility(),
+                user.email(),
+                user.phone(),
+                user.picture(),
+                user.nat()
         );
 
         return userService.save(updatedUser);

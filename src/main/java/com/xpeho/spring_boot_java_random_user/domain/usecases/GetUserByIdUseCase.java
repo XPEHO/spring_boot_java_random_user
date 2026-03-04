@@ -15,6 +15,6 @@ public class GetUserByIdUseCase {
 
     public UserEntity execute(long id) {
         return userService.getById(id)
-            .orElseThrow(() -> new UserNotFoundException("User with id " + id + " not found"));
+            .orElseThrow(() -> new UserNotFoundException(id));
     }
 }
