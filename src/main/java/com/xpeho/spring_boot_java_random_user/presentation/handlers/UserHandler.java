@@ -28,6 +28,7 @@ public class UserHandler implements UserController {
     private final FetchAndSaveRandomUsersUseCase fetchAndSaveRandomUsersUseCase;
     private final UpdateRandomUserUseCase updateRandomUserUseCase;
     private final GetUserByIdUseCase getUserByIdUseCase;
+    private final CreateUserUseCase createUserUseCase;
 
     public UserHandler(
             FetchAndSaveRandomUsersUseCase fetchAndSaveRandomUsersUseCase,

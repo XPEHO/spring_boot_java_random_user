@@ -3,6 +3,7 @@ package com.xpeho.spring_boot_java_random_user.presentation;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserEntity;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserRequest;
 import com.xpeho.spring_boot_java_random_user.domain.exceptions.UserNotFoundException;
+import com.xpeho.spring_boot_java_random_user.domain.usecases.CreateUserUseCase;
 import com.xpeho.spring_boot_java_random_user.domain.usecases.FetchAndSaveRandomUsersUseCase;
 import com.xpeho.spring_boot_java_random_user.domain.usecases.GetUserByIdUseCase;
 import com.xpeho.spring_boot_java_random_user.domain.usecases.UpdateRandomUserUseCase;
@@ -29,6 +30,7 @@ class UserHandlerTest {
     private FetchAndSaveRandomUsersUseCase fetchAndSaveRandomUsersUseCase;
     private UpdateRandomUserUseCase updateRandomUserUseCase;
     private GetUserByIdUseCase getUserByIdUseCase;
+    private CreateUserUseCase createUserUseCase;
     private UserHandler userHandler;
 
     @BeforeEach
@@ -36,7 +38,8 @@ class UserHandlerTest {
         fetchAndSaveRandomUsersUseCase = mock(FetchAndSaveRandomUsersUseCase.class);
         updateRandomUserUseCase = mock(UpdateRandomUserUseCase.class);
         getUserByIdUseCase = mock(GetUserByIdUseCase.class);
-        userHandler = new UserHandler(fetchAndSaveRandomUsersUseCase, updateRandomUserUseCase, getUserByIdUseCase);
+        createUserUseCase = mock(CreateUserUseCase.class);
+        userHandler = new UserHandler(fetchAndSaveRandomUsersUseCase, updateRandomUserUseCase, getUserByIdUseCase, createUserUseCase);
     }
 
     @Test
@@ -116,5 +119,19 @@ class UserHandlerTest {
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertNull(response.getBody());
         verify(updateRandomUserUseCase, times(1)).execute(123, request);
+    }
+
+    @Test
+    @DisplayName("Should return 201 and created user when createUser succeeds")
+    void shouldReturnCreatedWhenCreateUserSucceeds() {
+        UserRequest request = new UserRequest("female", "Emma", "Stone", "Ms", "emma@example.com", "0644444444", "emma.jpg", "FR");
+        UserEntity created = new UserEntity(10L, "female", "Emma", "Stone", "Ms", "emma@example.com", "0644444444", "emma.jpg", "FR");
+        when(createUserUseCase.execute(request)).thenReturn(created);
+
+        ResponseEntity<UserEntity> response = userHandler.createUser(request);
+
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertEquals(created, response.getBody());
+        verify(createUserUseCase, times(1)).execute(request);
     }
 }
