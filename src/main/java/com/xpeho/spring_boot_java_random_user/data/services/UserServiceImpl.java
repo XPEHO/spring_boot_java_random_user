@@ -1,10 +1,10 @@
 package com.xpeho.spring_boot_java_random_user.data.services;
 
+import com.xpeho.spring_boot_java_random_user.data.converters.UserConverter;
+import com.xpeho.spring_boot_java_random_user.data.models.db.User;
 import com.xpeho.spring_boot_java_random_user.data.sources.database.UserRepository;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserEntity;
 import com.xpeho.spring_boot_java_random_user.domain.services.UserService;
-import com.xpeho.spring_boot_java_random_user.data.models.db.User;
-import com.xpeho.spring_boot_java_random_user.data.converters.UserConverter;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,19 +27,24 @@ public class UserServiceImpl implements UserService {
         List<User> daoUsers = users.stream().map(userConverter::toDao).toList();
         Iterable<User> saved = userRepository.saveAll(daoUsers);
         return StreamSupport.stream(saved.spliterator(), false)
-            .map(userConverter::toDomain)
-            .toList();
+                .map(userConverter::toDomain)
+                .toList();
     }
 
     @Override
     public Optional<UserEntity> getById(long id) {
         return userRepository.findById(id)
-            .map(userConverter::toDomain);
+                .map(userConverter::toDomain);
     }
 
     @Override
     public UserEntity save(UserEntity user) {
         User savedUser = userRepository.save(userConverter.toDao(user));
         return userConverter.toDomain(savedUser);
+    }
+
+    @Override
+    public void deleteById(long id) {
+        userRepository.deleteById(id);
     }
 }
