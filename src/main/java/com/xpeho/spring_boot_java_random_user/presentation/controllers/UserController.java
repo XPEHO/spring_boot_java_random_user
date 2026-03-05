@@ -92,7 +92,7 @@ public interface UserController {
                     @Parameter(name = "id", description = "id of the requested user")
             }
     )
-    @ApiResponse(responseCode = "200", description = "User successfully found and returned")
+    @ApiResponse(responseCode = "204", description = "User successfully deleted")
     @ApiResponse(responseCode = "404", description = "The requested user does not exist")
     @ApiResponse(responseCode = "500", description = "Internal server error")
     void deleteUserById(
