@@ -257,6 +257,7 @@ Update an existing user's information.
 ```http
 PUT /random-users/1
 Content-Type: application/json
+PUT /random-users/{id}
 ```
 
 **Request Body:**
@@ -268,6 +269,24 @@ Content-Type: application/json
   "civility": "Ms",
   "email": "jane.smith@example.com",
   "phone": "+1 987 654 3210",
+  "picture": "pic.jpg",
+  "nat": "FR"
+}
+```
+#### Create a new user
+```http
+POST /random-users
+```
+Example body:
+
+```json
+{
+  "gender": "female",
+  "firstname": "Albert",
+  "lastname": "Bing",
+  "civility": "Mrs",
+  "email": "albert.bing@example.com",
+  "phone": "123456789",
   "picture": "pic.jpg",
   "nat": "FR"
 }
@@ -567,7 +586,7 @@ This project integrates with **Random User Generator API**:
 - [x] [Add this endpoint get /user/{id}](https://github.com/XPEHO/spring_boot_java_random_user/issues/8)
 - [x] [Add this endpoint put /user/{id}](https://github.com/XPEHO/spring_boot_java_random_user/issues/9)
 - [ ] [Add this endpoint delete /user/{id}](https://github.com/XPEHO/spring_boot_java_random_user/issues/10)
-- [ ] [Add this endpoint post /user](https://github.com/XPEHO/spring_boot_java_random_user/issues/11)
+- [x] [Add this endpoint post /user](https://github.com/XPEHO/spring_boot_java_random_user/issues/11)
 
 ---
 
