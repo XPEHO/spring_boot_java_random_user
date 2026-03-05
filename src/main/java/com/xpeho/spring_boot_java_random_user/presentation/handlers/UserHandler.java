@@ -4,6 +4,7 @@ import com.xpeho.spring_boot_java_random_user.domain.entities.UserEntity;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserRequest;
 import com.xpeho.spring_boot_java_random_user.domain.exceptions.UserNotFoundException;
 import com.xpeho.spring_boot_java_random_user.domain.usecases.FetchAndSaveRandomUsersUseCase;
+import com.xpeho.spring_boot_java_random_user.domain.usecases.GetUserByIdUseCase;
 import com.xpeho.spring_boot_java_random_user.domain.usecases.UpdateRandomUserUseCase;
 import com.xpeho.spring_boot_java_random_user.presentation.controllers.UserController;
 import org.slf4j.Logger;
@@ -24,13 +25,16 @@ public class UserHandler implements UserController {
     
     private final FetchAndSaveRandomUsersUseCase fetchAndSaveRandomUsersUseCase;
     private final UpdateRandomUserUseCase updateRandomUserUseCase;
+    private final GetUserByIdUseCase getUserByIdUseCase;
 
     public UserHandler(
             FetchAndSaveRandomUsersUseCase fetchAndSaveRandomUsersUseCase,
-            UpdateRandomUserUseCase updateRandomUserUseCase
+            UpdateRandomUserUseCase updateRandomUserUseCase,
+            GetUserByIdUseCase getUserByIdUseCase
     ) {
         this.fetchAndSaveRandomUsersUseCase = fetchAndSaveRandomUsersUseCase;
         this.updateRandomUserUseCase = updateRandomUserUseCase;
+        this.getUserByIdUseCase = getUserByIdUseCase;
     }
 
     @Override
@@ -54,5 +58,16 @@ public class UserHandler implements UserController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
+
+        @Override
+        public ResponseEntity<UserEntity> getUserById(int id) {
+            try {
+                UserEntity user = getUserByIdUseCase.execute(id);
+                return ResponseEntity.ok(user);
+            } catch (UserNotFoundException e) {
+                logger.warn("warning: the requested user does not exist : {}", e.getMessage(), e);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+        }
 
 }
