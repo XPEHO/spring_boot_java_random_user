@@ -7,6 +7,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class SpringBootJavaRandomUserApplication {
 
+    private SpringBootJavaRandomUserApplication() {
+    }
+
     static void main(String[] args) {
         Dotenv.configure()
                 .ignoreIfMissing()
