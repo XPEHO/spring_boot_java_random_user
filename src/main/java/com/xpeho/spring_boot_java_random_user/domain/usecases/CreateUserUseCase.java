@@ -15,15 +15,15 @@ public class CreateUserUseCase {
 
     public UserEntity execute(UserRequest user) {
         UserEntity userToCreate = new UserEntity(
-        null,
-            user.gender(),
-            user.firstname(),
-            user.lastname(),
-            user.civility(),
-            user.email(),
-            user.phone(),
-            user.picture(),
-            user.nat()
+                null,
+                user.gender(),
+                user.firstname(),
+                user.lastname(),
+                user.civility(),
+                user.email(),
+                user.phone(),
+                user.picture(),
+                user.nat()
         );
 
         return userService.save(userToCreate);

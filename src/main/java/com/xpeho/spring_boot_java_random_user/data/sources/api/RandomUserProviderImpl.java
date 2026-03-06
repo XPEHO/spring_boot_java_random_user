@@ -1,10 +1,10 @@
 package com.xpeho.spring_boot_java_random_user.data.sources.api;
 
+import com.xpeho.spring_boot_java_random_user.data.converters.UserConverter;
 import com.xpeho.spring_boot_java_random_user.data.models.api.RandomUserResponse;
 import com.xpeho.spring_boot_java_random_user.data.models.api.RandomUserResultDAO;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserEntity;
 import com.xpeho.spring_boot_java_random_user.domain.services.RandomUserProvider;
-import com.xpeho.spring_boot_java_random_user.data.converters.UserConverter;
 import org.springframework.stereotype.Service;
 import retrofit2.Response;
 
@@ -32,7 +32,7 @@ public class RandomUserProviderImpl implements RandomUserProvider {
             throw new IOException("Failed to parse users from response");
         }
         return users.stream()
-            .map(userConverter::fromApiModel)
-            .toList();
+                .map(userConverter::fromApiModel)
+                .toList();
     }
 }

@@ -3,10 +3,7 @@ package com.xpeho.spring_boot_java_random_user.presentation;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserEntity;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserRequest;
 import com.xpeho.spring_boot_java_random_user.domain.exceptions.UserNotFoundException;
-import com.xpeho.spring_boot_java_random_user.domain.usecases.CreateUserUseCase;
-import com.xpeho.spring_boot_java_random_user.domain.usecases.FetchAndSaveRandomUsersUseCase;
-import com.xpeho.spring_boot_java_random_user.domain.usecases.GetUserByIdUseCase;
-import com.xpeho.spring_boot_java_random_user.domain.usecases.UpdateRandomUserUseCase;
+import com.xpeho.spring_boot_java_random_user.domain.usecases.*;
 import com.xpeho.spring_boot_java_random_user.presentation.handlers.UserHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,13 +14,8 @@ import org.springframework.http.ResponseEntity;
 import java.io.IOException;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 class UserHandlerTest {
 
@@ -31,6 +23,7 @@ class UserHandlerTest {
     private UpdateRandomUserUseCase updateRandomUserUseCase;
     private GetUserByIdUseCase getUserByIdUseCase;
     private CreateUserUseCase createUserUseCase;
+    private DeleteUserByIdUseCase deleteUserUseCase;
     private UserHandler userHandler;
 
     @BeforeEach
@@ -39,7 +32,8 @@ class UserHandlerTest {
         updateRandomUserUseCase = mock(UpdateRandomUserUseCase.class);
         getUserByIdUseCase = mock(GetUserByIdUseCase.class);
         createUserUseCase = mock(CreateUserUseCase.class);
-        userHandler = new UserHandler(fetchAndSaveRandomUsersUseCase, updateRandomUserUseCase, getUserByIdUseCase, createUserUseCase);
+        deleteUserUseCase = mock(DeleteUserByIdUseCase.class);
+        userHandler = new UserHandler(fetchAndSaveRandomUsersUseCase, updateRandomUserUseCase, getUserByIdUseCase, createUserUseCase, deleteUserUseCase);
     }
 
     @Test
@@ -133,5 +127,26 @@ class UserHandlerTest {
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals(created, response.getBody());
         verify(createUserUseCase, times(1)).execute(request);
+    }
+
+    @Test
+    @DisplayName("Should return 204 when deleteUserById succeeds")
+    void shouldReturnNoContentWhenDeleteUserByIdSucceeds() {
+        int userId = 42;
+
+        userHandler.deleteUserById(userId);
+
+        verify(deleteUserUseCase, times(1)).execute(userId);
+    }
+
+    @Test
+    @DisplayName("Should log warning when deleteUserById throws UserNotFoundException")
+    void shouldLogWarningWhenDeleteUserByIdFails() {
+        int userId = 123;
+        doThrow(new UserNotFoundException(userId)).when(deleteUserUseCase).execute(userId);
+
+        userHandler.deleteUserById(userId);
+
+        verify(deleteUserUseCase, times(1)).execute(userId);
     }
 }

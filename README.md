@@ -1,4 +1,4 @@
-# Spring Boot Java Random User API
+# Spring Boot Random User API
 
 <div align="center">
 
@@ -7,123 +7,50 @@
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-blue?logo=postgresql)](https://www.postgresql.org/)
 [![License](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
 
-A modern Spring Boot REST API that consumes the public [Random User](https://randomuser.me/) API and persists data in a PostgreSQL database. Includes interactive API documentation via **Swagger UI / OpenAPI**.
+A REST API built with Spring Boot that fetches random users from [Random User API](https://randomuser.me/) and stores them in PostgreSQL.
 
-[Features](#-features) • [Quick Start](#-quick-start) • [API Endpoints](#-api-endpoints) • [Testing](#-testing) • [Architecture](#-architecture)
+**[Quick Start](#-quick-start) • [API Docs](#-api-documentation) • [Architecture](#-architecture)**
 
 </div>
 
 ---
 
-## 📋 Table of Contents
-
-1. [Features](#-features)
-2. [Tech Stack](#-tech-stack)
-3. [Prerequisites](#-prerequisites)
-4. [Quick Start](#-quick-start)
-5. [Configuration](#-configuration)
-6. [Running the Project](#-running-the-project)
-7. [API Documentation](#-api-documentation)
-8. [Testing](#-testing)
-9. [Architecture](#-architecture)
-10. [Database Schema](#-database-schema)
-11. [Monitoring](#-monitoring)
-12. [Quality & CI/CD](#-quality--cicd)
-13. [Troubleshooting](#-troubleshooting)
-14. [Todo](#-todo)
-
----
-
-## ✨ Features
-
-- ✅ **RESTful API** - Fetch and manage random users
-- ✅ **PostgreSQL Integration** - Persist data with Spring Data JDBC
-- ✅ **OpenAPI/Swagger** - Interactive API documentation at `/api`
-- ✅ **Docker Support** - Easy setup with Docker Compose
-- ✅ **Health Monitoring** - Spring Actuator endpoints
-- ✅ **Code Quality** - SonarQube integration via GitHub Actions
-- ✅ **Test Coverage** - JUnit 5 + Mockito + JaCoCo
-- ✅ **BDD Testing** - Cucumber support (in progress)
-- ✅ **Environment Management** - dotenv-java for secure configuration
-
----
-
-## 🛠️ Tech Stack
-
-| Component | Version | Purpose |
-|-----------|---------|---------|
-| **Java** | 25 | Language |
-| **Spring Boot** | 4.0.3 | Framework |
-| **Spring Web MVC** | (auto) | REST API |
-| **Spring Data JDBC** | (auto) | Database access |
-| **Spring Actuator** | (auto) | Monitoring |
-| **PostgreSQL** | 15 | Database |
-| **H2** | (test) | In-memory DB for tests |
-| **springdoc-openapi** | 3.0.1 | OpenAPI/Swagger |
-| **dotenv-java** | 5.2.2 | Environment config |
-| **Docker Compose** | - | Local infrastructure |
-| **Maven** | Wrapper | Build tool |
-| **JUnit 5** | (auto) | Testing framework |
-| **Mockito** | (auto) | Mocking |
-| **JaCoCo** | 0.8.14 | Code coverage |
-
----
-
 ## 📦 Prerequisites
 
-- **Java 25+** (or compatible JDK)
-- **Maven 3.8+** (included wrapper available)
-- **Docker Desktop** (for PostgreSQL)
-- **Git** (for version control)
+- Java 25+
+- Docker Desktop
+- Maven (wrapper included)
 
 ---
 
 ## 🚀 Quick Start
 
-### 1. Clone the repository
-
 ```bash
+# 1. Clone
 git clone https://github.com/XPEHO/spring_boot_java_random_user.git
 cd spring_boot_java_random_user
-```
 
-### 2. Set up environment variables
-
-```bash
+# 2. Configure environment
 cp .env.template .env
-# Edit .env with your PostgreSQL credentials
-```
+# Edit .env with your credentials
 
-### 3. Start PostgreSQL
-
-```bash
+# 3. Start PostgreSQL
 docker-compose up -d
-```
 
-### 4. Run the application
-
-```bash
+# 4. Run application
 ./mvnw spring-boot:run
 ```
 
-### 5. Access the API
-
-- **Swagger UI**: http://localhost:8080/api
-- **Health Check**: http://localhost:8080/actuator/health
+**Access:**
+- Swagger UI: http://localhost:8080/api
+- Health Check: http://localhost:8080/actuator/health
 
 ---
 
 ## ⚙️ Configuration
 
-### Environment Setup
+### Environment Variables (.env)
 
-#### .env file (git-ignored)
-
-```bash
-cp .env.template .env
-```
-
-**Content:**
 ```env
 POSTGRES_USER=your_user
 POSTGRES_PASSWORD=your_password
@@ -131,273 +58,132 @@ POSTGRES_DB=your_database
 POSTGRES_PORT=5432
 ```
 
-#### Local Profile (application-local.properties)
+### Profiles
 
-For local development with different credentials:
-
-```properties
-spring.datasource.username=${DB_USER}
-spring.datasource.password=${DB_PASSWORD}
-```
-
-Set `SPRING_PROFILES_ACTIVE=local` in your IDE run configuration.
-
-#### Test Profile (application-test.properties)
-
-H2 in-memory database for unit tests (auto-configured, no setup needed).
-
-### Default Configuration
-
-**application.properties** includes:
-
-```properties
-spring.application.name=spring_boot_java_random_user
-spring.datasource.url=jdbc:postgresql://localhost:${POSTGRES_PORT}/${POSTGRES_DB}
-spring.datasource.driver-class-name=org.postgresql.Driver
-springdoc.swagger-ui.path=/api
-randomuser.api.base-url=https://dummyjson.com/
-```
-
----
-
-## 🏃 Running the Project
-
-### Development Mode
-
-```bash
-# Using Maven wrapper (recommended)
-./mvnw spring-boot:run
-
-# Or with Maven installed
-mvn spring-boot:run
-```
-
-### Production Mode
-
-```bash
-# Build JAR
-./mvnw clean package
-
-# Run JAR
-java -jar target/spring_boot_java_random_user-0.0.1-SNAPSHOT.jar
-```
-
-### Docker Mode
-
-```bash
-# Build Docker image
-docker build -t xpeho/spring-boot-random-user .
-
-# Run container
-docker run -p 8080:8080 --env-file .env xpeho/spring-boot-random-user
-```
-
-Application will be available at: **http://localhost:8080**
+- **default**: PostgreSQL (production)
+- **local**: Custom local settings
+- **test**: H2 in-memory database
 
 ---
 
 ## 📖 API Documentation
 
-### Interactive Swagger UI
+**Interactive Docs:** http://localhost:8080/api  
+**OpenAPI Spec:** http://localhost:8080/v3/api-docs
 
-```
-http://localhost:8080/api
-```
+### Endpoints
 
-### OpenAPI JSON Specification
+| Method | Path | Description | Status |
+|--------|------|-------------|--------|
+| `GET` | `/random-users?count=500` | Fetch and save random users | ✅ |
+| `GET` | `/random-users/{id}` | Get user by ID | ✅ |
+| `POST` | `/random-users` | Create a new user | ✅ |
+| `PUT` | `/random-users/{id}` | Update user | ✅ |
+| `DELETE` | `/random-users/{id}` | Delete user | ✅ |
 
-```
-http://localhost:8080/v3/api-docs
-```
+### Example Request
 
-### Available Endpoints
+```bash
+# Fetch 10 random users
+curl -X GET "http://localhost:8080/random-users?count=10"
 
-#### 🔵 GET /random-users
+# Get user by ID
+curl -X GET "http://localhost:8080/random-users/1"
 
-Fetch and persist random users from the external API.
+# Create user
+curl -X POST "http://localhost:8080/random-users" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "gender": "female",
+    "firstname": "Jane",
+    "lastname": "Doe",
+    "civility": "Ms",
+    "email": "jane@example.com",
+    "phone": "0600000000",
+    "picture": "pic.jpg",
+    "nat": "FR"
+  }'
 
-```http
-GET /random-users?count=500
-```
-
-**Parameters:**
-- `count` (optional): Number of users to fetch (default: 500, max: 5000)
-
-**Response:** `200 OK`
-```json
-[
-  {
-    "id": 1,
+# Update user
+curl -X PUT "http://localhost:8080/random-users/1" \
+  -H "Content-Type: application/json" \
+  -d '{
     "gender": "male",
     "firstname": "John",
-    "lastname": "Doe",
+    "lastname": "Smith",
     "civility": "Mr",
-    "email": "john.doe@example.com",
-    "phone": "+1 234 567 8900",
-    "picture": "https://example.com/pic.jpg",
+    "email": "john@example.com",
+    "phone": "0611111111",
+    "picture": "pic2.jpg",
     "nat": "US"
-  }
-]
+  }'
 ```
-
-#### 🟢 GET /random-users/{id}
-
-Retrieve a specific user by ID.
-
-```http
-GET /random-users/1
-```
-
-**Response:** `200 OK` or `404 Not Found`
-
-#### 🟡 PUT /random-users/{id}
-
-Update an existing user's information.
-
-```http
-PUT /random-users/1
-Content-Type: application/json
-PUT /random-users/{id}
-```
-
-**Request Body:**
-```json
-{
-  "gender": "female",
-  "firstname": "Jane",
-  "lastname": "Smith",
-  "civility": "Ms",
-  "email": "jane.smith@example.com",
-  "phone": "+1 987 654 3210",
-  "picture": "pic.jpg",
-  "nat": "FR"
-}
-```
-#### Create a new user
-```http
-POST /random-users
-```
-Example body:
-
-```json
-{
-  "gender": "female",
-  "firstname": "Albert",
-  "lastname": "Bing",
-  "civility": "Mrs",
-  "email": "albert.bing@example.com",
-  "phone": "123456789",
-  "picture": "pic.jpg",
-  "nat": "FR"
-}
-```
-
-**Responses:**
-- `200 OK` - User updated successfully
-- `404 Not Found` - User not found
 
 ---
 
 ## 🧪 Testing
 
-### Run All Tests
-
 ```bash
+# Run all tests with Docker
 ./mvnw verify
-```
 
-Test execution lifecycle:
-1. **pre-integration-test** → Docker Compose starts PostgreSQL
-2. **integration-test** → Unit and integration tests run
-3. **post-integration-test** → Docker Compose stops
-
-### Run Specific Test Suite
-
-```bash
 # Unit tests only
 ./mvnw test
 
-# Integration tests only
-./mvnw failsafe:integration-test
-
-# Tests with specific tag (Cucumber)
-./mvnw test -Dcucumber.filter.tags="@smoke"
-```
-
-### Test Coverage Report
-
-```bash
+# With coverage report (target/site/jacoco/index.html)
 ./mvnw clean verify
 ```
 
-Generated reports:
-- **HTML Report**: `target/site/jacoco/index.html`
-- **XML Report**: `target/site/jacoco/jacoco.xml` (used by SonarQube)
-
-### Test Framework Details
-
-- **Framework**: JUnit 5
-- **Mocking**: Mockito
-- **BDD**: Cucumber (planned)
-- **Coverage**: JaCoCo
+**Test Stack:**
+- JUnit 5 - Testing framework
+- Mockito - Mocking
+- JaCoCo - Code coverage
+- Cucumber - BDD (planned)
 
 ---
 
 ## 🏗️ Architecture
 
+### Clean Architecture (3 Layers)
+
+```
+┌─────────────────────────────────────┐
+│     Presentation Layer              │  ← REST Controllers
+│  (controllers, handlers)            │
+└─────────────────────────────────────┘
+              ↓
+┌─────────────────────────────────────┐
+│     Domain Layer                    │  ← Business Logic
+│  (usecases, entities, exceptions)   │
+└─────────────────────────────────────┘
+              ↓
+┌─────────────────────────────────────┐
+│     Data Layer                      │  ← Data Access
+│  (repositories, services, sources)  │
+└─────────────────────────────────────┘
+              ↓
+         PostgreSQL
+```
+
 ### Project Structure
 
 ```
-spring_boot_java_random_user/
-├── src/
-│   ├── main/
-│   │   ├── java/com/xpeho/spring_boot_java_random_user/
-│   │   │   ├── SpringBootJavaRandomUserApplication.java    ← Entry point
-│   │   │   ├── config/                                      ← Spring configuration
-│   │   │   ├── data/                                        ← Data layer
-│   │   │   │   ├── converters/                              ← DTO/Entity conversion
-│   │   │   │   ├── models/                                  ← Data models
-│   │   │   │   ├── services/                                ← Data services
-│   │   │   │   └── sources/                                 ← API & DB sources
-│   │   │   ├── domain/                                      ← Business logic
-│   │   │   │   ├── entities/                                ← Domain entities
-│   │   │   │   ├── exceptions/                              ← Custom exceptions
-│   │   │   │   ├── services/                                ← Business services
-│   │   │   │   └── usecases/                                ← Use cases
-│   │   │   └── presentation/                                ← API layer
-│   │   │       ├── controllers/                             ← REST controllers
-│   │   │       └── handlers/                                ← Exception handlers
-│   │   └── resources/
-│   │       ├── application.properties                       ← Main config
-│   │       ├── application-local.properties                 ← Local overrides
-│   │       ├── schema.sql                                   ← DB schema
-│   │       └── static/                                      ← Static assets
-│   └── test/
-│       ├── java/                                            ← Test code
-│       └── resources/
-│           ├── application-test.properties                  ← Test config
-│           └── features/                                    ← Cucumber features
-├── .github/
-│   └── workflows/
-│       ├── sonar.yaml                                       ← SonarQube CI/CD
-│       └── ISSUE_TEMPLATE/                                  ← GitHub templates
-├── docker-compose.yml                                       ← Local infrastructure
-├── pom.xml                                                  ← Maven config
-├── .env.template                                            ← Env variables template
-├── .gitignore                                               ← Git ignore rules
-└── README.md                                                ← This file
-```
-
-### Layered Architecture
-
-```
-Presentation Layer (Controllers)
-         ↓
-Domain Layer (Use Cases, Services)
-         ↓
-Data Layer (Repositories, Converters)
-         ↓
-Database (PostgreSQL)
+src/main/java/com/xpeho/spring_boot_java_random_user/
+├── SpringBootJavaRandomUserApplication.java  ← Entry point
+├── config/                                    ← Configuration
+├── presentation/                              ← REST API Layer
+│   ├── controllers/                           ← API interfaces
+│   └── handlers/                              ← Implementations
+├── domain/                                    ← Business Layer
+│   ├── entities/                              ← Domain models
+│   ├── exceptions/                            ← Custom exceptions
+│   ├── services/                              ← Business services
+│   └── usecases/                              ← Use cases
+└── data/                                      ← Data Layer
+    ├── converters/                            ← DTO/Entity mapping
+    ├── models/                                ← Data models
+    ├── services/                              ← Data services
+    └── sources/                               ← API & DB access
 ```
 
 ---
@@ -406,82 +192,49 @@ Database (PostgreSQL)
 
 ### Users Table
 
-| Column | Type | Constraints | Description |
-|--------|------|-------------|-------------|
-| `id` | SERIAL | PRIMARY KEY | Auto-incremented identifier |
-| `gender` | VARCHAR(20) | - | Gender |
-| `firstname` | VARCHAR(100) | - | First name |
-| `lastname` | VARCHAR(100) | - | Last name |
-| `civility` | VARCHAR(20) | - | Title (Mr, Ms, Mrs, etc.) |
-| `email` | VARCHAR(255) | - | Email address |
-| `phone` | VARCHAR(50) | - | Phone number |
-| `picture` | VARCHAR(500) | - | Avatar/picture URL |
-| `nat` | VARCHAR(10) | - | Nationality code |
+| Column | Type | Description |
+|--------|------|-------------|
+| `id` | SERIAL PRIMARY KEY | Auto-incremented identifier |
+| `gender` | VARCHAR(20) | Gender |
+| `firstname` | VARCHAR(100) | First name |
+| `lastname` | VARCHAR(100) | Last name |
+| `civility` | VARCHAR(20) | Title (Mr, Ms, Mrs, etc.) |
+| `email` | VARCHAR(255) | Email address |
+| `phone` | VARCHAR(50) | Phone number |
+| `picture` | VARCHAR(500) | Avatar/picture URL |
+| `nat` | VARCHAR(10) | Nationality code |
 
-### DDL
-
-Auto-generated on startup via `schema.sql`:
-
-```sql
-DROP TABLE IF EXISTS "users";
-
-CREATE TABLE IF NOT EXISTS "users" (
-    id SERIAL PRIMARY KEY,
-    gender VARCHAR(20),
-    firstname VARCHAR(100),
-    lastname VARCHAR(100),
-    civility VARCHAR(20),
-    email VARCHAR(255),
-    phone VARCHAR(50),
-    picture VARCHAR(500),
-    nationality VARCHAR(10)
-);
-```
+**Schema auto-created on startup via `schema.sql`**
 
 ---
 
 ## 📊 Monitoring
 
-### Health Check
-
-```
-http://localhost:8080/actuator/health
-```
-
 ### Actuator Endpoints
 
-```
-http://localhost:8080/actuator
-http://localhost:8080/actuator/health
-http://localhost:8080/actuator/metrics
-http://localhost:8080/actuator/beans
-```
+- Health Check: http://localhost:8080/actuator/health
+- All Endpoints: http://localhost:8080/actuator
+- Metrics: http://localhost:8080/actuator/metrics
 
-### Metrics
-
-- JVM metrics
-- HTTP metrics
-- Database connection pool metrics
+**Available Metrics:** JVM metrics, HTTP metrics, Database connection pool metrics
 
 ---
 
 ## 🔍 Quality & CI/CD
 
-### Local SonarQube Analysis
+### SonarQube Analysis
 
 ```bash
 ./mvnw clean verify sonar:sonar
 ```
 
-### GitHub Actions Workflows
+### GitHub Actions
 
-#### 🟦 SonarQube Analysis (.github/workflows/sonar.yaml)
+**Workflow:** `.github/workflows/sonar.yaml`
 
-**Triggers:**
-- Push to any branch
-- Pull requests
+**Triggers:** Push to any branch, Pull requests
 
-**What it does:**
+**Pipeline:**
 1. Sets up Java 25
 2. Runs Maven tests with code coverage
 3. Uploads results to SonarQube
@@ -490,10 +243,7 @@ http://localhost:8080/actuator/beans
 **Required Secrets:**
 - `SONAR_TOKEN` - SonarQube authentication
 - `SONAR_HOST_URL` - SonarQube instance URL
-- `POSTGRES_USER` - DB user
-- `POSTGRES_PASSWORD` - DB password
-- `POSTGRES_DB` - DB name
-- `POSTGRES_PORT` - DB port
+- `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`, `POSTGRES_PORT`
 
 ---
 
@@ -569,27 +319,6 @@ This project integrates with **Random User Generator API**:
 
 ---
 
-## 📈 Future Enhancements
-
-- [ ] [Delete endpoint - DELETE /random-users/{id}](https://github.com/XPEHO/spring_boot_java_random_user/issues/10)
-- [ ] [Create endpoint - POST /random-users](https://github.com/XPEHO/spring_boot_java_random_user/issues/11)
-- [ ] [Liquibase database migrations](setup-docs/liquibase-guide.md)
-- [ ] [Cucumber BDD testing suite](setup-docs/cucumber-guide-english.md)
-
----
-
-## ✅ Todo
-
-- [x] [Add Sonarqube in the project](https://github.com/XPEHO/spring_boot_java_random_user/issues/2)
-- [x] [Add PostgreSQL database with docker](https://github.com/XPEHO/spring_boot_java_random_user/issues/6)
-- [x] [Add this endpoint get /user/random](https://github.com/XPEHO/spring_boot_java_random_user/issues/5)
-- [x] [Add this endpoint get /user/{id}](https://github.com/XPEHO/spring_boot_java_random_user/issues/8)
-- [x] [Add this endpoint put /user/{id}](https://github.com/XPEHO/spring_boot_java_random_user/issues/9)
-- [ ] [Add this endpoint delete /user/{id}](https://github.com/XPEHO/spring_boot_java_random_user/issues/10)
-- [x] [Add this endpoint post /user](https://github.com/XPEHO/spring_boot_java_random_user/issues/11)
-
----
-
 ## 👥 Contributing
 
 Contributions are welcome! Please follow these steps:
@@ -631,4 +360,3 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 ⭐ If you found this helpful, please consider starring the repository!
 
 </div>
-

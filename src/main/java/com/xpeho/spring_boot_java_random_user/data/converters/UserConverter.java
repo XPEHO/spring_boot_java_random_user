@@ -1,7 +1,8 @@
 package com.xpeho.spring_boot_java_random_user.data.converters;
+
 import com.xpeho.spring_boot_java_random_user.data.models.api.RandomUserResultDAO;
-import com.xpeho.spring_boot_java_random_user.domain.entities.UserEntity;
 import com.xpeho.spring_boot_java_random_user.data.models.db.User;
+import com.xpeho.spring_boot_java_random_user.domain.entities.UserEntity;
 import org.springframework.stereotype.Service;
 
 
@@ -21,32 +22,34 @@ public class UserConverter {
         user.setNationality(entity.nat());
         return user;
     }
+
     // DAO -> Domain
     public UserEntity toDomain(User user) {
         return new UserEntity(
-            user.getId(),
-            user.getGender(),
-            user.getFirstname(),
-            user.getLastname(),
-            user.getCivility(),
-            user.getEmail(),
-            user.getPhone(),
-            user.getPicture(),
-            user.getNationality()
+                user.getId(),
+                user.getGender(),
+                user.getFirstname(),
+                user.getLastname(),
+                user.getCivility(),
+                user.getEmail(),
+                user.getPhone(),
+                user.getPicture(),
+                user.getNationality()
         );
     }
+
     // API -> Domain
     public UserEntity fromApiModel(RandomUserResultDAO model) {
         return new UserEntity(
-            null,
-            model.getGender(),
-            model.getFirstName(),
-            model.getLastName(),
-            null,
-            model.getEmail(),
-            model.getPhone(),
-            model.getImage(),
-            null
+                null,
+                model.getGender(),
+                model.getFirstName(),
+                model.getLastName(),
+                null,
+                model.getEmail(),
+                model.getPhone(),
+                model.getImage(),
+                null
         );
     }
 }
