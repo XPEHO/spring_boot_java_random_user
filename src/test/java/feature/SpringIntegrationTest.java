@@ -34,6 +34,11 @@ public class SpringIntegrationTest {
 
     protected ResponseEntity<String> latestResponse;
 
+    protected void executeGet(String path) {
+        String url = "http://localhost:" + port + path;
+        latestResponse = restTemplate.getForEntity(url, String.class);
+    }
+
     protected void executePost(String path, Object payload) {
         String url = "http://localhost:" + port + path;
         HttpHeaders headers = new HttpHeaders();

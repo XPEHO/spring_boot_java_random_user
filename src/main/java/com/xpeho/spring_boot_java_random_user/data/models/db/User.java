@@ -7,6 +7,7 @@ import org.springframework.data.relational.core.mapping.Table;
 @Table("users")
 public class User {
     @Id
+    @Column("id")
     private Long id;
     @Column("gender")
     private String gender;
