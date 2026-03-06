@@ -4,5 +4,6 @@ Feature: Create user endpoint
     Given a valid user payload for creation
     When the client call to POST /random-users
     Then the response status should be 201
-    And the response should contain the created user id 1
-    And the response should contain the firstname "Emma"
+    And the user profile
+      | id        | 1    |
+      | firstname | Emma |
