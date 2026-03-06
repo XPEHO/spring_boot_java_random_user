@@ -6,7 +6,9 @@ Feature: Get user endpoint
     Then the response status should be 201
     When the client call to GET /random-users/1
     Then the response status should be 200
-    And the response should contain the firstname "Emma"
+    And the user profile
+      | id        | 1    |
+      | firstname | Emma |
 
   Scenario: Get a user that does not exist
     When the client call to GET /random-users/999
