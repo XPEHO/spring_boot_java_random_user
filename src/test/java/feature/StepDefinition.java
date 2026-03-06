@@ -50,4 +50,9 @@ public class StepDefinition extends SpringIntegrationTest {
         JsonNode body = objectMapper.readTree(latestResponse.getBody());
         assertEquals(expectedFirstname, body.get("firstname").asText());
     }
+
+    @When("the client call to GET \\/random-users\\/{int}")
+    public void theClientCallToGetRandomUser(int id) {
+        executeGet("/random-users/" + id);
+    }
 }
