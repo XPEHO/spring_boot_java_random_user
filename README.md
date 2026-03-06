@@ -132,13 +132,16 @@ curl -X PUT "http://localhost:8080/random-users/1" \
 
 # With coverage report (target/site/jacoco/index.html)
 ./mvnw clean verify
+
+#cucumber tests
+./mvnw test -Dtest=CucumberIntegrationTest
 ```
 
 **Test Stack:**
 - JUnit 5 - Testing framework
 - Mockito - Mocking
 - JaCoCo - Code coverage
-- Cucumber - BDD (planned)
+- Cucumber - BDD
 
 ---
 
