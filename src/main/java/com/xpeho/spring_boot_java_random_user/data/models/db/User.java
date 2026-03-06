@@ -8,15 +8,21 @@ import org.springframework.data.relational.core.mapping.Table;
 public class User {
     @Id
     private Long id;
+    @Column("gender")
     private String gender;
     @Column("firstname")
     private String firstname;
     @Column("lastname")
     private String lastname;
+    @Column("civility")
     private String civility;
+    @Column("email")
     private String email;
+    @Column("phone")
     private String phone;
+    @Column("picture")
     private String picture;
+    @Column("nationality")
     private String nationality;
 
     // Required by Spring Data JDBC to instantiate the entity via reflection
