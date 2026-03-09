@@ -5,5 +5,5 @@ Feature: Create user endpoint
     When the client call to POST /random-users
     Then the response status should be 201
     And the user profile
-      | id        | 1    |
+      | id        | <generated_id> |
       | firstname | Emma |

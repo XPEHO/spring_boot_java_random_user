@@ -134,7 +134,7 @@ curl -X PUT "http://localhost:8080/random-users/1" \
 ./mvnw clean verify
 
 #cucumber tests
-./mvnw test -Dtest=CucumberIntegrationTest
+./mvnw verify -DskipDocker=true -Dit.test=CucumberIntegrationTest
 ```
 
 **Test Stack:**
