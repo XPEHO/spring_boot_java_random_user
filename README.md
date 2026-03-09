@@ -225,8 +225,6 @@ src/main/resources/db/changelog/
 ./mvnw liquibase:rollback -Dliquibase.rollbackCount=1  # Rollback last change
 ```
 
-**Note:** Copy `liquibase.properties.template` to `liquibase.properties` and configure your database credentials for CLI commands.
-
 ---
 
 ## 📊 Monitoring
