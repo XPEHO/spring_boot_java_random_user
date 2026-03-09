@@ -122,7 +122,10 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-
+		<dependency>
+			<groupId>org.liquibase</groupId>
+			<artifactId>liquibase-core</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -130,6 +133,19 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.liquibase</groupId>
+				<artifactId>liquibase-maven-plugin</artifactId>
+				<configuration>
+					<changeLogFile>${env.LB_CHANGELOG}</changeLogFile>
+					<outputChangeLogFile>${env.LB_OUTPUT_CHANGELOG}</outputChangeLogFile>
+					<url>jdbc:postgresql://localhost:${env.POSTGRES_PORT}/${env.POSTGRES_DB}</url>
+					<username>${env.POSTGRES_USER}</username>
+					<password>${env.POSTGRES_PASSWORD}</password>
+					<driver>${env.LB_DRIVER}</driver>
+					<defaultSchemaName>${env.LB_SCHEMA}</defaultSchemaName>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

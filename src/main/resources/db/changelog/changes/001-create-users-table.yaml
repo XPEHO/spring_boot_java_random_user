@@ -1,0 +1,42 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-create-users-table
+      author: xpeho
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: SERIAL
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: gender
+                  type: VARCHAR(20)
+              - column:
+                  name: firstname
+                  type: VARCHAR(100)
+              - column:
+                  name: lastname
+                  type: VARCHAR(100)
+              - column:
+                  name: civility
+                  type: VARCHAR(20)
+              - column:
+                  name: email
+                  type: VARCHAR(255)
+              - column:
+                  name: phone
+                  type: VARCHAR(50)
+              - column:
+                  name: picture
+                  type: VARCHAR(500)
+              - column:
+                  name: nationality
+                  type: VARCHAR(10)
+      rollback:
+        - dropTable:
+            tableName: users
