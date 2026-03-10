@@ -1,6 +1,6 @@
 package com.xpeho.spring_boot_java_random_user.data.converters;
 
-import com.xpeho.spring_boot_java_random_user.data.models.api.RandomUserResultDAO;
+import com.xpeho.spring_boot_java_random_user.data.models.api.dummy.DummyUserResultDTO;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserEntity;
 import com.xpeho.spring_boot_java_random_user.data.models.db.User;
 import org.junit.jupiter.api.DisplayName;
@@ -14,7 +14,7 @@ class UserConverterTest {
     @Test
     @DisplayName("Should convert API model to domain entity with all fields")
     void shouldConvertApiModelToDomainWithAllFields() {
-        RandomUserResultDAO api = new RandomUserResultDAO();
+        DummyUserResultDTO api = new DummyUserResultDTO();
         api.setGender("male");
         api.setFirstName("John");
         api.setLastName("Doe");
@@ -34,7 +34,7 @@ class UserConverterTest {
     @Test
     @DisplayName("Should handle missing fields when converting API model")
     void shouldHandleMissingFieldsFromApiModel() {
-        RandomUserResultDAO api = new RandomUserResultDAO();
+        DummyUserResultDTO api = new DummyUserResultDTO();
         api.setGender("female");
         api.setEmail("jane@doe.com");
         api.setPhone("5678");

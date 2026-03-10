@@ -10,7 +10,7 @@ public class SpringBootJavaRandomUserApplication {
     private SpringBootJavaRandomUserApplication() {
     }
 
-    static void main(String[] args) {
+    public static void main(String[] args) {
         Dotenv.configure()
                 .ignoreIfMissing()
                 .load()

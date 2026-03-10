@@ -1,8 +1,8 @@
 package com.xpeho.spring_boot_java_random_user.data.sources.api;
 
 import com.xpeho.spring_boot_java_random_user.data.converters.UserConverter;
-import com.xpeho.spring_boot_java_random_user.data.models.api.RandomUserResponse;
-import com.xpeho.spring_boot_java_random_user.data.models.api.RandomUserResultDAO;
+import com.xpeho.spring_boot_java_random_user.data.models.api.dummy.DummyUserResponse;
+import com.xpeho.spring_boot_java_random_user.data.models.api.dummy.DummyUserResultDTO;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,7 +20,7 @@ class RandomUserProviderImplTest {
     private RandomUserApi randomUserApi;
     private UserConverter userConverter;
     private RandomUserProviderImpl provider;
-    private Call<RandomUserResponse> call;
+    private Call<DummyUserResponse> call;
 
     @BeforeEach
     void setUp() {
@@ -34,9 +34,9 @@ class RandomUserProviderImplTest {
     @DisplayName("Should fetch and convert users successfully")
     void shouldFetchAndConvertUsersSuccessfully() throws IOException {
         int count = 2;
-        RandomUserResponse responseObj = new RandomUserResponse();
-        RandomUserResultDAO dao1 = new RandomUserResultDAO();
-        RandomUserResultDAO dao2 = new RandomUserResultDAO();
+        DummyUserResponse responseObj = new DummyUserResponse();
+        DummyUserResultDTO dao1 = new DummyUserResultDTO();
+        DummyUserResultDTO dao2 = new DummyUserResultDTO();
         responseObj.setUsers(List.of(dao1, dao2));
         UserEntity entity1 = new UserEntity(null, "a", "b", "c", "d", "e", "f", "g", "h");
         UserEntity entity2 = new UserEntity(null, "i", "j", "k", "l", "m", "n", "o", "p");

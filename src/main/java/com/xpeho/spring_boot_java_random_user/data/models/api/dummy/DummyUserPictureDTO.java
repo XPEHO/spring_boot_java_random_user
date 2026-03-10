@@ -1,6 +1,6 @@
-package com.xpeho.spring_boot_java_random_user.data.models.api;
+package com.xpeho.spring_boot_java_random_user.data.models.api.dummy;
 
-public class RandomUserPictureDAO {
+public class DummyUserPictureDTO {
     private String medium;
 
     public String getMedium() {

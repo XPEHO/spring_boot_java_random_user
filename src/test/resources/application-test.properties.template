@@ -3,4 +3,7 @@ POSTGRES_PASSWORD=your_postgres_password
 POSTGRES_DB=your_postgres_db
 POSTGRES_PORT=your_postgres_port
 
+# Dummy API
+dummy.api.base-url=your_dummy_api_base_url
+
 

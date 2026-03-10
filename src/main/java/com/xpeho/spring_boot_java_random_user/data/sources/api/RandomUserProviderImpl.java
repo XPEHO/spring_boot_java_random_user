@@ -1,8 +1,8 @@
 package com.xpeho.spring_boot_java_random_user.data.sources.api;
 
 import com.xpeho.spring_boot_java_random_user.data.converters.UserConverter;
-import com.xpeho.spring_boot_java_random_user.data.models.api.RandomUserResponse;
-import com.xpeho.spring_boot_java_random_user.data.models.api.RandomUserResultDAO;
+import com.xpeho.spring_boot_java_random_user.data.models.api.dummy.DummyUserResponse;
+import com.xpeho.spring_boot_java_random_user.data.models.api.dummy.DummyUserResultDTO;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserEntity;
 import com.xpeho.spring_boot_java_random_user.domain.services.RandomUserProvider;
 import org.springframework.stereotype.Service;
@@ -23,11 +23,11 @@ public class RandomUserProviderImpl implements RandomUserProvider {
 
     @Override
     public List<UserEntity> fetchRandomUsers(int count) throws IOException {
-        Response<RandomUserResponse> response = randomUserApi.getRandomUsers(count).execute();
+        Response<DummyUserResponse> response = randomUserApi.getRandomUsers(count).execute();
         if (!response.isSuccessful() || response.body() == null) {
             throw new IOException("Failed to fetch users: " + response.code());
         }
-        List<RandomUserResultDAO> users = response.body().getUsers();
+        List<DummyUserResultDTO> users = response.body().getUsers();
         if (users == null) {
             throw new IOException("Failed to parse users from response");
         }
