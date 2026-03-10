@@ -207,7 +207,23 @@ src/main/java/com/xpeho/spring_boot_java_random_user/
 | `picture` | VARCHAR(500) | Avatar/picture URL |
 | `nat` | VARCHAR(10) | Nationality code |
 
-**Schema auto-created on startup via `schema.sql`**
+### Liquibase Migrations
+
+Database schema is managed with **Liquibase**. Migrations are applied automatically on application startup.
+
+```
+src/main/resources/db/changelog/
+├── db.changelog-master.yaml          ← Index file
+└── changes/
+    └── 001-create-users-table.yaml   ← Table creation
+```
+
+**CLI Commands:**
+```bash
+./mvnw liquibase:status                              # View pending changes
+./mvnw liquibase:update                              # Apply migrations
+./mvnw liquibase:rollback -Dliquibase.rollbackCount=1  # Rollback last change
+```
 
 ---
 

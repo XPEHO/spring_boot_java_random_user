@@ -108,6 +108,20 @@ trim() {
 scriptDir="$(dirname "$0")"
 scriptName="$(basename "$0")"
 
+# Load environment variables from .env (if present) to ensure Maven sees them.
+# This exports all variables defined in the .env file without requiring extra tools.
+if [ -f "$scriptDir/.env" ]; then
+  ENV_FILE="$scriptDir/.env"
+elif [ -f ".env" ]; then
+  ENV_FILE=".env"
+fi
+if [ -n "${ENV_FILE-}" ] && [ -r "$ENV_FILE" ]; then
+  set -a
+  # shellcheck disable=SC1090
+  . "$ENV_FILE"
+  set +a
+fi
+
 # parse distributionUrl and optional distributionSha256Sum, requires .mvn/wrapper/maven-wrapper.properties
 while IFS="=" read -r key value; do
   case "${key-}" in
