@@ -1,13 +1,18 @@
 package com.xpeho.spring_boot_java_random_user.presentation;
 
+import com.xpeho.spring_boot_java_random_user.domain.entities.PaginatedUsers;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserEntity;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserRequest;
+import com.xpeho.spring_boot_java_random_user.domain.exceptions.InvalidPaginationException;
 import com.xpeho.spring_boot_java_random_user.domain.exceptions.UserNotFoundException;
 import com.xpeho.spring_boot_java_random_user.domain.usecases.*;
 import com.xpeho.spring_boot_java_random_user.presentation.handlers.UserHandler;
+import com.xpeho.spring_boot_java_random_user.presentation.dto.UserResponseDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -37,30 +42,51 @@ class UserHandlerTest {
     }
 
     @Test
-    @DisplayName("Should return 200 and users when getRandomUsers succeeds")
+    @DisplayName("Should return 200 and paged users when getRandomUsers succeeds")
     void shouldReturnOkWhenGetRandomUsersSucceeds() throws IOException {
+        int page = 1;
+        int size = 10;
         List<UserEntity> users = List.of(
                 new UserEntity(1L, "male", "John", "Doe", "Mr", "john@example.com", "0600000000", "pic.jpg", "FR")
         );
-        when(fetchAndSaveRandomUsersUseCase.execute(2)).thenReturn(users);
+        PaginatedUsers paginatedUsers = new PaginatedUsers(users, 50, 0, 10);
+        when(fetchAndSaveRandomUsersUseCase.execute(page, size)).thenReturn(paginatedUsers);
 
-        ResponseEntity<List<UserEntity>> response = userHandler.getRandomUsers(2);
+        ResponseEntity<UserResponseDTO> response = userHandler.getRandomUsers(page, size);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(users, response.getBody());
-        verify(fetchAndSaveRandomUsersUseCase, times(1)).execute(2);
+        assertNotNull(response.getBody());
+        assertEquals(users, response.getBody().data());
+        assertEquals(50, response.getBody().total());
+        assertEquals(0, response.getBody().skip());
+        assertEquals(10, response.getBody().limit());
+        verify(fetchAndSaveRandomUsersUseCase, times(1)).execute(page, size);
     }
 
     @Test
-    @DisplayName("Should return 500 and empty list when getRandomUsers throws IOException")
+    @DisplayName("Should return 500 when getRandomUsers throws IOException")
     void shouldReturnInternalServerErrorWhenGetRandomUsersFails() throws IOException {
-        when(fetchAndSaveRandomUsersUseCase.execute(5)).thenThrow(new IOException("downstream unavailable"));
+        int page = 1;
+        int size = 10;
+        when(fetchAndSaveRandomUsersUseCase.execute(page, size)).thenThrow(new IOException("downstream unavailable"));
 
-        ResponseEntity<List<UserEntity>> response = userHandler.getRandomUsers(5);
+        ResponseEntity<UserResponseDTO> response = userHandler.getRandomUsers(page, size);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        assertTrue(response.getBody() != null && response.getBody().isEmpty());
-        verify(fetchAndSaveRandomUsersUseCase, times(1)).execute(5);
+        assertNull(response.getBody());
+        verify(fetchAndSaveRandomUsersUseCase, times(1)).execute(page, size);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "1, 31",
+            "0, 10",
+            "1, 0"
+    })
+    @DisplayName("Should throw InvalidPaginationException for invalid pagination inputs")
+    void shouldThrowInvalidPaginationExceptionForInvalidPaginationInputs(int page, int size) throws IOException {
+        assertThrows(InvalidPaginationException.class, () -> userHandler.getRandomUsers(page, size));
+        verify(fetchAndSaveRandomUsersUseCase, never()).execute(page, size);
     }
 
     @Test
