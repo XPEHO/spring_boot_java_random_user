@@ -2,6 +2,7 @@ package com.xpeho.spring_boot_java_random_user.presentation.controllers;
 
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserEntity;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserRequest;
+import com.xpeho.spring_boot_java_random_user.presentation.dto.UserResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -11,7 +12,6 @@ import jakarta.validation.constraints.Min;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 
 @RequestMapping("/random-users")
@@ -21,19 +21,23 @@ public interface UserController {
     @GetMapping("")
     @Operation(
             summary = "Get random users",
-            description = "Fetches a list of random users from the external API and saves them to the database.",
+            description = "Fetches a paginated list of random users from the external API and saves them to the database.",
             parameters = {
-                    @Parameter(name = "count", description = "Number of users to generate (max 5000)", example = "500")
+                    @Parameter(name = "page", description = "Page number", example = "1"),
+                    @Parameter(name = "size", description = "Number of users per page (max 30)", example = "10")
             }
     )
     @ApiResponse(responseCode = "200", description = "List of users successfully fetched and saved")
     @ApiResponse(responseCode = "500", description = "Internal server error")
     @ApiResponse(responseCode = "503", description = "External service unavailable")
-    ResponseEntity<List<UserEntity>> getRandomUsers(
-            @RequestParam(defaultValue = "500")
+    ResponseEntity<UserResponseDTO> getRandomUsers(
+            @RequestParam(defaultValue = "1")
             @Min(1)
-            @Max(5000)
-            int count
+            int page,
+            @RequestParam(defaultValue = "10")
+            @Min(1)
+            @Max(30)
+            int size
     );
 
     @GetMapping("/{id}")

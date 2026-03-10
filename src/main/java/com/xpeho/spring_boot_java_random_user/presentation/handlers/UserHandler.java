@@ -1,10 +1,13 @@
 package com.xpeho.spring_boot_java_random_user.presentation.handlers;
 
+import com.xpeho.spring_boot_java_random_user.domain.entities.PaginatedUsers;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserEntity;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserRequest;
+import com.xpeho.spring_boot_java_random_user.domain.exceptions.InvalidPaginationException;
 import com.xpeho.spring_boot_java_random_user.domain.exceptions.UserNotFoundException;
 import com.xpeho.spring_boot_java_random_user.domain.usecases.*;
 import com.xpeho.spring_boot_java_random_user.presentation.controllers.UserController;
+import com.xpeho.spring_boot_java_random_user.presentation.dto.UserResponseDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -13,9 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
-import java.util.List;
 
-import static java.util.Collections.emptyList;
 
 @RestController
 public class UserHandler implements UserController {
@@ -46,14 +47,25 @@ public class UserHandler implements UserController {
 
 
     @Override
-    public ResponseEntity<List<UserEntity>> getRandomUsers(int count) {
+    public ResponseEntity<UserResponseDTO> getRandomUsers(int page, int size) {
+        if (page < 1) {
+            throw new InvalidPaginationException("Page must be greater than or equal to 1. Requested: " + page);
+        }
+        if (size < 1 || size > 30) {
+            throw new InvalidPaginationException("Page size must be between 1 and 30. Requested: " + size);
+        }
         try {
-            List<UserEntity> users = fetchAndSaveRandomUsersUseCase.execute(count);
-            return ResponseEntity.ok(users);
+            PaginatedUsers result = fetchAndSaveRandomUsersUseCase.execute(page, size);
+            UserResponseDTO response = new UserResponseDTO(
+                    result.data(),
+                    result.total(),
+                    result.skip(),
+                    result.limit()
+            );
+            return ResponseEntity.ok(response);
         } catch (IOException e) {
             logger.error("Error fetching random users: {}", e.getMessage(), e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(emptyList());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 

@@ -3,6 +3,7 @@ package com.xpeho.spring_boot_java_random_user.data.sources.api;
 import com.xpeho.spring_boot_java_random_user.data.converters.UserConverter;
 import com.xpeho.spring_boot_java_random_user.data.models.api.RandomUserResponse;
 import com.xpeho.spring_boot_java_random_user.data.models.api.RandomUserResultDAO;
+import com.xpeho.spring_boot_java_random_user.domain.entities.PaginatedUsers;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserEntity;
 import com.xpeho.spring_boot_java_random_user.domain.services.RandomUserProvider;
 import org.springframework.stereotype.Service;
@@ -22,17 +23,21 @@ public class RandomUserProviderImpl implements RandomUserProvider {
     }
 
     @Override
-    public List<UserEntity> fetchRandomUsers(int count) throws IOException {
-        Response<RandomUserResponse> response = randomUserApi.getRandomUsers(count).execute();
+    public PaginatedUsers fetchRandomUsers(int page, int size) throws IOException {
+        // Convert 1-based page index to 0-based skip offset
+        int skip = (page - 1) * size;
+        Response<RandomUserResponse> response = randomUserApi.getRandomUsers(size, skip).execute();
         if (!response.isSuccessful() || response.body() == null) {
             throw new IOException("Failed to fetch users: " + response.code());
         }
-        List<RandomUserResultDAO> users = response.body().getUsers();
+        RandomUserResponse body = response.body();
+        List<RandomUserResultDAO> users = body.getUsers();
         if (users == null) {
             throw new IOException("Failed to parse users from response");
         }
-        return users.stream()
+        List<UserEntity> entities = users.stream()
                 .map(userConverter::fromApiModel)
                 .toList();
+        return new PaginatedUsers(entities, body.getTotal(), body.getSkip(), body.getLimit());
     }
 }
