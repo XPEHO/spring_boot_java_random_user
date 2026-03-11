@@ -1,6 +1,6 @@
-package com.xpeho.spring_boot_java_random_user.data.models.api;
+package com.xpeho.spring_boot_java_random_user.data.models.api.dummy;
 
-public class RandomUserNameDAO {
+public class DummyUserNameDTO {
     private String title;
     private String first;
     private String last;
@@ -29,3 +29,4 @@ public class RandomUserNameDAO {
         this.last = last;
     }
 }
+

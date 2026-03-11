@@ -7,7 +7,7 @@
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-blue?logo=postgresql)](https://www.postgresql.org/)
 [![License](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
 
-A REST API built with Spring Boot that fetches random users from [Random User API](https://randomuser.me/) and stores them in PostgreSQL.
+A REST API built with Spring Boot that fetches users from [DummyJSON Users API](https://dummyjson.com/users) and stores them in PostgreSQL.
 
 **[Quick Start](#-quick-start) • [API Docs](#-api-documentation) • [Architecture](#-architecture)**
 
@@ -58,6 +58,14 @@ POSTGRES_DB=your_database
 POSTGRES_PORT=5432
 ```
 
+### External API Configuration
+
+`application.properties` uses:
+
+```properties
+dummy.api.base-url=https://dummyjson.com/
+```
+
 ### Profiles
 
 - **default**: PostgreSQL (production)
@@ -73,18 +81,18 @@ POSTGRES_PORT=5432
 
 ### Endpoints
 
-| Method | Path | Description | Status |
-|--------|------|-------------|--------|
-| `GET` | `/random-users?count=500` | Fetch and save random users | ✅ |
-| `GET` | `/random-users/{id}` | Get user by ID | ✅ |
-| `POST` | `/random-users` | Create a new user | ✅ |
-| `PUT` | `/random-users/{id}` | Update user | ✅ |
-| `DELETE` | `/random-users/{id}` | Delete user | ✅ |
+| Method | Path                     | Description | Status |
+|--------|--------------------------|-------------|--------|
+| `GET` | `/random-users?count=30` | Fetch and save users from external API | ✅ |
+| `GET` | `/random-users/{id}`     | Get user by ID | ✅ |
+| `POST` | `/random-users`          | Create a new user | ✅ |
+| `PUT` | `/random-users/{id}`     | Update user | ✅ |
+| `DELETE` | `/random-users/{id}`     | Delete user | ✅ |
 
 ### Example Request
 
 ```bash
-# Fetch 10 random users
+# Fetch 10 users from external API and store them
 curl -X GET "http://localhost:8080/random-users?count=10"
 
 # Get user by ID
@@ -167,6 +175,16 @@ curl -X PUT "http://localhost:8080/random-users/1" \
               ↓
          PostgreSQL
 ```
+
+### Domain Service Ports
+
+- `LocalUserService`: local persistence operations (save, read, delete) backed by PostgreSQL.
+- `RemoteUserService`: external user source contract used by use cases.
+
+### External Source Adapter
+
+- `DummyUserApi`: Retrofit client contract for DummyJSON endpoints.
+- `DummyUserServiceImpl`: adapter that calls `DummyUserApi`, maps DTOs, and returns `PaginatedUsers`.
 
 ### Project Structure
 
@@ -327,14 +345,15 @@ error: release version 25 not supported
 
 ## 🌐 External API
 
-This project integrates with **Random User Generator API**:
+This project integrates with **DummyJSON Users API**:
 
-- **URL**: https://randomuser.me/api/
-- **Documentation**: https://randomuser.me/documentation
+- **Base URL**: https://dummyjson.com/
+- **Users Endpoint**: https://dummyjson.com/users
+- **Documentation**: https://dummyjson.com/docs/users
 - **Features**:
-  - Generate random users
-  - Filter by nationality
-  - Customize response fields
+  - Paginated user retrieval (`limit`, `skip`)
+  - Stable JSON schema for user fixtures
+  - Fast sandbox API for development/testing
 
 ---
 
@@ -365,7 +384,7 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 ## 🔗 Useful Links
 
 - [Spring Boot Documentation](https://spring.io/projects/spring-boot)
-- [Random User API Docs](https://randomuser.me/documentation)
+- [DummyJSON Users API Docs](https://dummyjson.com/docs/users)
 - [PostgreSQL Documentation](https://www.postgresql.org/docs/)
 - [Docker Documentation](https://docs.docker.com/)
 - [SonarQube Documentation](https://docs.sonarqube.org/)

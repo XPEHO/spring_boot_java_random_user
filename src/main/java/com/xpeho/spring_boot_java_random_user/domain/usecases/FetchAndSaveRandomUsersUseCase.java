@@ -1,8 +1,8 @@
 package com.xpeho.spring_boot_java_random_user.domain.usecases;
 
 import com.xpeho.spring_boot_java_random_user.domain.entities.PaginatedUsers;
-import com.xpeho.spring_boot_java_random_user.domain.services.RandomUserProvider;
-import com.xpeho.spring_boot_java_random_user.domain.services.UserService;
+import com.xpeho.spring_boot_java_random_user.domain.services.LocalUserService;
+import com.xpeho.spring_boot_java_random_user.domain.services.RemoteUserService;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -10,17 +10,17 @@ import java.io.IOException;
 @Service
 public class FetchAndSaveRandomUsersUseCase {
 
-    private final UserService userService;
-    private final RandomUserProvider randomUserProvider;
+    private final LocalUserService localUserService;
+    private final RemoteUserService remoteUserService;
 
-    public FetchAndSaveRandomUsersUseCase(UserService userService, RandomUserProvider randomUserProvider) {
-        this.userService = userService;
-        this.randomUserProvider = randomUserProvider;
+    public FetchAndSaveRandomUsersUseCase(LocalUserService localUserService, RemoteUserService remoteUserService) {
+        this.localUserService = localUserService;
+        this.remoteUserService = remoteUserService;
     }
 
     public PaginatedUsers execute(int page, int size) throws IOException {
-        PaginatedUsers response = randomUserProvider.fetchRandomUsers(page, size);
-        userService.saveAll(response.data());
+        PaginatedUsers response = remoteUserService.fetchUsers(page, size);
+        localUserService.saveAll(response.data());
         return response;
     }
 }

@@ -3,14 +3,14 @@ package com.xpeho.spring_boot_java_random_user.domain.usecases;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserEntity;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserRequest;
 import com.xpeho.spring_boot_java_random_user.domain.exceptions.UserNotFoundException;
-import com.xpeho.spring_boot_java_random_user.domain.services.UserService;
+import com.xpeho.spring_boot_java_random_user.domain.services.LocalUserService;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UpdateRandomUserUseCase {
-    private final UserService userService;
+    private final LocalUserService userService;
 
-    public UpdateRandomUserUseCase(UserService userService) {
+    public UpdateRandomUserUseCase(LocalUserService userService) {
         this.userService = userService;
     }
 

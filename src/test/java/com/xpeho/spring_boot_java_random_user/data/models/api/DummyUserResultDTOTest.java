@@ -1,14 +1,15 @@
 package com.xpeho.spring_boot_java_random_user.data.models.api;
 
+import com.xpeho.spring_boot_java_random_user.data.models.api.dummy.DummyUserResultDTO;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-class RandomUserResultDAOTest {
+class DummyUserResultDTOTest {
     @Test
     @DisplayName("Should store and return all user fields")
     void shouldStoreAndReturnAllUserFields() {
-        RandomUserResultDAO result = new RandomUserResultDAO();
+        DummyUserResultDTO result = new DummyUserResultDTO();
         result.setGender("male");
         result.setFirstName("John");
         result.setLastName("Doe");
@@ -26,7 +27,7 @@ class RandomUserResultDAOTest {
     @Test
     @DisplayName("Should have null fields by default")
     void shouldHaveNullFieldsByDefault() {
-        RandomUserResultDAO result = new RandomUserResultDAO();
+        DummyUserResultDTO result = new DummyUserResultDTO();
         assertNull(result.getGender());
         assertNull(result.getFirstName());
         assertNull(result.getLastName());
@@ -35,3 +36,4 @@ class RandomUserResultDAOTest {
         assertNull(result.getImage());
     }
 }
+
