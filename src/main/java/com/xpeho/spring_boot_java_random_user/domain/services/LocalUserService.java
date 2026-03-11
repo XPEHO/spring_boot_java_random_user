@@ -5,7 +5,7 @@ import com.xpeho.spring_boot_java_random_user.domain.entities.UserEntity;
 import java.util.List;
 import java.util.Optional;
 
-public interface UserService {
+public interface LocalUserService {
     List<UserEntity> saveAll(List<UserEntity> users);
 
     Optional<UserEntity> getById(long id);
@@ -14,3 +14,4 @@ public interface UserService {
 
     void deleteById(long id);
 }
+

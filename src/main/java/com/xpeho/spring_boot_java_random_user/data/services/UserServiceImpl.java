@@ -4,7 +4,7 @@ import com.xpeho.spring_boot_java_random_user.data.converters.UserConverter;
 import com.xpeho.spring_boot_java_random_user.data.models.db.User;
 import com.xpeho.spring_boot_java_random_user.data.sources.database.UserRepository;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserEntity;
-import com.xpeho.spring_boot_java_random_user.domain.services.UserService;
+import com.xpeho.spring_boot_java_random_user.domain.services.LocalUserService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.stream.StreamSupport;
 
 @Service
 
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements LocalUserService {
     private final UserRepository userRepository;
     private final UserConverter userConverter;
 

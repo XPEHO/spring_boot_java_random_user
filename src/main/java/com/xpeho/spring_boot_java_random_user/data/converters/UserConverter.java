@@ -1,6 +1,6 @@
 package com.xpeho.spring_boot_java_random_user.data.converters;
 
-import com.xpeho.spring_boot_java_random_user.data.models.api.RandomUserResultDAO;
+import com.xpeho.spring_boot_java_random_user.data.models.api.dummy.DummyUserResultDTO;
 import com.xpeho.spring_boot_java_random_user.data.models.db.User;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserEntity;
 import org.springframework.stereotype.Service;
@@ -38,8 +38,8 @@ public class UserConverter {
         );
     }
 
-    // API -> Domain
-    public UserEntity fromApiModel(RandomUserResultDAO model) {
+    // API DTO -> Domain
+    public UserEntity fromApiModel(DummyUserResultDTO model) {
         return new UserEntity(
                 null,
                 model.getGender(),

@@ -1,12 +1,12 @@
-package com.xpeho.spring_boot_java_random_user.data.models.api;
+package com.xpeho.spring_boot_java_random_user.data.models.api.dummy;
 
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class RandomUserResponse {
+public class DummyUserResponse {
     @SerializedName("users")
-    private List<RandomUserResultDAO> users;
+    private List<DummyUserResultDTO> users;
 
     @SerializedName("total")
     private int total;
@@ -17,11 +17,11 @@ public class RandomUserResponse {
     @SerializedName("limit")
     private int limit;
 
-    public List<RandomUserResultDAO> getUsers() {
+    public List<DummyUserResultDTO> getUsers() {
         return users;
     }
 
-    public void setUsers(List<RandomUserResultDAO> users) {
+    public void setUsers(List<DummyUserResultDTO> users) {
         this.users = users;
     }
 
@@ -49,3 +49,4 @@ public class RandomUserResponse {
         this.limit = limit;
     }
 }
+
