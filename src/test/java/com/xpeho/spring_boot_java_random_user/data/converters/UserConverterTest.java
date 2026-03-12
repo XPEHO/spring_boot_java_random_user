@@ -1,8 +1,11 @@
 package com.xpeho.spring_boot_java_random_user.data.converters;
 
 import com.xpeho.spring_boot_java_random_user.data.models.api.dummy.DummyUserResultDTO;
+import com.xpeho.spring_boot_java_random_user.data.models.api.randomuser.RandomUserNameDTO;
+import com.xpeho.spring_boot_java_random_user.data.models.api.randomuser.RandomUserPictureDTO;
+import com.xpeho.spring_boot_java_random_user.data.models.api.randomuser.RandomUserResultDTO;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserEntity;
-import com.xpeho.spring_boot_java_random_user.data.models.db.User;
+import com.xpeho.spring_boot_java_random_user.data.models.database.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -45,6 +48,56 @@ class UserConverterTest {
         assertEquals("female", entity.gender());
         assertEquals("jane@doe.com", entity.email());
         assertEquals("5678", entity.phone());
+    }
+
+    @Test
+    @DisplayName("Should convert RandomUser API model to domain entity with nested fields")
+    void shouldConvertRandomUserApiModelToDomainWithNestedFields() {
+        RandomUserNameDTO name = new RandomUserNameDTO();
+        name.setTitle("Ms");
+        name.setFirst("Jane");
+        name.setLast("Doe");
+
+        RandomUserPictureDTO picture = new RandomUserPictureDTO();
+        picture.setMedium("random.jpg");
+
+        RandomUserResultDTO api = new RandomUserResultDTO();
+        api.setGender("female");
+        api.setName(name);
+        api.setEmail("jane@doe.com");
+        api.setPhone("5678");
+        api.setPicture(picture);
+        api.setNat("FR");
+
+        UserEntity entity = converter.fromRandomUserApiModel(api);
+        assertNull(entity.id());
+        assertEquals("female", entity.gender());
+        assertEquals("Jane", entity.firstname());
+        assertEquals("Doe", entity.lastname());
+        assertEquals("Ms", entity.civility());
+        assertEquals("jane@doe.com", entity.email());
+        assertEquals("5678", entity.phone());
+        assertEquals("random.jpg", entity.picture());
+        assertEquals("FR", entity.nat());
+    }
+
+    @Test
+    @DisplayName("Should handle missing nested fields from RandomUser API model")
+    void shouldHandleMissingNestedFieldsFromRandomUserApiModel() {
+        RandomUserResultDTO api = new RandomUserResultDTO();
+        api.setGender("female");
+        api.setEmail("jane@doe.com");
+        api.setPhone("5678");
+
+        UserEntity entity = converter.fromRandomUserApiModel(api);
+        assertEquals("female", entity.gender());
+        assertEquals("jane@doe.com", entity.email());
+        assertEquals("5678", entity.phone());
+        assertNull(entity.firstname());
+        assertNull(entity.lastname());
+        assertNull(entity.civility());
+        assertNull(entity.picture());
+        assertNull(entity.nat());
     }
 
     @Test

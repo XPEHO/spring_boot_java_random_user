@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -17,6 +18,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleInvalidPaginationException(InvalidPaginationException ex) {
         logger.warn("Invalid pagination request: {}", ex.getMessage());
         return buildErrorResponse("INVALID_PAGINATION", ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex) {
+        String message = String.format("Invalid value '%s' for parameter '%s'", ex.getValue(), ex.getName());
+        logger.warn("Type mismatch: {}", message);
+        return buildErrorResponse("INVALID_PARAMETER", message, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(UserNotFoundException.class)
@@ -35,4 +43,3 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(status).body(new ErrorResponse(error, message, status.value()));
     }
 }
-

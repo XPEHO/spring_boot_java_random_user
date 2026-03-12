@@ -1,9 +1,10 @@
-package com.xpeho.spring_boot_java_random_user.data.sources.api;
+package com.xpeho.spring_boot_java_random_user.data.sources.api.dummy;
 
 import com.xpeho.spring_boot_java_random_user.data.converters.UserConverter;
 import com.xpeho.spring_boot_java_random_user.data.models.api.dummy.DummyUserResponse;
 import com.xpeho.spring_boot_java_random_user.data.models.api.dummy.DummyUserResultDTO;
 import com.xpeho.spring_boot_java_random_user.domain.entities.PaginatedUsers;
+import com.xpeho.spring_boot_java_random_user.domain.enums.UserSource;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserEntity;
 import com.xpeho.spring_boot_java_random_user.domain.services.RemoteUserService;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,11 @@ public class DummyUserServiceImpl implements RemoteUserService {
     public DummyUserServiceImpl(DummyUserApi dummyUserApi, UserConverter userConverter) {
         this.dummyUserApi = dummyUserApi;
         this.userConverter = userConverter;
+    }
+
+    @Override
+    public UserSource getSource() {
+        return UserSource.DUMMY;
     }
 
     @Override

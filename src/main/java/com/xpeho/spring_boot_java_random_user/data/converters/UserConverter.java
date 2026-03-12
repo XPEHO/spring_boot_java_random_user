@@ -1,7 +1,8 @@
 package com.xpeho.spring_boot_java_random_user.data.converters;
 
 import com.xpeho.spring_boot_java_random_user.data.models.api.dummy.DummyUserResultDTO;
-import com.xpeho.spring_boot_java_random_user.data.models.db.User;
+import com.xpeho.spring_boot_java_random_user.data.models.api.randomuser.RandomUserResultDTO;
+import com.xpeho.spring_boot_java_random_user.data.models.database.User;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserEntity;
 import org.springframework.stereotype.Service;
 
@@ -50,6 +51,26 @@ public class UserConverter {
                 model.getPhone(),
                 model.getImage(),
                 null
+        );
+    }
+
+    // RandomUser API DTO -> Domain
+    public UserEntity fromRandomUserApiModel(RandomUserResultDTO model) {
+        String title = model.getName() != null ? model.getName().getTitle() : null;
+        String first = model.getName() != null ? model.getName().getFirst() : null;
+        String last = model.getName() != null ? model.getName().getLast() : null;
+        String picture = model.getPicture() != null ? model.getPicture().getMedium() : null;
+
+        return new UserEntity(
+                null,
+                model.getGender(),
+                first,
+                last,
+                title,
+                model.getEmail(),
+                model.getPhone(),
+                picture,
+                model.getNat()
         );
     }
 }

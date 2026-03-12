@@ -1,4 +1,4 @@
-package com.xpeho.spring_boot_java_random_user.data.models.db;
+package com.xpeho.spring_boot_java_random_user.data.models.database;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;

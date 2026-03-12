@@ -2,6 +2,7 @@ package com.xpeho.spring_boot_java_random_user.presentation.controllers;
 
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserEntity;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserRequest;
+import com.xpeho.spring_boot_java_random_user.domain.enums.UserSource;
 import com.xpeho.spring_boot_java_random_user.presentation.dto.UserResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -24,7 +25,8 @@ public interface UserController {
             description = "Fetches a paginated list of random users from the external API and saves them to the database.",
             parameters = {
                     @Parameter(name = "page", description = "Page number", example = "1"),
-                    @Parameter(name = "size", description = "Number of users per page (max 30)", example = "10")
+                    @Parameter(name = "size", description = "Number of users per page (max 30)", example = "10"),
+                    @Parameter(name = "source", description = "External source to use", example = "DUMMY")
             }
     )
     @ApiResponse(responseCode = "200", description = "List of users successfully fetched and saved")
@@ -37,7 +39,9 @@ public interface UserController {
             @RequestParam(defaultValue = "10")
             @Min(1)
             @Max(30)
-            int size
+            int size,
+            @RequestParam(defaultValue = "DUMMY")
+            UserSource source
     );
 
     @GetMapping("/{id}")

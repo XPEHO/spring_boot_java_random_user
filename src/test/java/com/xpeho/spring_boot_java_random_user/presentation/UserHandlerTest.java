@@ -3,6 +3,7 @@ package com.xpeho.spring_boot_java_random_user.presentation;
 import com.xpeho.spring_boot_java_random_user.domain.entities.PaginatedUsers;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserEntity;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserRequest;
+import com.xpeho.spring_boot_java_random_user.domain.enums.UserSource;
 import com.xpeho.spring_boot_java_random_user.domain.exceptions.InvalidPaginationException;
 import com.xpeho.spring_boot_java_random_user.domain.exceptions.UserNotFoundException;
 import com.xpeho.spring_boot_java_random_user.domain.usecases.*;
@@ -50,9 +51,9 @@ class UserHandlerTest {
                 new UserEntity(1L, "male", "John", "Doe", "Mr", "john@example.com", "0600000000", "pic.jpg", "FR")
         );
         PaginatedUsers paginatedUsers = new PaginatedUsers(users, 50, 0, 10);
-        when(fetchAndSaveRandomUsersUseCase.execute(page, size)).thenReturn(paginatedUsers);
+        when(fetchAndSaveRandomUsersUseCase.execute(page, size, UserSource.DUMMY)).thenReturn(paginatedUsers);
 
-        ResponseEntity<UserResponseDTO> response = userHandler.getRandomUsers(page, size);
+        ResponseEntity<UserResponseDTO> response = userHandler.getRandomUsers(page, size, UserSource.DUMMY);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
@@ -60,7 +61,7 @@ class UserHandlerTest {
         assertEquals(50, response.getBody().total());
         assertEquals(0, response.getBody().skip());
         assertEquals(10, response.getBody().limit());
-        verify(fetchAndSaveRandomUsersUseCase, times(1)).execute(page, size);
+        verify(fetchAndSaveRandomUsersUseCase, times(1)).execute(page, size, UserSource.DUMMY);
     }
 
     @Test
@@ -68,13 +69,13 @@ class UserHandlerTest {
     void shouldReturnInternalServerErrorWhenGetRandomUsersFails() throws IOException {
         int page = 1;
         int size = 10;
-        when(fetchAndSaveRandomUsersUseCase.execute(page, size)).thenThrow(new IOException("downstream unavailable"));
+        when(fetchAndSaveRandomUsersUseCase.execute(page, size, UserSource.RANDOM_USER)).thenThrow(new IOException("downstream unavailable"));
 
-        ResponseEntity<UserResponseDTO> response = userHandler.getRandomUsers(page, size);
+        ResponseEntity<UserResponseDTO> response = userHandler.getRandomUsers(page, size, UserSource.RANDOM_USER);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertNull(response.getBody());
-        verify(fetchAndSaveRandomUsersUseCase, times(1)).execute(page, size);
+        verify(fetchAndSaveRandomUsersUseCase, times(1)).execute(page, size, UserSource.RANDOM_USER);
     }
 
     @ParameterizedTest
@@ -85,9 +86,10 @@ class UserHandlerTest {
     })
     @DisplayName("Should throw InvalidPaginationException for invalid pagination inputs")
     void shouldThrowInvalidPaginationExceptionForInvalidPaginationInputs(int page, int size) throws IOException {
-        assertThrows(InvalidPaginationException.class, () -> userHandler.getRandomUsers(page, size));
-        verify(fetchAndSaveRandomUsersUseCase, never()).execute(page, size);
+        assertThrows(InvalidPaginationException.class, () -> userHandler.getRandomUsers(page, size, UserSource.DUMMY));
+        verify(fetchAndSaveRandomUsersUseCase, never()).execute(page, size, UserSource.DUMMY);
     }
+
 
     @Test
     @DisplayName("Should return 200 and user when getUserById succeeds")

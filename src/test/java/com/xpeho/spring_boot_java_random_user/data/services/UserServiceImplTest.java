@@ -1,7 +1,7 @@
 package com.xpeho.spring_boot_java_random_user.data.services;
 
 import com.xpeho.spring_boot_java_random_user.data.converters.UserConverter;
-import com.xpeho.spring_boot_java_random_user.data.models.db.User;
+import com.xpeho.spring_boot_java_random_user.data.models.database.User;
 import com.xpeho.spring_boot_java_random_user.data.sources.database.UserRepository;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserEntity;
 import org.junit.jupiter.api.BeforeEach;
