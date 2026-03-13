@@ -27,7 +27,7 @@ public class FetchAndSaveRandomUsersUseCase {
     public PaginatedUsers execute(int page, int size, UserSource source) throws IOException {
         RemoteUserService remoteUserService = remoteUserServices.get(source);
         if (remoteUserService == null) {
-            throw new IOException("No remote service configured for source: " + source);
+            throw new IllegalStateException("No remote service configured for source: " + source);
         }
         PaginatedUsers response = remoteUserService.fetchUsers(page, size);
         localUserService.saveAll(response.data());
