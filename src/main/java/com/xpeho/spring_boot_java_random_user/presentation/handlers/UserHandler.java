@@ -2,6 +2,7 @@ package com.xpeho.spring_boot_java_random_user.presentation.handlers;
 
 import com.xpeho.spring_boot_java_random_user.domain.entities.PaginatedUsers;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserEntity;
+import com.xpeho.spring_boot_java_random_user.domain.entities.UserFilter;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserRequest;
 import com.xpeho.spring_boot_java_random_user.domain.enums.UserSource;
 import com.xpeho.spring_boot_java_random_user.domain.exceptions.InvalidPaginationException;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.util.List;
 
 
 @RestController
@@ -30,20 +32,22 @@ public class UserHandler implements UserController {
     private final GetUserByIdUseCase getUserByIdUseCase;
     private final CreateUserUseCase createUserUseCase;
     private final DeleteUserByIdUseCase deleteUserUseCase;
+    private final FilterUsersUseCase filterUsersUseCase;
 
     public UserHandler(
             FetchAndSaveRandomUsersUseCase fetchAndSaveRandomUsersUseCase,
             UpdateRandomUserUseCase updateRandomUserUseCase,
             GetUserByIdUseCase getUserByIdUseCase,
             CreateUserUseCase createUserUseCase,
-            DeleteUserByIdUseCase deleteUserUseCase
+            DeleteUserByIdUseCase deleteUserUseCase,
+            FilterUsersUseCase filterUsersUseCase
     ) {
         this.fetchAndSaveRandomUsersUseCase = fetchAndSaveRandomUsersUseCase;
         this.updateRandomUserUseCase = updateRandomUserUseCase;
         this.getUserByIdUseCase = getUserByIdUseCase;
         this.createUserUseCase = createUserUseCase;
         this.deleteUserUseCase = deleteUserUseCase;
-
+        this.filterUsersUseCase = filterUsersUseCase;
     }
 
 
@@ -97,6 +101,16 @@ public class UserHandler implements UserController {
     public ResponseEntity<UserEntity> createUser(@RequestBody UserRequest user) {
         UserEntity createdUser = createUserUseCase.execute(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
+    }
+
+    @Override
+    public ResponseEntity<List<UserEntity>> filterUsers(
+            String gender, String firstname, String lastname,
+            String civility, String email, String phone, String nat
+    ) {
+        UserFilter filter = new UserFilter(gender, firstname, lastname, civility, email, phone, nat);
+        List<UserEntity> users = filterUsersUseCase.execute(filter);
+        return ResponseEntity.ok(users);
     }
 
     @Override

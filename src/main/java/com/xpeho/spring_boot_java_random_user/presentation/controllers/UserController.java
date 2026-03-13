@@ -13,6 +13,8 @@ import jakarta.validation.constraints.Min;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 
 @RequestMapping("/random-users")
@@ -91,6 +93,32 @@ public interface UserController {
     @ApiResponse(responseCode = "500", description = "Internal server error")
     ResponseEntity<UserEntity> createUser(@RequestBody UserRequest user);
 
+
+    @GetMapping("/filter")
+    @Operation(
+            summary = "Filter users",
+            description = "Search users by optional filters on gender, firstname, lastname, civility, email, phone and nationality. All filters are case-insensitive and support partial matching.",
+            parameters = {
+                    @Parameter(name = "gender", description = "Filter by gender"),
+                    @Parameter(name = "firstname", description = "Filter by firstname"),
+                    @Parameter(name = "lastname", description = "Filter by lastname"),
+                    @Parameter(name = "civility", description = "Filter by civility"),
+                    @Parameter(name = "email", description = "Filter by email"),
+                    @Parameter(name = "phone", description = "Filter by phone"),
+                    @Parameter(name = "nat", description = "Filter by nationality")
+            }
+    )
+    @ApiResponse(responseCode = "200", description = "Filtered list of users")
+    @ApiResponse(responseCode = "500", description = "Internal server error")
+    ResponseEntity<List<UserEntity>> filterUsers(
+            @RequestParam(required = false) String gender,
+            @RequestParam(required = false) String firstname,
+            @RequestParam(required = false) String lastname,
+            @RequestParam(required = false) String civility,
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) String phone,
+            @RequestParam(required = false) String nat
+    );
 
     @DeleteMapping("/{id}")
     @Operation(

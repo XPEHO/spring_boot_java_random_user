@@ -2,6 +2,7 @@ package com.xpeho.spring_boot_java_random_user.presentation;
 
 import com.xpeho.spring_boot_java_random_user.domain.entities.PaginatedUsers;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserEntity;
+import com.xpeho.spring_boot_java_random_user.domain.entities.UserFilter;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserRequest;
 import com.xpeho.spring_boot_java_random_user.domain.enums.UserSource;
 import com.xpeho.spring_boot_java_random_user.domain.exceptions.InvalidPaginationException;
@@ -30,6 +31,7 @@ class UserHandlerTest {
     private GetUserByIdUseCase getUserByIdUseCase;
     private CreateUserUseCase createUserUseCase;
     private DeleteUserByIdUseCase deleteUserUseCase;
+    private FilterUsersUseCase filterUsersUseCase;
     private UserHandler userHandler;
 
     @BeforeEach
@@ -39,7 +41,8 @@ class UserHandlerTest {
         getUserByIdUseCase = mock(GetUserByIdUseCase.class);
         createUserUseCase = mock(CreateUserUseCase.class);
         deleteUserUseCase = mock(DeleteUserByIdUseCase.class);
-        userHandler = new UserHandler(fetchAndSaveRandomUsersUseCase, updateRandomUserUseCase, getUserByIdUseCase, createUserUseCase, deleteUserUseCase);
+        filterUsersUseCase = mock(FilterUsersUseCase.class);
+        userHandler = new UserHandler(fetchAndSaveRandomUsersUseCase, updateRandomUserUseCase, getUserByIdUseCase, createUserUseCase, deleteUserUseCase, filterUsersUseCase);
     }
 
     @Test
@@ -176,5 +179,37 @@ class UserHandlerTest {
         userHandler.deleteUserById(userId);
 
         verify(deleteUserUseCase, times(1)).execute(userId);
+    }
+
+    @Test
+    @DisplayName("Should return 200 and filtered users when filterUsers succeeds")
+    void shouldReturnOkWhenFilterUsersSucceeds() {
+        UserFilter filter = new UserFilter("male", null, null, null, null, null, "FR");
+        List<UserEntity> users = List.of(
+                new UserEntity(1L, "male", "John", "Doe", "Mr", "john@example.com", "0600000000", "pic.jpg", "FR")
+        );
+        when(filterUsersUseCase.execute(filter)).thenReturn(users);
+
+        ResponseEntity<List<UserEntity>> response = userHandler.filterUsers("male", null, null, null, null, null, "FR");
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(1, response.getBody().size());
+        assertEquals(users, response.getBody());
+        verify(filterUsersUseCase, times(1)).execute(filter);
+    }
+
+    @Test
+    @DisplayName("Should return 200 and empty list when no users match filter")
+    void shouldReturnOkWithEmptyListWhenNoUsersMatchFilter() {
+        UserFilter filter = new UserFilter(null, "NonExistent", null, null, null, null, null);
+        when(filterUsersUseCase.execute(filter)).thenReturn(List.of());
+
+        ResponseEntity<List<UserEntity>> response = userHandler.filterUsers(null, "NonExistent", null, null, null, null, null);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertTrue(response.getBody().isEmpty());
+        verify(filterUsersUseCase, times(1)).execute(filter);
     }
 }
