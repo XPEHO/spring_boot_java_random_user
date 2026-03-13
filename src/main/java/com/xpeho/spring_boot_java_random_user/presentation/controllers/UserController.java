@@ -2,6 +2,7 @@ package com.xpeho.spring_boot_java_random_user.presentation.controllers;
 
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserEntity;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserRequest;
+import com.xpeho.spring_boot_java_random_user.domain.enums.Gender;
 import com.xpeho.spring_boot_java_random_user.domain.enums.UserSource;
 import com.xpeho.spring_boot_java_random_user.presentation.dto.UserResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,6 +13,8 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 
@@ -91,6 +94,32 @@ public interface UserController {
     @ApiResponse(responseCode = "500", description = "Internal server error")
     ResponseEntity<UserEntity> createUser(@RequestBody UserRequest user);
 
+
+    @GetMapping("/filter")
+    @Operation(
+            summary = "Filter users",
+            description = "Search users by optional filters on gender, firstname, lastname, civility, email, phone and nationality. All filters are case-insensitive and support partial matching.",
+            parameters = {
+                    @Parameter(name = "gender", description = "Filter by gender (MALE or FEMALE)"),
+                    @Parameter(name = "firstname", description = "Filter by firstname"),
+                    @Parameter(name = "lastname", description = "Filter by lastname"),
+                    @Parameter(name = "civility", description = "Filter by civility"),
+                    @Parameter(name = "email", description = "Filter by email"),
+                    @Parameter(name = "phone", description = "Filter by phone"),
+                    @Parameter(name = "nat", description = "Filter by nationality")
+            }
+    )
+    @ApiResponse(responseCode = "200", description = "Filtered list of users")
+    @ApiResponse(responseCode = "500", description = "Internal server error")
+    ResponseEntity<List<UserEntity>> filterUsers(
+            @RequestParam(required = false) Gender gender,
+            @RequestParam(required = false) String firstname,
+            @RequestParam(required = false) String lastname,
+            @RequestParam(required = false) String civility,
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) String phone,
+            @RequestParam(required = false) String nat
+    );
 
     @DeleteMapping("/{id}")
     @Operation(
