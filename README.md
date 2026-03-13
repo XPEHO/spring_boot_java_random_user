@@ -88,6 +88,7 @@ dummy.api.base-url=https://dummyjson.com/
 | `POST` | `/random-users`          | Create a new user | ✅ |
 | `PUT` | `/random-users/{id}`     | Update user | ✅ |
 | `DELETE` | `/random-users/{id}`     | Delete user | ✅ |
+| `GET` | `/random-users/filter` | Filter users by criteria | ✅ |
 
 ### Example Request
 
@@ -114,6 +115,12 @@ curl -X POST "http://localhost:8080/random-users" \
     "picture": "pic.jpg",
     "nat": "FR"
   }'
+
+# Filter users by gender and nationality
+curl -X GET "http://localhost:8080/random-users/filter?gender=MALE&nat=FR"
+
+# Filter users by firstname (partial match, case-insensitive)
+curl -X GET "http://localhost:8080/random-users/filter?firstname=john"
 
 # Update user
 curl -X PUT "http://localhost:8080/random-users/1" \
