@@ -51,16 +51,17 @@ public class UserServiceImpl implements LocalUserService {
 
     @Override
     public List<UserEntity> filterUsers(UserFilter filter) {
-        String gender = filter.gender() != null ? "%" + filter.gender() + "%" : null;
-        String firstname = filter.firstname() != null ? "%" + filter.firstname() + "%" : null;
-        String lastname = filter.lastname() != null ? "%" + filter.lastname() + "%" : null;
-        String civility = filter.civility() != null ? "%" + filter.civility() + "%" : null;
-        String email = filter.email() != null ? "%" + filter.email() + "%" : null;
-        String phone = filter.phone() != null ? "%" + filter.phone() + "%" : null;
-        String nationality = filter.nat() != null ? "%" + filter.nat() + "%" : null;
+        String gender = filter.gender() != null ? filter.gender().name().toLowerCase() : null;
 
-        return userRepository.findByFilters(gender, firstname, lastname, civility, email, phone, nationality)
-                .stream()
+        return userRepository.findByFilters(
+                        gender,
+                        filter.firstname(),
+                        filter.lastname(),
+                        filter.civility(),
+                        filter.email(),
+                        filter.phone(),
+                        filter.nat()
+                ).stream()
                 .map(userConverter::toDomain)
                 .toList();
     }

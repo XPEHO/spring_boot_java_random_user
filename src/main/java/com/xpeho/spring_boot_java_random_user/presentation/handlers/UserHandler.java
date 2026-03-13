@@ -4,6 +4,7 @@ import com.xpeho.spring_boot_java_random_user.domain.entities.PaginatedUsers;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserEntity;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserFilter;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserRequest;
+import com.xpeho.spring_boot_java_random_user.domain.enums.Gender;
 import com.xpeho.spring_boot_java_random_user.domain.enums.UserSource;
 import com.xpeho.spring_boot_java_random_user.domain.exceptions.InvalidPaginationException;
 import com.xpeho.spring_boot_java_random_user.domain.exceptions.UserNotFoundException;
@@ -105,7 +106,7 @@ public class UserHandler implements UserController {
 
     @Override
     public ResponseEntity<List<UserEntity>> filterUsers(
-            String gender, String firstname, String lastname,
+            Gender gender, String firstname, String lastname,
             String civility, String email, String phone, String nat
     ) {
         UserFilter filter = new UserFilter(gender, firstname, lastname, civility, email, phone, nat);

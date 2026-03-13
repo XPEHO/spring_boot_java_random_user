@@ -4,6 +4,7 @@ import com.xpeho.spring_boot_java_random_user.domain.entities.PaginatedUsers;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserEntity;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserFilter;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserRequest;
+import com.xpeho.spring_boot_java_random_user.domain.enums.Gender;
 import com.xpeho.spring_boot_java_random_user.domain.enums.UserSource;
 import com.xpeho.spring_boot_java_random_user.domain.exceptions.InvalidPaginationException;
 import com.xpeho.spring_boot_java_random_user.domain.exceptions.UserNotFoundException;
@@ -184,13 +185,13 @@ class UserHandlerTest {
     @Test
     @DisplayName("Should return 200 and filtered users when filterUsers succeeds")
     void shouldReturnOkWhenFilterUsersSucceeds() {
-        UserFilter filter = new UserFilter("male", null, null, null, null, null, "FR");
+        UserFilter filter = new UserFilter(Gender.MALE, null, null, null, null, null, "FR");
         List<UserEntity> users = List.of(
                 new UserEntity(1L, "male", "John", "Doe", "Mr", "john@example.com", "0600000000", "pic.jpg", "FR")
         );
         when(filterUsersUseCase.execute(filter)).thenReturn(users);
 
-        ResponseEntity<List<UserEntity>> response = userHandler.filterUsers("male", null, null, null, null, null, "FR");
+        ResponseEntity<List<UserEntity>> response = userHandler.filterUsers(Gender.MALE, null, null, null, null, null, "FR");
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());

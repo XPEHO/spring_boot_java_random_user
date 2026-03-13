@@ -10,13 +10,13 @@ import java.util.List;
 public interface UserRepository extends CrudRepository<User, Long> {
 
     @Query("SELECT * FROM users WHERE " +
-            "(:gender IS NULL OR LOWER(gender) LIKE LOWER(:gender)) AND " +
-            "(:firstname IS NULL OR LOWER(firstname) LIKE LOWER(:firstname)) AND " +
-            "(:lastname IS NULL OR LOWER(lastname) LIKE LOWER(:lastname)) AND " +
-            "(:civility IS NULL OR LOWER(civility) LIKE LOWER(:civility)) AND " +
-            "(:email IS NULL OR LOWER(email) LIKE LOWER(:email)) AND " +
-            "(:phone IS NULL OR LOWER(phone) LIKE LOWER(:phone)) AND " +
-            "(:nationality IS NULL OR LOWER(nationality) LIKE LOWER(:nationality))")
+            "(:gender IS NULL OR LOWER(gender) = LOWER(:gender)) AND " +
+            "(:firstname IS NULL OR LOWER(firstname) LIKE LOWER(CONCAT('%', :firstname, '%'))) AND " +
+            "(:lastname IS NULL OR LOWER(lastname) LIKE LOWER(CONCAT('%', :lastname, '%'))) AND " +
+            "(:civility IS NULL OR civility LIKE CONCAT('%', :civility, '%')) AND " +
+            "(:email IS NULL OR email LIKE CONCAT('%', :email, '%')) AND " +
+            "(:phone IS NULL OR phone LIKE CONCAT('%', :phone, '%')) AND " +
+            "(:nationality IS NULL OR LOWER(nationality) LIKE LOWER(CONCAT('%', :nationality, '%')))")
     List<User> findByFilters(
             @Param("gender") String gender,
             @Param("firstname") String firstname,

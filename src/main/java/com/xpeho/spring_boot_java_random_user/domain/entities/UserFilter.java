@@ -1,7 +1,9 @@
 package com.xpeho.spring_boot_java_random_user.domain.entities;
 
+import com.xpeho.spring_boot_java_random_user.domain.enums.Gender;
+
 public record UserFilter(
-        String gender,
+        Gender gender,
         String firstname,
         String lastname,
         String civility,
