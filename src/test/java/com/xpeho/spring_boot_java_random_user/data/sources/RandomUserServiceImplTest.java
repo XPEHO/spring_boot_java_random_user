@@ -1,10 +1,13 @@
-package com.xpeho.spring_boot_java_random_user.data.sources.api;
+package com.xpeho.spring_boot_java_random_user.data.sources;
 
 import com.xpeho.spring_boot_java_random_user.data.converters.UserConverter;
-import com.xpeho.spring_boot_java_random_user.data.models.api.dummy.DummyUserResponse;
-import com.xpeho.spring_boot_java_random_user.data.models.api.dummy.DummyUserResultDTO;
+import com.xpeho.spring_boot_java_random_user.data.models.api.randomuser.RandomUserResponseDTO;
+import com.xpeho.spring_boot_java_random_user.data.models.api.randomuser.RandomUserResultDTO;
+import com.xpeho.spring_boot_java_random_user.data.sources.api.randomuser.RandomUserApi;
+import com.xpeho.spring_boot_java_random_user.data.sources.api.randomuser.RandomUserServiceImpl;
 import com.xpeho.spring_boot_java_random_user.domain.entities.PaginatedUsers;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserEntity;
+import com.xpeho.spring_boot_java_random_user.domain.enums.UserSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,53 +17,60 @@ import retrofit2.Response;
 import java.io.IOException;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-class DummyUserServiceImplTest {
-    private DummyUserApi dummyUserApi;
+class RandomUserServiceImplTest {
+    private RandomUserApi randomUserApi;
     private UserConverter userConverter;
-    private DummyUserServiceImpl service;
-    private Call<DummyUserResponse> call;
+    private RandomUserServiceImpl service;
+    private Call<RandomUserResponseDTO> call;
 
     @BeforeEach
     void setUp() {
-        dummyUserApi = mock(DummyUserApi.class);
+        randomUserApi = mock(RandomUserApi.class);
         userConverter = mock(UserConverter.class);
         //noinspection unchecked
-        call = (Call<DummyUserResponse>) mock(Call.class);
-        service = new DummyUserServiceImpl(dummyUserApi, userConverter);
+        call = (Call<RandomUserResponseDTO>) mock(Call.class);
+        service = new RandomUserServiceImpl(randomUserApi, userConverter);
+    }
+
+    @Test
+    @DisplayName("Should expose RANDOM_USER source")
+    void shouldExposeRandomUserSource() {
+        assertEquals(UserSource.RANDOM_USER, service.getSource());
     }
 
     @Test
     @DisplayName("Should fetch and convert users successfully")
     void shouldFetchAndConvertUsersSuccessfully() throws IOException {
-        int page = 1;
+        int page = 2;
         int size = 2;
-        int total = 100;
-        int skip = 0;
-        int limit = 2;
-        DummyUserResponse responseObj = new DummyUserResponse();
-        DummyUserResultDTO dto1 = new DummyUserResultDTO();
-        DummyUserResultDTO dto2 = new DummyUserResultDTO();
-        responseObj.setUsers(List.of(dto1, dto2));
-        responseObj.setTotal(total);
-        responseObj.setSkip(skip);
-        responseObj.setLimit(limit);
+        int skip = 2;
+
+        RandomUserResponseDTO responseObj = new RandomUserResponseDTO();
+        RandomUserResultDTO dto1 = new RandomUserResultDTO();
+        RandomUserResultDTO dto2 = new RandomUserResultDTO();
+        responseObj.setResults(List.of(dto1, dto2));
+
         UserEntity entity1 = new UserEntity(null, "a", "b", "c", "d", "e", "f", "g", "h");
         UserEntity entity2 = new UserEntity(null, "i", "j", "k", "l", "m", "n", "o", "p");
-        when(dummyUserApi.getUsers(size, skip)).thenReturn(call);
+
+        when(randomUserApi.getUsers(size, page)).thenReturn(call);
         when(call.execute()).thenReturn(Response.success(responseObj));
-        when(userConverter.fromApiModel(dto1)).thenReturn(entity1);
-        when(userConverter.fromApiModel(dto2)).thenReturn(entity2);
+        when(userConverter.fromRandomUserApiModel(dto1)).thenReturn(entity1);
+        when(userConverter.fromRandomUserApiModel(dto2)).thenReturn(entity2);
 
         PaginatedUsers result = service.fetchUsers(page, size);
+
         assertEquals(2, result.data().size());
         assertEquals(entity1, result.data().get(0));
         assertEquals(entity2, result.data().get(1));
-        assertEquals(total, result.total());
+        assertEquals(2, result.total());
         assertEquals(skip, result.skip());
-        assertEquals(limit, result.limit());
+        assertEquals(size, result.limit());
     }
 
     @Test
@@ -68,9 +78,10 @@ class DummyUserServiceImplTest {
     void shouldThrowIOExceptionWhenApiReturnsError() throws IOException {
         int page = 1;
         int size = 1;
-        int skip = 0;
-        when(dummyUserApi.getUsers(size, skip)).thenReturn(call);
+
+        when(randomUserApi.getUsers(size, page)).thenReturn(call);
         when(call.execute()).thenReturn(Response.error(500, okhttp3.ResponseBody.create(null, "error")));
+
         assertThrows(IOException.class, () -> service.fetchUsers(page, size));
     }
 
@@ -79,9 +90,11 @@ class DummyUserServiceImplTest {
     void shouldThrowIOExceptionWhenResponseBodyIsNull() throws IOException {
         int page = 1;
         int size = 1;
-        int skip = 0;
-        when(dummyUserApi.getUsers(size, skip)).thenReturn(call);
+
+        when(randomUserApi.getUsers(size, page)).thenReturn(call);
         when(call.execute()).thenReturn(Response.success(null));
+
         assertThrows(IOException.class, () -> service.fetchUsers(page, size));
     }
 }
+

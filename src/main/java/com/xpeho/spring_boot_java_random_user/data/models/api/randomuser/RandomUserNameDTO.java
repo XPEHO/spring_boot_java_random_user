@@ -1,6 +1,6 @@
-package com.xpeho.spring_boot_java_random_user.data.models.api.dummy;
+package com.xpeho.spring_boot_java_random_user.data.models.api.randomuser;
 
-public class DummyUserNameDTO {
+public class RandomUserNameDTO {
     private String title;
     private String first;
     private String last;

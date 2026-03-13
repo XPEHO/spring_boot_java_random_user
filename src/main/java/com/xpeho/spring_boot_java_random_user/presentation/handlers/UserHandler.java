@@ -3,6 +3,7 @@ package com.xpeho.spring_boot_java_random_user.presentation.handlers;
 import com.xpeho.spring_boot_java_random_user.domain.entities.PaginatedUsers;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserEntity;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserRequest;
+import com.xpeho.spring_boot_java_random_user.domain.enums.UserSource;
 import com.xpeho.spring_boot_java_random_user.domain.exceptions.InvalidPaginationException;
 import com.xpeho.spring_boot_java_random_user.domain.exceptions.UserNotFoundException;
 import com.xpeho.spring_boot_java_random_user.domain.usecases.*;
@@ -47,7 +48,7 @@ public class UserHandler implements UserController {
 
 
     @Override
-    public ResponseEntity<UserResponseDTO> getRandomUsers(int page, int size) {
+    public ResponseEntity<UserResponseDTO> getRandomUsers(int page, int size, UserSource source) {
         if (page < 1) {
             throw new InvalidPaginationException("Page must be greater than or equal to 1. Requested: " + page);
         }
@@ -55,7 +56,7 @@ public class UserHandler implements UserController {
             throw new InvalidPaginationException("Page size must be between 1 and 30. Requested: " + size);
         }
         try {
-            PaginatedUsers result = fetchAndSaveRandomUsersUseCase.execute(page, size);
+            PaginatedUsers result = fetchAndSaveRandomUsersUseCase.execute(page, size, source);
             UserResponseDTO response = new UserResponseDTO(
                     result.data(),
                     result.total(),

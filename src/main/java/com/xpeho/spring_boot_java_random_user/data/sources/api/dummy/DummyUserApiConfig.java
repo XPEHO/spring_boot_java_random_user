@@ -1,6 +1,6 @@
-package com.xpeho.spring_boot_java_random_user.data.sources.api;
+package com.xpeho.spring_boot_java_random_user.data.sources.api.dummy;
 
-import okhttp3.OkHttpClient;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -9,19 +9,16 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 @Configuration
 public class DummyUserApiConfig {
-    @Bean
+    @Bean(name = "dummyUserRetrofit")
     public Retrofit dummyUserRetrofit(Environment env) {
-        String baseUrl = env.getRequiredProperty("dummy.api.base-url");
-        OkHttpClient client = new OkHttpClient.Builder().build();
         return new Retrofit.Builder()
-                .baseUrl(baseUrl)
+                .baseUrl(env.getRequiredProperty("dummy.api.base-url"))
                 .addConverterFactory(GsonConverterFactory.create())
-                .client(client)
                 .build();
     }
 
     @Bean
-    public DummyUserApi dummyUserApi(Retrofit dummyUserRetrofit) {
+    public DummyUserApi dummyUserApi(@Qualifier("dummyUserRetrofit") Retrofit dummyUserRetrofit) {
         return dummyUserRetrofit.create(DummyUserApi.class);
     }
 }

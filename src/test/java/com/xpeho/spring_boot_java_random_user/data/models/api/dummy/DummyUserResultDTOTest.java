@@ -1,6 +1,5 @@
-package com.xpeho.spring_boot_java_random_user.data.models.api;
+package com.xpeho.spring_boot_java_random_user.data.models.api.dummy;
 
-import com.xpeho.spring_boot_java_random_user.data.models.api.dummy.DummyUserResultDTO;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;

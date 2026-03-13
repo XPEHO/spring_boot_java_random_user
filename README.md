@@ -83,7 +83,7 @@ dummy.api.base-url=https://dummyjson.com/
 
 | Method | Path                     | Description | Status |
 |--------|--------------------------|-------------|--------|
-| `GET` | `/random-users?count=30` | Fetch and save users from external API | ✅ |
+| `GET` | `/random-users?page=1&size=10&source=DUMMY` | Fetch and save users from selected external API source | ✅ |
 | `GET` | `/random-users/{id}`     | Get user by ID | ✅ |
 | `POST` | `/random-users`          | Create a new user | ✅ |
 | `PUT` | `/random-users/{id}`     | Update user | ✅ |
@@ -93,7 +93,10 @@ dummy.api.base-url=https://dummyjson.com/
 
 ```bash
 # Fetch 10 users from external API and store them
-curl -X GET "http://localhost:8080/random-users?count=10"
+curl -X GET "http://localhost:8080/random-users?page=1&size=10&source=DUMMY"
+
+# Fetch 10 users from randomuser.me and store them
+curl -X GET "http://localhost:8080/random-users?page=1&size=10&source=RANDOM_USER"
 
 # Get user by ID
 curl -X GET "http://localhost:8080/random-users/1"
@@ -185,6 +188,8 @@ curl -X PUT "http://localhost:8080/random-users/1" \
 
 - `DummyUserApi`: Retrofit client contract for DummyJSON endpoints.
 - `DummyUserServiceImpl`: adapter that calls `DummyUserApi`, maps DTOs, and returns `PaginatedUsers`.
+- `RandomUserApi`: Retrofit client contract for randomuser.me endpoints.
+- `RandomUserServiceImpl`: adapter that calls `RandomUserApi`, maps DTOs, and returns `PaginatedUsers`.
 
 ### Project Structure
 

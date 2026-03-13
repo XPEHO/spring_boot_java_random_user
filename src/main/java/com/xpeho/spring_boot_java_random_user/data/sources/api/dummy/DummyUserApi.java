@@ -1,4 +1,4 @@
-package com.xpeho.spring_boot_java_random_user.data.sources.api;
+package com.xpeho.spring_boot_java_random_user.data.sources.api.dummy;
 
 import com.xpeho.spring_boot_java_random_user.data.models.api.dummy.DummyUserResponse;
 import retrofit2.Call;
