@@ -31,5 +31,4 @@ build/
 
 ### Environment variables ###
 .env
-src/test/resources/application-test.properties
 src/main/resources/application-local.properties

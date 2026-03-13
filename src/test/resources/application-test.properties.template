@@ -1,6 +1,6 @@
-POSTGRES_USER=your_postgres_user
-POSTGRES_PASSWORD=your_postgres_password
-POSTGRES_DB=your_postgres_db
-POSTGRES_PORT=your_postgres_port
-
-
+spring.datasource.url=jdbc:h2:mem:mydb;MODE=PostgreSQL;DATABASE_TO_UPPER=false;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+spring.datasource.driver-class-name=org.h2.Driver
+spring.datasource.username=myusername
+spring.datasource.password=mypassword
+spring.sql.init.mode=never
+spring.docker.compose.enabled=false
