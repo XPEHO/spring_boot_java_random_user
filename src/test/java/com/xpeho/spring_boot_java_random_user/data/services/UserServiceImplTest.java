@@ -4,10 +4,14 @@ import com.xpeho.spring_boot_java_random_user.data.converters.UserConverter;
 import com.xpeho.spring_boot_java_random_user.data.models.database.User;
 import com.xpeho.spring_boot_java_random_user.data.sources.database.UserRepository;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserEntity;
+import com.xpeho.spring_boot_java_random_user.domain.entities.UserFilter;
+import com.xpeho.spring_boot_java_random_user.domain.enums.Gender;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -83,5 +87,64 @@ class UserServiceImplTest {
         verify(userConverter).toDao(input);
         verify(userRepository).save(daoToSave);
         verify(userConverter).toDomain(savedDao);
+    }
+
+    @Test
+    @DisplayName("Should convert gender enum to lowercase and call repository with filter values")
+    void shouldFilterUsersWithGender() {
+        UserFilter filter = new UserFilter(Gender.MALE, "John", null, null, null, null, null);
+
+        User dao = new User();
+        dao.setId(1L);
+        dao.setFirstname("John");
+
+        UserEntity expected = new UserEntity(1L, "male", "John", "Doe", "Mr", "john@doe.com", "1234", "pic.jpg", "FR");
+
+        when(userRepository.findByFilters("male", "John", null, null, null, null, null))
+                .thenReturn(List.of(dao));
+        when(userConverter.toDomain(dao)).thenReturn(expected);
+
+        List<UserEntity> result = userService.filterUsers(filter);
+
+        assertEquals(1, result.size());
+        assertEquals(expected, result.get(0));
+        verify(userRepository).findByFilters("male", "John", null, null, null, null, null);
+        verify(userConverter).toDomain(dao);
+    }
+
+    @Test
+    @DisplayName("Should pass null gender when filter gender is null")
+    void shouldFilterUsersWithNullGender() {
+        UserFilter filter = new UserFilter(null, null, "Smith", null, null, null, null);
+
+        User dao = new User();
+        dao.setId(2L);
+        dao.setLastname("Smith");
+
+        UserEntity expected = new UserEntity(2L, "female", "Alice", "Smith", "Ms", "alice@smith.com", "5678", "pic2.jpg", "US");
+
+        when(userRepository.findByFilters(null, null, "Smith", null, null, null, null))
+                .thenReturn(List.of(dao));
+        when(userConverter.toDomain(dao)).thenReturn(expected);
+
+        List<UserEntity> result = userService.filterUsers(filter);
+
+        assertEquals(1, result.size());
+        assertEquals(expected, result.get(0));
+        verify(userRepository).findByFilters(null, null, "Smith", null, null, null, null);
+    }
+
+    @Test
+    @DisplayName("Should return empty list when no users match filter")
+    void shouldReturnEmptyListWhenNoUsersMatchFilter() {
+        UserFilter filter = new UserFilter(Gender.FEMALE, "Unknown", null, null, null, null, null);
+
+        when(userRepository.findByFilters("female", "Unknown", null, null, null, null, null))
+                .thenReturn(Collections.emptyList());
+
+        List<UserEntity> result = userService.filterUsers(filter);
+
+        assertTrue(result.isEmpty());
+        verify(userRepository).findByFilters("female", "Unknown", null, null, null, null, null);
     }
 }
