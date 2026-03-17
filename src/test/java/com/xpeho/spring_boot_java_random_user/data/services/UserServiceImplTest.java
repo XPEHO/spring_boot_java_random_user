@@ -9,6 +9,7 @@ import com.xpeho.spring_boot_java_random_user.domain.enums.Gender;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.util.Collections;
 import java.util.List;
@@ -90,7 +91,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    @DisplayName("Should convert gender enum to lowercase and call repository with filter values")
+    @DisplayName("Should build a specification and call repository for filtered users")
     void shouldFilterUsersWithGender() {
         UserFilter filter = new UserFilter(Gender.MALE, "John", null, null, null, null, null);
 
@@ -100,7 +101,7 @@ class UserServiceImplTest {
 
         UserEntity expected = new UserEntity(1L, "male", "John", "Doe", "Mr", "john@doe.com", "1234", "pic.jpg", "FR");
 
-        when(userRepository.findByFilters("male", "John", null, null, null, null, null))
+        when(userRepository.findAll(org.mockito.ArgumentMatchers.<Specification<User>>any()))
                 .thenReturn(List.of(dao));
         when(userConverter.toDomain(dao)).thenReturn(expected);
 
@@ -108,12 +109,12 @@ class UserServiceImplTest {
 
         assertEquals(1, result.size());
         assertEquals(expected, result.get(0));
-        verify(userRepository).findByFilters("male", "John", null, null, null, null, null);
+        verify(userRepository).findAll(org.mockito.ArgumentMatchers.<Specification<User>>any());
         verify(userConverter).toDomain(dao);
     }
 
     @Test
-    @DisplayName("Should pass null gender when filter gender is null")
+    @DisplayName("Should call repository when gender filter is null")
     void shouldFilterUsersWithNullGender() {
         UserFilter filter = new UserFilter(null, null, "Smith", null, null, null, null);
 
@@ -123,7 +124,7 @@ class UserServiceImplTest {
 
         UserEntity expected = new UserEntity(2L, "female", "Alice", "Smith", "Ms", "alice@smith.com", "5678", "pic2.jpg", "US");
 
-        when(userRepository.findByFilters(null, null, "Smith", null, null, null, null))
+        when(userRepository.findAll(org.mockito.ArgumentMatchers.<Specification<User>>any()))
                 .thenReturn(List.of(dao));
         when(userConverter.toDomain(dao)).thenReturn(expected);
 
@@ -131,7 +132,7 @@ class UserServiceImplTest {
 
         assertEquals(1, result.size());
         assertEquals(expected, result.get(0));
-        verify(userRepository).findByFilters(null, null, "Smith", null, null, null, null);
+        verify(userRepository).findAll(org.mockito.ArgumentMatchers.<Specification<User>>any());
     }
 
     @Test
@@ -139,12 +140,12 @@ class UserServiceImplTest {
     void shouldReturnEmptyListWhenNoUsersMatchFilter() {
         UserFilter filter = new UserFilter(Gender.FEMALE, "Unknown", null, null, null, null, null);
 
-        when(userRepository.findByFilters("female", "Unknown", null, null, null, null, null))
+        when(userRepository.findAll(org.mockito.ArgumentMatchers.<Specification<User>>any()))
                 .thenReturn(Collections.emptyList());
 
         List<UserEntity> result = userService.filterUsers(filter);
 
         assertTrue(result.isEmpty());
-        verify(userRepository).findByFilters("female", "Unknown", null, null, null, null, null);
+        verify(userRepository).findAll(org.mockito.ArgumentMatchers.<Specification<User>>any());
     }
 }

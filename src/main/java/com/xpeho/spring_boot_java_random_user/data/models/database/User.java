@@ -1,34 +1,39 @@
 package com.xpeho.spring_boot_java_random_user.data.models.database;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Column;
-import org.springframework.data.relational.core.mapping.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
-@Table("users")
+@Entity
+@Table(name = "users")
 public class User {
     @Id
-    @Column("id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
-    @Column("gender")
+    @Column(name = "gender")
     private String gender;
-    @Column("firstname")
+    @Column(name = "firstname")
     private String firstname;
-    @Column("lastname")
+    @Column(name = "lastname")
     private String lastname;
-    @Column("civility")
+    @Column(name = "civility")
     private String civility;
-    @Column("email")
+    @Column(name = "email")
     private String email;
-    @Column("phone")
+    @Column(name = "phone")
     private String phone;
-    @Column("picture")
+    @Column(name = "picture")
     private String picture;
-    @Column("nationality")
+    @Column(name = "nationality")
     private String nationality;
 
-    // Required by Spring Data JDBC to instantiate the entity via reflection
+    // Required by JPA
     public User() {
-        // No initialization needed; fields are populated by Spring Data JDBC after instantiation
+        // No initialization needed
     }
 
     public Long getId() {
