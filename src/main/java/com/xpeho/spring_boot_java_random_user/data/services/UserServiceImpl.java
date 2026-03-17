@@ -3,7 +3,9 @@ package com.xpeho.spring_boot_java_random_user.data.services;
 import com.xpeho.spring_boot_java_random_user.data.converters.UserConverter;
 import com.xpeho.spring_boot_java_random_user.data.models.database.User;
 import com.xpeho.spring_boot_java_random_user.data.sources.database.UserRepository;
+import com.xpeho.spring_boot_java_random_user.data.sources.database.UserSpecifications;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserEntity;
+import com.xpeho.spring_boot_java_random_user.domain.entities.UserFilter;
 import com.xpeho.spring_boot_java_random_user.domain.services.LocalUserService;
 import org.springframework.stereotype.Service;
 
@@ -46,5 +48,12 @@ public class UserServiceImpl implements LocalUserService {
     @Override
     public void deleteById(long id) {
         userRepository.deleteById(id);
+    }
+
+    @Override
+    public List<UserEntity> filterUsers(UserFilter filter) {
+        return userRepository.findAll(UserSpecifications.byFilter(filter)).stream()
+                .map(userConverter::toDomain)
+                .toList();
     }
 }
