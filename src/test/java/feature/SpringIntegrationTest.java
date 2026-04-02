@@ -46,4 +46,10 @@ public class SpringIntegrationTest {
         HttpEntity<Object> request = new HttpEntity<>(payload, headers);
         latestResponse = restTemplate.postForEntity(url, request, String.class);
     }
+
+    protected void executeDelete(String path) {
+        String url = "http://localhost:" + port + path;
+        restTemplate.delete(url);
+        latestResponse = ResponseEntity.noContent().build();
+    }
 }
