@@ -14,4 +14,4 @@ Feature: Delete user endpoint
 
   Scenario: Delete a user that does not exist
     When the client call to DELETE /random-users/999
-    Then the response status should be 204
+    Then the response status should be 404
