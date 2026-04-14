@@ -198,38 +198,57 @@
 				</executions>
 			</plugin>
 			<plugin>
-				<groupId>com.dkanejs.maven.plugins</groupId>
-				<artifactId>docker-compose-maven-plugin</artifactId>
-				<version>4.0.0</version>
-				<configuration>
-					<skip>${skipDocker}</skip>
-					<composeFile>${project.basedir}/docker-compose.yml</composeFile>
-					<detachedMode>true</detachedMode>
-					<removeVolumes>false</removeVolumes>
-					<removeOrphans>true</removeOrphans>
-				</configuration>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>3.3.0</version>
 				<executions>
 					<!-- Clean up any leftover container from a previous run -->
 					<execution>
 						<id>docker-compose-down-before</id>
 						<phase>pre-integration-test</phase>
-						<goals>
-							<goal>down</goal>
-						</goals>
+						<goals><goal>exec</goal></goals>
+						<configuration>
+							<skip>${skipDocker}</skip>
+							<executable>docker</executable>
+							<arguments>
+								<argument>compose</argument>
+								<argument>-f</argument>
+								<argument>${project.basedir}/docker-compose.yml</argument>
+								<argument>down</argument>
+								<argument>--remove-orphans</argument>
+							</arguments>
+						</configuration>
 					</execution>
 					<execution>
 						<id>docker-compose-up</id>
 						<phase>pre-integration-test</phase>
-						<goals>
-							<goal>up</goal>
-						</goals>
+						<goals><goal>exec</goal></goals>
+						<configuration>
+							<skip>${skipDocker}</skip>
+							<executable>docker</executable>
+							<arguments>
+								<argument>compose</argument>
+								<argument>-f</argument>
+								<argument>${project.basedir}/docker-compose.yml</argument>
+								<argument>up</argument>
+								<argument>-d</argument>
+							</arguments>
+						</configuration>
 					</execution>
 					<execution>
 						<id>docker-compose-down</id>
 						<phase>post-integration-test</phase>
-						<goals>
-							<goal>down</goal>
-						</goals>
+						<goals><goal>exec</goal></goals>
+						<configuration>
+							<skip>${skipDocker}</skip>
+							<executable>docker</executable>
+							<arguments>
+								<argument>compose</argument>
+								<argument>-f</argument>
+								<argument>${project.basedir}/docker-compose.yml</argument>
+								<argument>down</argument>
+							</arguments>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
