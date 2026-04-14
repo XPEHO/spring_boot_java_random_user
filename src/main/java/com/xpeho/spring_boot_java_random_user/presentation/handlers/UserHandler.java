@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,6 +23,7 @@ import java.io.IOException;
 import java.util.List;
 
 
+@Validated
 @RestController
 public class UserHandler implements UserController {
 
@@ -70,7 +72,7 @@ public class UserHandler implements UserController {
             );
             return ResponseEntity.ok(response);
         } catch (IOException e) {
-            logger.error("Error fetching random users: {}", e.getMessage(), e);
+            logger.error("Error fetching random users: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
@@ -124,6 +126,6 @@ public class UserHandler implements UserController {
     }
 
     private void logUserNotFound(UserNotFoundException e) {
-        logger.warn(USER_NOT_FOUND_LOG, e.getMessage(), e);
+        logger.warn(USER_NOT_FOUND_LOG, e.getMessage());
     }
 }
