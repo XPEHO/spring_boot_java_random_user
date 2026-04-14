@@ -78,4 +78,28 @@ public class StepDefinition extends SpringIntegrationTest {
         assertNotNull(createdUserId, "No user was created before this step");
         executeGet("/random-users/" + createdUserId);
     }
+
+    @When("the client call to GET \\/random-users")
+    public void theClientCallToGetRandomUsers() {
+        executeGet("/random-users");
+    }
+
+    @When("the client call to GET \\/random-users with page {int} and size {int}")
+    public void theClientCallToGetRandomUsersWithPageAndSize(int page, int size) {
+        executeGet("/random-users?page=" + page + "&size=" + size);
+    }
+
+    @And("the response contains a list of users")
+    public void theResponseContainsAListOfUsers() throws Exception {
+        JsonNode body = objectMapper.readTree(latestResponse.getBody());
+        assertNotNull(body.get("data"));
+        assertTrue(body.get("data").isArray());
+    }
+
+    @And("the response contains {int} users")
+    public void theResponseContainsUsers(int expectedSize) throws Exception {
+        JsonNode body = objectMapper.readTree(latestResponse.getBody());
+        assertNotNull(body.get("data"));
+        assertEquals(expectedSize, body.get("data").size());
+    }
 }
