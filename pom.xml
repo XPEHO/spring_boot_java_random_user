@@ -175,7 +175,9 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
-					<skip>true</skip>
+					<excludes>
+						<exclude>**/*IntegrationTest.java</exclude>
+					</excludes>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -183,8 +185,7 @@
 				<artifactId>maven-failsafe-plugin</artifactId>
 				<configuration>
 					<includes>
-						<include>**/*Tests.java</include>
-						<include>**/*Test.java</include>
+						<include>**/*IntegrationTest.java</include>
 					</includes>
 				</configuration>
 				<executions>
