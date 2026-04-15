@@ -7,6 +7,7 @@ import org.springframework.boot.resttestclient.TestRestTemplate;
 import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -49,7 +50,6 @@ public class SpringIntegrationTest {
 
     protected void executeDelete(String path) {
         String url = "http://localhost:" + port + path;
-        restTemplate.delete(url);
-        latestResponse = ResponseEntity.noContent().build();
+        latestResponse = restTemplate.exchange(url, HttpMethod.DELETE, null, String.class);
     }
 }

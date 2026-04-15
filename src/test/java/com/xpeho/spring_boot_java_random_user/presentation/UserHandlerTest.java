@@ -149,9 +149,12 @@ class UserHandlerTest {
     @DisplayName("Should return 204 when deleteUserById succeeds")
     void shouldReturnNoContentWhenDeleteUserByIdSucceeds() {
         int userId = 42;
+        doNothing().when(deleteUserUseCase).execute(userId);
 
-        userHandler.deleteUserById(userId);
+        ResponseEntity<Void> response = userHandler.deleteUserById(userId);
 
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+        assertNull(response.getBody());
         verify(deleteUserUseCase, times(1)).execute(userId);
     }
 
@@ -161,8 +164,10 @@ class UserHandlerTest {
         int userId = 123;
         doThrow(new UserNotFoundException(userId)).when(deleteUserUseCase).execute(userId);
 
-        userHandler.deleteUserById(userId);
+        ResponseEntity<Void> response = userHandler.deleteUserById(userId);
 
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertNull(response.getBody());
         verify(deleteUserUseCase, times(1)).execute(userId);
     }
 

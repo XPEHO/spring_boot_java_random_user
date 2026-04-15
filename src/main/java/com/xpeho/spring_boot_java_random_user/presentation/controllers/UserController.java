@@ -132,7 +132,7 @@ public interface UserController {
     @ApiResponse(responseCode = "204", description = "User successfully deleted")
     @ApiResponse(responseCode = "404", description = "The requested user does not exist")
     @ApiResponse(responseCode = "500", description = "Internal server error")
-    void deleteUserById(
+        ResponseEntity<Void> deleteUserById(
             @PathVariable
             int id
     );

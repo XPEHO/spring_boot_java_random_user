@@ -110,11 +110,13 @@ public class UserHandler implements UserController {
     }
 
     @Override
-    public void deleteUserById(int id) {
+    public ResponseEntity<Void> deleteUserById(int id) {
         try {
             deleteUserUseCase.execute(id);
+            return ResponseEntity.noContent().build();
         } catch (UserNotFoundException e) {
             logUserNotFound(e);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 
