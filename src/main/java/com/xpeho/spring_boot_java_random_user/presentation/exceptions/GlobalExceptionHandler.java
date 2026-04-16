@@ -2,6 +2,7 @@ package com.xpeho.spring_boot_java_random_user.presentation.exceptions;
 
 import com.xpeho.spring_boot_java_random_user.domain.exceptions.InvalidPaginationException;
 import com.xpeho.spring_boot_java_random_user.domain.exceptions.UserNotFoundException;
+import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,16 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ErrorResponse> handleConstraintViolationException(ConstraintViolationException ex) {
+        String message = ex.getConstraintViolations().stream()
+                .map(v -> v.getPropertyPath() + ": " + v.getMessage())
+                .findFirst()
+                .orElse(ex.getMessage());
+        logger.warn("Constraint violation: {}", message);
+        return buildErrorResponse("INVALID_PARAMETER", message, HttpStatus.BAD_REQUEST);
+    }
 
     @ExceptionHandler(InvalidPaginationException.class)
     public ResponseEntity<ErrorResponse> handleInvalidPaginationException(InvalidPaginationException ex) {
