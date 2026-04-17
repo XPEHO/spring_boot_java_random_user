@@ -22,7 +22,7 @@ public class GlobalExceptionHandler {
                 .findFirst()
                 .orElse(ex.getMessage());
         logger.warn("Constraint violation: {}", message);
-        return buildErrorResponse("INVALID_PARAMETER", message, HttpStatus.BAD_REQUEST);
+        return buildErrorResponse("INVALID_PAGINATION", message, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(InvalidPaginationException.class)

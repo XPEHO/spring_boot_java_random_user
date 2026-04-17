@@ -6,7 +6,6 @@ import com.xpeho.spring_boot_java_random_user.domain.entities.UserFilter;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserRequest;
 import com.xpeho.spring_boot_java_random_user.domain.enums.Gender;
 import com.xpeho.spring_boot_java_random_user.domain.enums.UserSource;
-import com.xpeho.spring_boot_java_random_user.domain.exceptions.InvalidPaginationException;
 import com.xpeho.spring_boot_java_random_user.domain.exceptions.UserNotFoundException;
 import com.xpeho.spring_boot_java_random_user.domain.usecases.*;
 import com.xpeho.spring_boot_java_random_user.presentation.handlers.UserHandler;
@@ -14,8 +13,6 @@ import com.xpeho.spring_boot_java_random_user.presentation.dto.UserResponseDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -81,19 +78,6 @@ class UserHandlerTest {
         assertNull(response.getBody());
         verify(fetchAndSaveRandomUsersUseCase, times(1)).execute(page, size, UserSource.RANDOM_USER);
     }
-
-    @ParameterizedTest
-    @CsvSource({
-            "1, 31",
-            "0, 10",
-            "1, 0"
-    })
-    @DisplayName("Should throw InvalidPaginationException for invalid pagination inputs")
-    void shouldThrowInvalidPaginationExceptionForInvalidPaginationInputs(int page, int size) throws IOException {
-        assertThrows(InvalidPaginationException.class, () -> userHandler.getRandomUsers(page, size, UserSource.DUMMY));
-        verify(fetchAndSaveRandomUsersUseCase, never()).execute(page, size, UserSource.DUMMY);
-    }
-
 
     @Test
     @DisplayName("Should return 200 and user when getUserById succeeds")

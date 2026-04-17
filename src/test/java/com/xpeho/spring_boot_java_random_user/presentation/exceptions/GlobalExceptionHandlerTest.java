@@ -34,7 +34,7 @@ class GlobalExceptionHandlerTest {
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertNotNull(response.getBody());
-        assertEquals("INVALID_PARAMETER", response.getBody().error());
+        assertEquals("INVALID_PAGINATION", response.getBody().error());
         assertEquals(400, response.getBody().status());
         assertTrue(response.getBody().message().contains("must be less than or equal to 30"));
     }
