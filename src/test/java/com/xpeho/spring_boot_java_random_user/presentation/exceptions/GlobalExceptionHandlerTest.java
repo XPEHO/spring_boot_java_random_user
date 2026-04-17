@@ -3,17 +3,41 @@ package com.xpeho.spring_boot_java_random_user.presentation.exceptions;
 import com.xpeho.spring_boot_java_random_user.domain.exceptions.InvalidPaginationException;
 import com.xpeho.spring_boot_java_random_user.domain.exceptions.UserNotFoundException;
 import com.xpeho.spring_boot_java_random_user.domain.enums.UserSource;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+import java.util.Set;
+
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class GlobalExceptionHandlerTest {
 
     private final GlobalExceptionHandler handler = new GlobalExceptionHandler();
+
+    @Test
+    @DisplayName("Should return 400 BAD_REQUEST when ConstraintViolationException is thrown")
+    void shouldReturnBadRequestWhenConstraintViolationException() {
+        ConstraintViolation<?> violation = mock(ConstraintViolation.class);
+        when(violation.getPropertyPath()).thenReturn(mock(jakarta.validation.Path.class));
+        when(violation.getPropertyPath().toString()).thenReturn("size");
+        when(violation.getMessage()).thenReturn("must be less than or equal to 30");
+
+        ConstraintViolationException ex = new ConstraintViolationException(Set.of(violation));
+        ResponseEntity<ErrorResponse> response = handler.handleConstraintViolationException(ex);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals("INVALID_PARAMETER", response.getBody().error());
+        assertEquals(400, response.getBody().status());
+        assertTrue(response.getBody().message().contains("must be less than or equal to 30"));
+    }
 
     @Test
     @DisplayName("Should return 400 BAD_REQUEST when InvalidPaginationException is thrown")
