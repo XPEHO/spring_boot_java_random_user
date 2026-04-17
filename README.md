@@ -47,6 +47,68 @@ docker-compose up -d
 
 ---
 
+## 🐳 Docker
+
+### Architecture
+
+L'application peut être entièrement conteneurisée via un **Dockerfile multi-stage** et **Docker Compose**.
+
+```
+┌─────────────────── xpeho_network (bridge) ───────────────────┐
+│                                                               │
+│   ┌──────────┐       jdbc:postgresql://         ┌──────────┐ │
+│   │   app    │ ──────── postgres:5432 ────────▶ │ postgres │ │
+│   │  :8080   │       (nom du service)           │  :5432   │ │
+│   └──────────┘                                  └──────────┘ │
+│                                                               │
+└───────────────────────────────────────────────────────────────┘
+```
+
+| Service    | Image / Build                | Rôle                       | Port exposé               |
+|------------|------------------------------|----------------------------|---------------------------|
+| `postgres` | `postgres:17-alpine`         | Base de données PostgreSQL | `${POSTGRES_PORT}` → 5432 |
+| `app`      | Build depuis `Dockerfile`    | Application Spring Boot    | 8080 → 8080               |
+
+### Dockerfile — Build multi-stage
+
+Le Dockerfile utilise deux étapes pour produire une image finale légère et sécurisée :
+
+| Stage | Image | Rôle |
+|-------|-------|------|
+| **Build** | `eclipse-temurin:25-jdk` | Compile le JAR avec Maven (JDK complet) |
+| **Run** | `eclipse-temurin:25-jre` | Exécute l'application (JRE allégé, utilisateur non-root) |
+
+> **Pourquoi Eclipse Temurin ?** Distribution OpenJDK de référence : gratuite, open-source, maintenue par la fondation Eclipse (Adoptium).
+
+> **Sécurité :** L'image finale tourne avec un utilisateur non-root (`appuser`), sans code source ni outils de build.
+
+### Compose Profiles
+
+Le service `app` est derrière un **profil Compose** pour ne pas interférer avec le workflow dev/CI :
+
+```bash
+# Démarrer uniquement PostgreSQL (dev, tests, CI)
+docker compose up -d
+
+# Démarrer PostgreSQL + Application (déploiement complet)
+docker compose --profile app up -d --build
+```
+
+### Commandes utiles
+
+```bash
+# Voir les logs de l'application
+docker compose logs -f app
+
+# Arrêter et supprimer les conteneurs
+docker compose down
+
+# Arrêter et supprimer les conteneurs + volumes (reset DB)
+docker compose down -v
+```
+
+---
+
 ## ⚙️ Configuration
 
 ### Environment Variables (.env)
@@ -56,6 +118,11 @@ POSTGRES_USER=your_user
 POSTGRES_PASSWORD=your_password
 POSTGRES_DB=your_database
 POSTGRES_PORT=5432
+
+# Liquibase (optionnel, valeurs par défaut fournies)
+LB_CHANGELOG=db/changelog/db.changelog-master.yaml
+LB_SCHEMA=public
+SPRING_LIQUIBASE_ENABLED=true
 ```
 
 ### External API Configuration
