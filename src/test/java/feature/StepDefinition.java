@@ -3,7 +3,7 @@ package feature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserRequest;
-import io.cucumber.datatable.DataTable;
+import feature.CucumberTypeConfig.FieldAssertion;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -46,26 +46,25 @@ public class StepDefinition extends SpringIntegrationTest {
     }
 
     @And("the user profile")
-    public void theUserProfile(DataTable table) throws Exception{
+    public void theUserProfile(List<FieldAssertion> assertions) throws Exception {
         JsonNode body = objectMapper.readTree(latestResponse.getBody());
-        List<List<String>> rows = table.asLists(String.class);
-        for (List<String> row : rows) {
-            String field = row.get(0).trim();
-            String expected = row.get(1).trim();
-            JsonNode valueNode = body.get(field);
-            assertNotNull(valueNode);
 
-            if ("<generated_id>".equals(expected)) {
-                createdUserId = valueNode.asLong();
-                assertTrue(createdUserId > 0);
-                continue;
+        for (FieldAssertion assertion : assertions) {
+            JsonNode valueNode = body.get(assertion.field());
+            assertNotNull(valueNode, "Field '%s' not found in response".formatted(assertion.field()));
+
+            switch (assertion.expected()) {
+                case "<generated_id>" -> {
+                    createdUserId = valueNode.asLong();
+                    assertTrue(createdUserId > 0);
+                }
+                case "<created_id>" -> {
+                    assertNotNull(createdUserId);
+                    assertEquals(createdUserId.toString(), valueNode.asText());
+                }
+                default -> assertEquals(assertion.expected(), valueNode.asText(),
+                        "Mismatch on field '%s'".formatted(assertion.field()));
             }
-            if ("<created_id>".equals(expected)) {
-                assertNotNull(createdUserId);
-                assertEquals(createdUserId.toString(), valueNode.asText());
-                continue;
-            }
-            assertEquals(expected, valueNode.asText());
         }
     }
 

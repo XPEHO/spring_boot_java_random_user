@@ -13,5 +13,5 @@ Feature: Get user endpoint
       | firstname | Emma |
 
   Scenario: Get a user that does not exist
-    When the client call to GET /random-users/999
+    When the client call to GET /random-users/999999
     Then the response status should be 404
