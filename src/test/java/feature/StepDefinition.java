@@ -89,6 +89,17 @@ public class StepDefinition extends SpringIntegrationTest {
         executeGet("/random-users?page=" + page + "&size=" + size);
     }
 
+    @When("the client call to DELETE \/random-users\/{int}")
+    public void theClientCallToDeleteRandomUser(int id) {
+        executeDelete("/random-users/" + id);
+    }
+
+    @When("the client call to DELETE the created user")
+    public void theClientCallToDeleteTheCreatedUser() {
+        assertNotNull(createdUserId, "No user was created before this step");
+        executeDelete("/random-users/" + createdUserId);
+    }
+
     @And("the response contains a list of users")
     public void theResponseContainsAListOfUsers() throws Exception {
         JsonNode body = objectMapper.readTree(latestResponse.getBody());

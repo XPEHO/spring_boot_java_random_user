@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
@@ -45,5 +46,10 @@ public class SpringIntegrationTest {
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<Object> request = new HttpEntity<>(payload, headers);
         latestResponse = restTemplate.postForEntity(url, request, String.class);
+    }
+
+    protected void executeDelete(String path) {
+        String url = "http://localhost:" + port + path;
+        latestResponse = restTemplate.exchange(url, HttpMethod.DELETE, HttpEntity.EMPTY, String.class);
     }
 }
