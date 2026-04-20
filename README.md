@@ -47,6 +47,69 @@ docker-compose up -d
 
 ---
 
+## 🐳 Docker
+
+### Architecture
+
+The application can be fully containerized using a **multi-stage Dockerfile** and **Docker Compose**.
+
+The `app` container connects to the `postgres` container over the `xpeho_network` bridge network using the PostgreSQL service name as the hostname.
+```
+┌─────────────────── xpeho_network (bridge) ───────────────────┐
+│                                                               │
+│   ┌──────────┐       jdbc:postgresql://         ┌──────────┐ │
+│   │   app    │ ──────── postgres:5432 ────────▶ │ postgres │ │
+│   │  :8080   │       (service name)             │  :5432   │ │
+│   └──────────┘                                  └──────────┘ │
+│                                                               │
+└───────────────────────────────────────────────────────────────┘
+```
+
+| Service    | Image / Build                | Role                       | Exposed Port              |
+|------------|------------------------------|----------------------------|---------------------------|
+| `postgres` | `postgres:17-alpine`         | PostgreSQL database        | `${POSTGRES_PORT}` → 5432 |
+| `app`      | Built from `Dockerfile`      | Spring Boot application    | 8080 → 8080               |
+
+### Dockerfile — Multi-stage Build
+
+The Dockerfile uses two stages to produce a lightweight, secure final image:
+
+| Stage | Image | Role |
+|-------|-------|------|
+| **Build** | `eclipse-temurin:25-jdk` | Compiles the JAR with Maven (full JDK) |
+| **Run** | `eclipse-temurin:25-jre` | Runs the application (lightweight JRE, non-root user) |
+
+> **Why Eclipse Temurin?** Reference OpenJDK distribution: free, open-source, maintained by the Eclipse Foundation (Adoptium).
+
+> **Security:** The final image runs as a non-root user (`appuser`), without source code or build tools.
+
+### Compose Profiles
+
+The `app` service is behind a **Compose profile** to avoid interfering with the dev/CI workflow:
+
+```bash
+# Start PostgreSQL only (dev, tests, CI)
+docker compose up -d
+
+# Start PostgreSQL + Application (full deployment)
+docker compose --profile app up -d --build
+```
+
+### Useful Commands
+
+```bash
+# View application logs
+docker compose logs -f app
+
+# Stop and remove containers
+docker compose down
+
+# Stop and remove containers + volumes (reset DB)
+docker compose down -v
+```
+
+---
+
 ## ⚙️ Configuration
 
 ### Environment Variables (.env)
@@ -56,6 +119,11 @@ POSTGRES_USER=your_user
 POSTGRES_PASSWORD=your_password
 POSTGRES_DB=your_database
 POSTGRES_PORT=5432
+
+# Liquibase (optional, defaults provided)
+LB_CHANGELOG=db/changelog/db.changelog-master.yaml
+LB_SCHEMA=public
+SPRING_LIQUIBASE_ENABLED=true
 ```
 
 ### External API Configuration

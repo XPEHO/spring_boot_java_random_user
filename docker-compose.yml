@@ -18,6 +18,30 @@ services:
     networks:
       - xpeho_network
 
+  app:
+    profiles:
+      - app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: xpeho_app
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_PORT: 5432
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB}
+      SPRING_LIQUIBASE_ENABLED: ${SPRING_LIQUIBASE_ENABLED:-true}
+      LB_CHANGELOG: ${LB_CHANGELOG:-db/changelog/db.changelog-master.yaml}
+      LB_SCHEMA: ${LB_SCHEMA:-public}
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - xpeho_network
+
 volumes:
   postgres_data:
     driver: local
