@@ -89,7 +89,7 @@ public class StepDefinition extends SpringIntegrationTest {
         executeGet("/random-users?page=" + page + "&size=" + size);
     }
 
-    @When("the client call to DELETE \/random-users\/{int}")
+    @When("the client call to DELETE \\/random-users\\/{int}")
     public void theClientCallToDeleteRandomUser(int id) {
         executeDelete("/random-users/" + id);
     }
