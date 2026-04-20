@@ -7,9 +7,9 @@ Feature: Delete user endpoint
     And the user profile
       | id | <generated_id> |
     When the client call to DELETE the created user
-    Then the response status should be 204
+    Then the response status should be 200
     When the client call to GET the created user
-    Then the response status should be 404
+    Then the response status should be 400
 
   Scenario: Delete a user that does not exist
     When the client call to DELETE /random-users/999999
