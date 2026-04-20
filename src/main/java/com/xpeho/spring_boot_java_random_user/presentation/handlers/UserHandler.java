@@ -6,7 +6,6 @@ import com.xpeho.spring_boot_java_random_user.domain.entities.UserFilter;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserRequest;
 import com.xpeho.spring_boot_java_random_user.domain.enums.Gender;
 import com.xpeho.spring_boot_java_random_user.domain.enums.UserSource;
-import com.xpeho.spring_boot_java_random_user.domain.exceptions.InvalidPaginationException;
 import com.xpeho.spring_boot_java_random_user.domain.exceptions.UserNotFoundException;
 import com.xpeho.spring_boot_java_random_user.domain.usecases.*;
 import com.xpeho.spring_boot_java_random_user.presentation.controllers.UserController;
@@ -15,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.List;
 
 
+@Validated
 @RestController
 public class UserHandler implements UserController {
 
@@ -54,12 +55,6 @@ public class UserHandler implements UserController {
 
     @Override
     public ResponseEntity<UserResponseDTO> getRandomUsers(int page, int size, UserSource source) {
-        if (page < 1) {
-            throw new InvalidPaginationException("Page must be greater than or equal to 1. Requested: " + page);
-        }
-        if (size < 1 || size > 30) {
-            throw new InvalidPaginationException("Page size must be between 1 and 30. Requested: " + size);
-        }
         try {
             PaginatedUsers result = fetchAndSaveRandomUsersUseCase.execute(page, size, source);
             UserResponseDTO response = new UserResponseDTO(
@@ -70,7 +65,7 @@ public class UserHandler implements UserController {
             );
             return ResponseEntity.ok(response);
         } catch (IOException e) {
-            logger.error("Error fetching random users: {}", e.getMessage(), e);
+            logger.error("Error fetching random users", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
@@ -124,6 +119,6 @@ public class UserHandler implements UserController {
     }
 
     private void logUserNotFound(UserNotFoundException e) {
-        logger.warn(USER_NOT_FOUND_LOG, e.getMessage(), e);
+        logger.warn(USER_NOT_FOUND_LOG, e);
     }
 }
