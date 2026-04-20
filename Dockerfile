@@ -21,8 +21,8 @@ WORKDIR /app
 # Create a non-root user and group for running the application securely
 RUN groupadd --system appgroup && useradd --system --gid appgroup appuser
 
-# Copy the built JAR from the build stage (explicit name to avoid matching multiple artifacts)
-COPY --from=build /app/target/spring_boot_java_random_user-0.0.1-SNAPSHOT.jar app.jar
+# Copy the built JAR from the build stage using a stable pattern so version changes do not break the image build
+COPY --from=build /app/target/*.jar app.jar
 
 # Ensure the non-root user owns the application files
 RUN chown -R appuser:appgroup /app
