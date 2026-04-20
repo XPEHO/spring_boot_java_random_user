@@ -51,59 +51,59 @@ docker-compose up -d
 
 ### Architecture
 
-L'application peut être entièrement conteneurisée via un **Dockerfile multi-stage** et **Docker Compose**.
+The application can be fully containerized using a **multi-stage Dockerfile** and **Docker Compose**.
 
 ```
 ┌─────────────────── xpeho_network (bridge) ───────────────────┐
 │                                                               │
 │   ┌──────────┐       jdbc:postgresql://         ┌──────────┐ │
 │   │   app    │ ──────── postgres:5432 ────────▶ │ postgres │ │
-│   │  :8080   │       (nom du service)           │  :5432   │ │
+│   │  :8080   │       (service name)             │  :5432   │ │
 │   └──────────┘                                  └──────────┘ │
 │                                                               │
 └───────────────────────────────────────────────────────────────┘
 ```
 
-| Service    | Image / Build                | Rôle                       | Port exposé               |
+| Service    | Image / Build                | Role                       | Exposed Port              |
 |------------|------------------------------|----------------------------|---------------------------|
-| `postgres` | `postgres:17-alpine`         | Base de données PostgreSQL | `${POSTGRES_PORT}` → 5432 |
-| `app`      | Build depuis `Dockerfile`    | Application Spring Boot    | 8080 → 8080               |
+| `postgres` | `postgres:17-alpine`         | PostgreSQL database        | `${POSTGRES_PORT}` → 5432 |
+| `app`      | Built from `Dockerfile`      | Spring Boot application    | 8080 → 8080               |
 
-### Dockerfile — Build multi-stage
+### Dockerfile — Multi-stage Build
 
-Le Dockerfile utilise deux étapes pour produire une image finale légère et sécurisée :
+The Dockerfile uses two stages to produce a lightweight, secure final image:
 
-| Stage | Image | Rôle |
+| Stage | Image | Role |
 |-------|-------|------|
-| **Build** | `eclipse-temurin:25-jdk` | Compile le JAR avec Maven (JDK complet) |
-| **Run** | `eclipse-temurin:25-jre` | Exécute l'application (JRE allégé, utilisateur non-root) |
+| **Build** | `eclipse-temurin:25-jdk` | Compiles the JAR with Maven (full JDK) |
+| **Run** | `eclipse-temurin:25-jre` | Runs the application (lightweight JRE, non-root user) |
 
-> **Pourquoi Eclipse Temurin ?** Distribution OpenJDK de référence : gratuite, open-source, maintenue par la fondation Eclipse (Adoptium).
+> **Why Eclipse Temurin?** Reference OpenJDK distribution: free, open-source, maintained by the Eclipse Foundation (Adoptium).
 
-> **Sécurité :** L'image finale tourne avec un utilisateur non-root (`appuser`), sans code source ni outils de build.
+> **Security:** The final image runs as a non-root user (`appuser`), without source code or build tools.
 
 ### Compose Profiles
 
-Le service `app` est derrière un **profil Compose** pour ne pas interférer avec le workflow dev/CI :
+The `app` service is behind a **Compose profile** to avoid interfering with the dev/CI workflow:
 
 ```bash
-# Démarrer uniquement PostgreSQL (dev, tests, CI)
+# Start PostgreSQL only (dev, tests, CI)
 docker compose up -d
 
-# Démarrer PostgreSQL + Application (déploiement complet)
+# Start PostgreSQL + Application (full deployment)
 docker compose --profile app up -d --build
 ```
 
-### Commandes utiles
+### Useful Commands
 
 ```bash
-# Voir les logs de l'application
+# View application logs
 docker compose logs -f app
 
-# Arrêter et supprimer les conteneurs
+# Stop and remove containers
 docker compose down
 
-# Arrêter et supprimer les conteneurs + volumes (reset DB)
+# Stop and remove containers + volumes (reset DB)
 docker compose down -v
 ```
 
@@ -119,7 +119,7 @@ POSTGRES_PASSWORD=your_password
 POSTGRES_DB=your_database
 POSTGRES_PORT=5432
 
-# Liquibase (optionnel, valeurs par défaut fournies)
+# Liquibase (optional, defaults provided)
 LB_CHANGELOG=db/changelog/db.changelog-master.yaml
 LB_SCHEMA=public
 SPRING_LIQUIBASE_ENABLED=true
