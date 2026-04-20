@@ -53,6 +53,7 @@ docker-compose up -d
 
 The application can be fully containerized using a **multi-stage Dockerfile** and **Docker Compose**.
 
+The `app` container connects to the `postgres` container over the `xpeho_network` bridge network using the PostgreSQL service name as the hostname.
 ```
 ┌─────────────────── xpeho_network (bridge) ───────────────────┐
 │                                                               │
