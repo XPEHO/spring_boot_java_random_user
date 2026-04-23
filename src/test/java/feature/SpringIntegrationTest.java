@@ -27,8 +27,8 @@ import org.springframework.test.context.ActiveProfiles;
 )
 public class SpringIntegrationTest {
 
-    private static final String TEST_USERNAME = "testuser";
-    private static final String TEST_PASSWORD = "testpass";
+    private static final String TEST_USERNAME = "testadmin";
+    private static final String TEST_PASSWORD = "testadminpass";
 
     @Autowired
     protected TestRestTemplate restTemplate;

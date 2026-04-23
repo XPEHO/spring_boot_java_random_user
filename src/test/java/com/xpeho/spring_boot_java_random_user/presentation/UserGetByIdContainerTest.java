@@ -26,10 +26,13 @@ import static org.assertj.core.api.Assertions.assertThat;
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         properties = {
                 "spring.sql.init.mode=never",
-        "spring.jpa.hibernate.ddl-auto=create-drop",
-        "spring.security.user.name=testuser",
-        "spring.security.user.password=testpass",
-        "spring.security.user.roles=USER"
+            "spring.jpa.hibernate.ddl-auto=create-drop",
+            "app.security.admin.username=testadmin",
+            "app.security.admin.password=testadminpass",
+            "app.security.user.username=testuser",
+            "app.security.user.password=testpass",
+            "app.security.test.username=testviewer",
+            "app.security.test.password=testviewerpass"
         }
 )
 class UserGetByIdContainerTest {
