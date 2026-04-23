@@ -27,6 +27,9 @@ import org.springframework.test.context.ActiveProfiles;
 )
 public class SpringIntegrationTest {
 
+    private static final String TEST_USERNAME = "testuser";
+    private static final String TEST_PASSWORD = "testpass";
+
     @Autowired
     protected TestRestTemplate restTemplate;
 
@@ -37,7 +40,9 @@ public class SpringIntegrationTest {
 
     protected void executeGet(String path) {
         String url = "http://localhost:" + port + path;
-        latestResponse = restTemplate.getForEntity(url, String.class);
+        latestResponse = restTemplate
+            .withBasicAuth(TEST_USERNAME, TEST_PASSWORD)
+            .getForEntity(url, String.class);
     }
 
     protected void executePost(String path, Object payload) {
@@ -45,12 +50,16 @@ public class SpringIntegrationTest {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<Object> request = new HttpEntity<>(payload, headers);
-        latestResponse = restTemplate.postForEntity(url, request, String.class);
+        latestResponse = restTemplate
+            .withBasicAuth(TEST_USERNAME, TEST_PASSWORD)
+            .postForEntity(url, request, String.class);
     }
 
     protected void executeDelete(String path) {
         String url = "http://localhost:" + port + path;
-        latestResponse = restTemplate.exchange(url, HttpMethod.DELETE, HttpEntity.EMPTY, String.class);
+        latestResponse = restTemplate
+            .withBasicAuth(TEST_USERNAME, TEST_PASSWORD)
+            .exchange(url, HttpMethod.DELETE, HttpEntity.EMPTY, String.class);
     }
 
     protected void executePut(String path, Object payload) {

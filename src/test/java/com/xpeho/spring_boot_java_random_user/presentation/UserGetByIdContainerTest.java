@@ -26,10 +26,16 @@ import static org.assertj.core.api.Assertions.assertThat;
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         properties = {
                 "spring.sql.init.mode=never",
-                "spring.jpa.hibernate.ddl-auto=create-drop"
+        "spring.jpa.hibernate.ddl-auto=create-drop",
+        "spring.security.user.name=testuser",
+        "spring.security.user.password=testpass",
+        "spring.security.user.roles=USER"
         }
 )
 class UserGetByIdContainerTest {
+
+    private static final String TEST_USERNAME = "testuser";
+    private static final String TEST_PASSWORD = "testpass";
 
     @Container
     @ServiceConnection
@@ -61,8 +67,8 @@ class UserGetByIdContainerTest {
 
         User saved = userRepository.saveAndFlush(user);
 
-        ResponseEntity<UserEntity> response = restTemplate.getForEntity(
-            "/random-users/{id}",
+        ResponseEntity<UserEntity> response = restTemplate.withBasicAuth(TEST_USERNAME, TEST_PASSWORD).getForEntity(
+                "/random-users/{id}",
                 UserEntity.class,
                 saved.getId()
         );
@@ -77,10 +83,10 @@ class UserGetByIdContainerTest {
     @Test
     @DisplayName("GET /random-users/{id} should return 404 when user does not exist")
     void shouldReturnNotFoundWhenUserDoesNotExist() {
-        ResponseEntity<UserEntity> response = restTemplate.getForEntity(
-            "/random-users/{id}",
+        ResponseEntity<UserEntity> response = restTemplate.withBasicAuth(TEST_USERNAME, TEST_PASSWORD).getForEntity(
+                "/random-users/{id}",
                 UserEntity.class,
-            -1
+                -1
         );
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
