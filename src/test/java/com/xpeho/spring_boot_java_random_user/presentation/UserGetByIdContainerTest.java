@@ -32,7 +32,9 @@ import static org.assertj.core.api.Assertions.assertThat;
             "app.security.user.username=testuser",
             "app.security.user.password=testpass",
             "app.security.test.username=testviewer",
-            "app.security.test.password=testviewerpass"
+            "app.security.test.password=testviewerpass",
+            "logging.level.com.xpeho.spring_boot_java_random_user.presentation.handlers=OFF",
+            "logging.level.com.zaxxer.hikari.pool.PoolBase=ERROR"
         }
 )
 class UserGetByIdContainerTest {
