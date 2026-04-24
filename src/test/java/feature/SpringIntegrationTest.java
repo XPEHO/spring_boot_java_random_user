@@ -7,6 +7,7 @@ import org.springframework.boot.resttestclient.TestRestTemplate;
 import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -27,8 +28,11 @@ import org.springframework.test.context.ActiveProfiles;
 )
 public class SpringIntegrationTest {
 
-    private static final String TEST_USERNAME = "testadmin";
-    private static final String TEST_PASSWORD = "testadminpass";
+    @Value("${app.security.admin.username}")
+    private String testUsername;
+
+    @Value("${app.security.admin.password}")
+    private String testPassword;
 
     @Autowired
     protected TestRestTemplate restTemplate;
@@ -41,7 +45,7 @@ public class SpringIntegrationTest {
     protected void executeGet(String path) {
         String url = "http://localhost:" + port + path;
         latestResponse = restTemplate
-            .withBasicAuth(TEST_USERNAME, TEST_PASSWORD)
+            .withBasicAuth(testUsername, testPassword)
             .getForEntity(url, String.class);
     }
 
@@ -51,14 +55,14 @@ public class SpringIntegrationTest {
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<Object> request = new HttpEntity<>(payload, headers);
         latestResponse = restTemplate
-            .withBasicAuth(TEST_USERNAME, TEST_PASSWORD)
+            .withBasicAuth(testUsername, testPassword)
             .postForEntity(url, request, String.class);
     }
 
     protected void executeDelete(String path) {
         String url = "http://localhost:" + port + path;
         latestResponse = restTemplate
-            .withBasicAuth(TEST_USERNAME, TEST_PASSWORD)
+            .withBasicAuth(testUsername, testPassword)
             .exchange(url, HttpMethod.DELETE, HttpEntity.EMPTY, String.class);
     }
 
