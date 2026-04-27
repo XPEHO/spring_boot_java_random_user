@@ -6,6 +6,8 @@ on:
     types: [opened, synchronize, reopened]
 
 name: Sonar
+permissions:
+  contents: read
 jobs:
   sonarqube:
     runs-on: ubuntu-latest
