@@ -1,0 +1,7 @@
+on: pull_request
+
+name: Git checks
+
+jobs:
+  xpeho_workflows_git_checks:
+    uses: XPEHO/Xpeho-Workflows/.github/workflows/git_checks.yaml@main

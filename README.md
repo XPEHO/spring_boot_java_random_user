@@ -134,7 +134,7 @@ SPRING_LIQUIBASE_ENABLED=true
 dummy.api.base-url=https://dummyjson.com/
 ```
 
-### Profiles
+### Profiles 
 
 - **default**: PostgreSQL (production)
 - **local**: Custom local settings
