@@ -52,4 +52,12 @@ public class SpringIntegrationTest {
         String url = "http://localhost:" + port + path;
         latestResponse = restTemplate.exchange(url, HttpMethod.DELETE, HttpEntity.EMPTY, String.class);
     }
+
+    protected void executePut(String path, Object payload) {
+        String url = "http://localhost:" + port + path;
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<Object> request = new HttpEntity<>(payload, headers);
+        latestResponse = restTemplate.exchange(url, HttpMethod.PUT, request, String.class);
+    }
 }
