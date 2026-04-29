@@ -100,6 +100,31 @@ public class StepDefinition extends SpringIntegrationTest {
         executeDelete("/random-users/" + createdUserId);
     }
 
+    @Given("a valid user payload for update")
+    public void aValidUserPayloadForUpdate() {
+        payload = new UserRequest(
+            "male",
+            "John",
+            "Doe",
+            "Mr",
+            "john.doe@example.com",
+            "0611111111",
+            "john.jpg",
+            "US"
+        );
+    }
+
+    @When("the client call to PUT the created user")
+    public void theClientCallToPutTheCreatedUser() {
+        assertNotNull(createdUserId, "No user was created before this step");
+        executePut("/random-users/" + createdUserId, payload);
+    }
+
+    @When("the client call to PUT \\/random-users\\/{int}")
+    public void theClientCallToPutRandomUser(int id) {
+        executePut("/random-users/" + id, payload);
+    }
+
     @And("the response contains a list of users")
     public void theResponseContainsAListOfUsers() throws Exception {
         JsonNode body = objectMapper.readTree(latestResponse.getBody());
