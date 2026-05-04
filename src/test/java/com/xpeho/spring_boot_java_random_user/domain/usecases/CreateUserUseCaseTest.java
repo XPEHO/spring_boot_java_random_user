@@ -1,8 +1,7 @@
 package com.xpeho.spring_boot_java_random_user.domain.usecases;
 
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserEntity;
-import com.xpeho.spring_boot_java_random_user.domain.entities.UserRequest;
-import com.xpeho.spring_boot_java_random_user.domain.services.LocalUserService;
+import com.xpeho.spring_boot_java_random_user.domain.services.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,33 +12,30 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 class CreateUserUseCaseTest {
-    private LocalUserService userService;
+    private UserService userService;
     private CreateUserUseCase useCase;
 
     @BeforeEach
     void setUp() {
-        userService = mock(LocalUserService.class);
+        userService = mock(UserService.class);
         useCase = new CreateUserUseCase(userService);
     }
 
     @Test
-    @DisplayName("Should create a user without keeping the input id")
+    @DisplayName("Should create a user by passing the UserEntity directly")
     void shouldCreateUserWithoutKeepingInputId() {
-        UserRequest payload = new UserRequest(
-            "female", "Alice", "Smith", "Mrs", "alice@smith.com", "5678", "new-pic.jpg", "US"
+        UserEntity input = new UserEntity(
+            null, "female", "Alice", "Smith", "Mrs", "alice@smith.com", "5678", "new-pic.jpg", "US"
         );
         UserEntity createdUser = new UserEntity(
             1L, "female", "Alice", "Smith", "Mrs", "alice@smith.com", "5678", "new-pic.jpg", "US"
         );
-        UserEntity expectedSavedUser = new UserEntity(
-            null, "female", "Alice", "Smith", "Mrs", "alice@smith.com", "5678", "new-pic.jpg", "US"
-        );
 
-        when(userService.save(expectedSavedUser)).thenReturn(createdUser);
+        when(userService.save(input)).thenReturn(createdUser);
 
-        UserEntity result = useCase.execute(payload);
+        UserEntity result = useCase.execute(input);
 
         assertEquals(createdUser, result);
-        verify(userService).save(expectedSavedUser);
+        verify(userService).save(input);
     }
 }

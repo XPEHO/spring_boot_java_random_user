@@ -3,7 +3,7 @@ package com.xpeho.spring_boot_java_random_user.domain.usecases;
 import com.xpeho.spring_boot_java_random_user.domain.entities.PaginatedUsers;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserEntity;
 import com.xpeho.spring_boot_java_random_user.domain.enums.UserSource;
-import com.xpeho.spring_boot_java_random_user.domain.services.LocalUserService;
+import com.xpeho.spring_boot_java_random_user.domain.services.UserService;
 import com.xpeho.spring_boot_java_random_user.domain.services.RemoteUserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,14 +16,14 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class FetchAndSaveRandomUsersUseCaseTest {
-    private LocalUserService userService;
+    private UserService userService;
     private RemoteUserService dummyRemoteUserService;
     private RemoteUserService randomRemoteUserService;
     private FetchAndSaveRandomUsersUseCase useCase;
 
     @BeforeEach
     void setUp() {
-        userService = mock(LocalUserService.class);
+        userService = mock(UserService.class);
         dummyRemoteUserService = mock(RemoteUserService.class);
         randomRemoteUserService = mock(RemoteUserService.class);
         when(dummyRemoteUserService.getSource()).thenReturn(UserSource.DUMMY);

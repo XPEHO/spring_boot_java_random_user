@@ -1,6 +1,6 @@
 package com.xpeho.spring_boot_java_random_user.domain.usecases;
 
-import com.xpeho.spring_boot_java_random_user.domain.services.LocalUserService;
+import com.xpeho.spring_boot_java_random_user.domain.services.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -8,12 +8,12 @@ import org.junit.jupiter.api.Test;
 import static org.mockito.Mockito.*;
 
 class DeleteUserByIdUseCaseTest {
-    private LocalUserService userService;
+    private UserService userService;
     private DeleteUserByIdUseCase useCase;
 
     @BeforeEach
     void setUp() {
-        userService = mock(LocalUserService.class);
+        userService = mock(UserService.class);
         useCase = new DeleteUserByIdUseCase(userService);
     }
 

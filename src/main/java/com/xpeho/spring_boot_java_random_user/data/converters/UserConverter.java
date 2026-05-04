@@ -2,7 +2,7 @@ package com.xpeho.spring_boot_java_random_user.data.converters;
 
 import com.xpeho.spring_boot_java_random_user.data.models.api.dummy.DummyUserResultDTO;
 import com.xpeho.spring_boot_java_random_user.data.models.api.randomuser.RandomUserResultDTO;
-import com.xpeho.spring_boot_java_random_user.data.models.database.User;
+import com.xpeho.spring_boot_java_random_user.data.models.database.UserDao;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserEntity;
 import org.springframework.stereotype.Service;
 
@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserConverter {
     // Domain -> DAO
-    public User toDao(UserEntity entity) {
-        User user = new User();
+    public UserDao toDao(UserEntity entity) {
+        UserDao user = new UserDao();
         user.setId(entity.id());
         user.setGender(entity.gender());
         user.setFirstname(entity.firstname());
@@ -25,7 +25,7 @@ public class UserConverter {
     }
 
     // DAO -> Domain
-    public UserEntity toDomain(User user) {
+    public UserEntity toDomain(UserDao user) {
         return new UserEntity(
                 user.getId(),
                 user.getGender(),

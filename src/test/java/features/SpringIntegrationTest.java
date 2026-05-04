@@ -1,4 +1,4 @@
-package feature;
+package features;
 
 import com.xpeho.spring_boot_java_random_user.SpringBootJavaRandomUserApplication;
 import io.cucumber.spring.CucumberContextConfiguration;

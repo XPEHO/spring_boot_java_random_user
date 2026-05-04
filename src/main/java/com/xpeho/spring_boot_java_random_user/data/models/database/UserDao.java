@@ -9,7 +9,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class UserDao {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -32,7 +32,7 @@ public class User {
     private String nationality;
 
     // Required by JPA
-    public User() {
+    public UserDao() {
         // No initialization needed
     }
 
@@ -108,3 +108,4 @@ public class User {
         this.nationality = nationality;
     }
 }
+

@@ -31,7 +31,7 @@
 		<testcontainers.version>2.0.4</testcontainers.version>
 		<skipDocker>false</skipDocker>
 		<sonar.coverage.exclusions>**/*Application.java</sonar.coverage.exclusions>
-		<sonar.test.exclusions>**/feature/SpringIntegrationTest.java</sonar.test.exclusions>
+		<sonar.test.exclusions>**/features/SpringIntegrationTest.java</sonar.test.exclusions>
 		<sonar.coverage.jacoco.xmlReportPaths>${project.build.directory}/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
 	</properties>
 

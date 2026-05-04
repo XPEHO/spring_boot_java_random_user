@@ -1,9 +1,10 @@
 package com.xpeho.spring_boot_java_random_user.domain.usecases;
 
+import com.xpeho.spring_boot_java_random_user.domain.entities.PaginatedUsers;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserEntity;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserFilter;
 import com.xpeho.spring_boot_java_random_user.domain.enums.Gender;
-import com.xpeho.spring_boot_java_random_user.domain.services.LocalUserService;
+import com.xpeho.spring_boot_java_random_user.domain.services.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,55 +16,58 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class FilterUsersUseCaseTest {
-    private LocalUserService userService;
+    private UserService userService;
     private FilterUsersUseCase useCase;
 
     @BeforeEach
     void setUp() {
-        userService = mock(LocalUserService.class);
+        userService = mock(UserService.class);
         useCase = new FilterUsersUseCase(userService);
     }
 
     @Test
-    @DisplayName("Should return filtered users matching the filter")
+    @DisplayName("Should return paginated filtered users matching the filter")
     void shouldReturnFilteredUsers() {
         UserFilter filter = new UserFilter(Gender.MALE, "John", null, null, null, null, null);
-        List<UserEntity> expected = List.of(
+        List<UserEntity> users = List.of(
                 new UserEntity(1L, "male", "John", "Doe", "Mr", "john@example.com", "0600000000", "http://pic.jpg", "FR")
         );
-        when(userService.filterUsers(filter)).thenReturn(expected);
+        PaginatedUsers expected = new PaginatedUsers(users, 1, 0, 10);
+        when(userService.filterUsers(filter, 1, 10)).thenReturn(expected);
 
-        List<UserEntity> result = useCase.execute(filter);
+        PaginatedUsers result = useCase.execute(filter, 1, 10);
 
         assertEquals(expected, result);
-        verify(userService).filterUsers(filter);
+        verify(userService).filterUsers(filter, 1, 10);
     }
 
     @Test
-    @DisplayName("Should return empty list when no users match the filter")
+    @DisplayName("Should return empty paginated result when no users match the filter")
     void shouldReturnEmptyListWhenNoMatch() {
         UserFilter filter = new UserFilter(Gender.FEMALE, "Unknown", null, null, null, null, null);
-        when(userService.filterUsers(filter)).thenReturn(Collections.emptyList());
+        PaginatedUsers empty = new PaginatedUsers(Collections.emptyList(), 0, 0, 10);
+        when(userService.filterUsers(filter, 1, 10)).thenReturn(empty);
 
-        List<UserEntity> result = useCase.execute(filter);
+        PaginatedUsers result = useCase.execute(filter, 1, 10);
 
-        assertTrue(result.isEmpty());
-        verify(userService).filterUsers(filter);
+        assertTrue(result.data().isEmpty());
+        verify(userService).filterUsers(filter, 1, 10);
     }
 
     @Test
     @DisplayName("Should pass filter with all fields to the service")
     void shouldPassFilterWithAllFields() {
         UserFilter filter = new UserFilter(Gender.FEMALE, "Alice", "Smith", "Ms", "alice@example.com", "0611111111", "US");
-        List<UserEntity> expected = List.of(
+        List<UserEntity> users = List.of(
                 new UserEntity(5L, "female", "Alice", "Smith", "Ms", "alice@example.com", "0611111111", "http://pic2.jpg", "US")
         );
-        when(userService.filterUsers(filter)).thenReturn(expected);
+        PaginatedUsers expected = new PaginatedUsers(users, 1, 0, 10);
+        when(userService.filterUsers(filter, 1, 10)).thenReturn(expected);
 
-        List<UserEntity> result = useCase.execute(filter);
+        PaginatedUsers result = useCase.execute(filter, 1, 10);
 
         assertEquals(expected, result);
-        verify(userService, times(1)).filterUsers(filter);
+        verify(userService, times(1)).filterUsers(filter, 1, 10);
         verifyNoMoreInteractions(userService);
     }
 }

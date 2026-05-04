@@ -1,12 +1,15 @@
 package com.xpeho.spring_boot_java_random_user.data.services;
 
 import com.xpeho.spring_boot_java_random_user.data.converters.UserConverter;
-import com.xpeho.spring_boot_java_random_user.data.models.database.User;
+import com.xpeho.spring_boot_java_random_user.data.models.database.UserDao;
 import com.xpeho.spring_boot_java_random_user.data.sources.database.UserRepository;
 import com.xpeho.spring_boot_java_random_user.data.sources.database.UserSpecifications;
+import com.xpeho.spring_boot_java_random_user.domain.entities.PaginatedUsers;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserEntity;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserFilter;
-import com.xpeho.spring_boot_java_random_user.domain.services.LocalUserService;
+import com.xpeho.spring_boot_java_random_user.domain.services.UserService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,8 +17,7 @@ import java.util.Optional;
 import java.util.stream.StreamSupport;
 
 @Service
-
-public class UserServiceImpl implements LocalUserService {
+public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserConverter userConverter;
 
@@ -26,8 +28,8 @@ public class UserServiceImpl implements LocalUserService {
 
     @Override
     public List<UserEntity> saveAll(List<UserEntity> users) {
-        List<User> daoUsers = users.stream().map(userConverter::toDao).toList();
-        Iterable<User> saved = userRepository.saveAll(daoUsers);
+        List<UserDao> daoUsers = users.stream().map(userConverter::toDao).toList();
+        Iterable<UserDao> saved = userRepository.saveAll(daoUsers);
         return StreamSupport.stream(saved.spliterator(), false)
                 .map(userConverter::toDomain)
                 .toList();
@@ -41,7 +43,7 @@ public class UserServiceImpl implements LocalUserService {
 
     @Override
     public UserEntity save(UserEntity user) {
-        User savedUser = userRepository.save(userConverter.toDao(user));
+        UserDao savedUser = userRepository.save(userConverter.toDao(user));
         return userConverter.toDomain(savedUser);
     }
 
@@ -51,9 +53,13 @@ public class UserServiceImpl implements LocalUserService {
     }
 
     @Override
-    public List<UserEntity> filterUsers(UserFilter filter) {
-        return userRepository.findAll(UserSpecifications.byFilter(filter)).stream()
+    public PaginatedUsers filterUsers(UserFilter filter, int page, int size) {
+        PageRequest pageable = PageRequest.of(page - 1, size);
+        Page<UserDao> result = userRepository.findAll(UserSpecifications.byFilter(filter), pageable);
+        List<UserEntity> entities = result.getContent().stream()
                 .map(userConverter::toDomain)
                 .toList();
+        int skip = (page - 1) * size;
+        return new PaginatedUsers(entities, (int) result.getTotalElements(), skip, size);
     }
 }

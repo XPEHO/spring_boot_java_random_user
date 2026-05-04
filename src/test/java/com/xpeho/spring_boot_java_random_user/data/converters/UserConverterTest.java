@@ -5,7 +5,7 @@ import com.xpeho.spring_boot_java_random_user.data.models.api.randomuser.RandomU
 import com.xpeho.spring_boot_java_random_user.data.models.api.randomuser.RandomUserPictureDTO;
 import com.xpeho.spring_boot_java_random_user.data.models.api.randomuser.RandomUserResultDTO;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserEntity;
-import com.xpeho.spring_boot_java_random_user.data.models.database.User;
+import com.xpeho.spring_boot_java_random_user.data.models.database.UserDao;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -104,7 +104,7 @@ class UserConverterTest {
     @DisplayName("Should convert domain to DB and back without losing data")
     void shouldConvertDomainToDbAndBackWithoutLosingData() {
         UserEntity entity = new UserEntity(1L, "male", "John", "Doe", "Mr", "john@doe.com", "1234", "pic.jpg", "FR");
-        User dao = converter.toDao(entity);
+        UserDao dao = converter.toDao(entity);
         assertEquals(entity.id(), dao.getId());
         assertEquals(entity.firstname(), dao.getFirstname());
         assertEquals(entity.lastname(), dao.getLastname());

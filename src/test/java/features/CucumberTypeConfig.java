@@ -1,6 +1,6 @@
-package feature;
+package features;
 
-import com.xpeho.spring_boot_java_random_user.domain.entities.UserRequest;
+import com.xpeho.spring_boot_java_random_user.presentation.dto.UserRequestDTO;
 import io.cucumber.java.DataTableType;
 
 import java.util.List;
@@ -33,12 +33,12 @@ public class CucumberTypeConfig {
     }
 
     /**
-     * Convertit une ligne de DataTable (Map<String,String>) en UserRequest.
+     * Convertit une ligne de DataTable (Map<String,String>) en UserRequestDTO.
      * Utilisable dans les .feature avec des tables à en-têtes.
      */
     @DataTableType
-    public UserRequest userRequest(Map<String, String> row) {
-        return new UserRequest(
+    public UserRequestDTO userRequest(Map<String, String> row) {
+        return new UserRequestDTO(
                 row.get("gender"),
                 row.get("firstname"),
                 row.get("lastname"),

@@ -1,8 +1,8 @@
 package com.xpeho.spring_boot_java_random_user.presentation;
 
-import com.xpeho.spring_boot_java_random_user.data.models.database.User;
+import com.xpeho.spring_boot_java_random_user.data.models.database.UserDao;
 import com.xpeho.spring_boot_java_random_user.data.sources.database.UserRepository;
-import com.xpeho.spring_boot_java_random_user.domain.entities.UserEntity;
+import com.xpeho.spring_boot_java_random_user.presentation.dto.UserDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -60,7 +60,7 @@ class UserGetByIdContainerTest {
     @Test
     @DisplayName("GET /random-users/{id} should return 200 with persisted user")
     void shouldReturnUserByIdWhenUserExists() {
-        User user = new User();
+        UserDao user = new UserDao();
         user.setGender("female");
         user.setFirstname("Jane");
         user.setLastname("Doe");
@@ -70,11 +70,11 @@ class UserGetByIdContainerTest {
         user.setPicture("https://example.com/jane.jpg");
         user.setNationality("FR");
 
-        User saved = userRepository.saveAndFlush(user);
+        UserDao saved = userRepository.saveAndFlush(user);
 
-        ResponseEntity<UserEntity> response = restTemplate.withBasicAuth(TEST_USERNAME, TEST_PASSWORD).getForEntity(
+        ResponseEntity<UserDTO> response = restTemplate.withBasicAuth(TEST_USERNAME, TEST_PASSWORD).getForEntity(
                 "/random-users/{id}",
-                UserEntity.class,
+                UserDTO.class,
                 saved.getId()
         );
 
@@ -88,9 +88,9 @@ class UserGetByIdContainerTest {
     @Test
     @DisplayName("GET /random-users/{id} should return 404 when user does not exist")
     void shouldReturnNotFoundWhenUserDoesNotExist() {
-        ResponseEntity<UserEntity> response = restTemplate.withBasicAuth(TEST_USERNAME, TEST_PASSWORD).getForEntity(
+        ResponseEntity<UserDTO> response = restTemplate.withBasicAuth(TEST_USERNAME, TEST_PASSWORD).getForEntity(
                 "/random-users/{id}",
-                UserEntity.class,
+                UserDTO.class,
                 -1
         );
 

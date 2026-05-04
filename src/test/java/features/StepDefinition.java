@@ -1,9 +1,9 @@
-package feature;
+package features;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.xpeho.spring_boot_java_random_user.domain.entities.UserRequest;
-import feature.CucumberTypeConfig.FieldAssertion;
+import com.xpeho.spring_boot_java_random_user.presentation.dto.UserRequestDTO;
+import features.CucumberTypeConfig.FieldAssertion;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -18,12 +18,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class StepDefinition extends SpringIntegrationTest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private UserRequest payload;
+    private UserRequestDTO payload;
     private Long createdUserId;
 
     @Given("a valid user payload for creation")
     public void aValidUserPayloadForCreation() {
-        payload = new UserRequest(
+        payload = new UserRequestDTO(
             "female",
             "Emma",
             "Stone",
@@ -102,7 +102,7 @@ public class StepDefinition extends SpringIntegrationTest {
 
     @Given("a valid user payload for update")
     public void aValidUserPayloadForUpdate() {
-        payload = new UserRequest(
+        payload = new UserRequestDTO(
             "male",
             "John",
             "Doe",

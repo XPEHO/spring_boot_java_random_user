@@ -1,13 +1,11 @@
 package com.xpeho.spring_boot_java_random_user.domain.usecases;
 
-import com.xpeho.spring_boot_java_random_user.domain.services.LocalUserService;
-import org.springframework.stereotype.Service;
+import com.xpeho.spring_boot_java_random_user.domain.services.UserService;
 
-@Service
 public class DeleteUserByIdUseCase {
-    private final LocalUserService userService;
+    private final UserService userService;
 
-    public DeleteUserByIdUseCase(LocalUserService userService) {
+    public DeleteUserByIdUseCase(UserService userService) {
         this.userService = userService;
     }
 
