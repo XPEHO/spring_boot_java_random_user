@@ -15,7 +15,7 @@ A REST API built with Spring Boot that fetches users from [DummyJSON Users API](
 
 ---
 
-## 📦 Prerequisites
+## 📦 Prerequisites 
 
 - Java 25+
 - Docker Desktop
@@ -120,35 +120,11 @@ POSTGRES_PASSWORD=your_password
 POSTGRES_DB=your_database
 POSTGRES_PORT=5432
 
-# Spring Security
-APP_SECURITY_ADMIN_USER=admin
-APP_SECURITY_ADMIN_PASSWORD=admin123
-APP_SECURITY_USER=apiuser
-APP_SECURITY_PASSWORD=changeit
-APP_SECURITY_TEST_USER=testuser
-APP_SECURITY_TEST_PASSWORD=testpass
-
 # Liquibase (optional, defaults provided)
 LB_CHANGELOG=db/changelog/db.changelog-master.yaml
 LB_SCHEMA=public
 SPRING_LIQUIBASE_ENABLED=true
 ```
-
-### Spring Security
-
-The API uses HTTP Basic authentication with three in-memory roles:
-
-- `ADMIN`: can read, create, update and delete users
-- `USER`: can read users
-- `TEST`: can read users and is used by automated tests
-
-Protected endpoints require credentials. Example:
-
-```bash
-curl -u apiuser:changeit "http://localhost:8080/random-users"
-```
-
-Swagger UI remains publicly accessible, while API endpoints are protected according to the role rules above.
 
 ### External API Configuration
 
