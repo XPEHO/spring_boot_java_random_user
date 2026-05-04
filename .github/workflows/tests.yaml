@@ -38,12 +38,11 @@ jobs:
 
       - name: Prepare Docker .env for CI tests
         run: |
-          cat > .env <<EOF
-          POSTGRES_USER=${{ secrets.POSTGRES_USER }}
-          POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
-          POSTGRES_DB=${{ secrets.POSTGRES_DB }}
-          POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}
-          EOF
+          printf '%s\n' \
+            "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" \
+            "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" \
+            "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" \
+            "POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}" > .env
 
       - name: Install Docker Compose
         run: |
