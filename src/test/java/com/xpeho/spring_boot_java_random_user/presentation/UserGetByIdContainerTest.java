@@ -26,10 +26,21 @@ import static org.assertj.core.api.Assertions.assertThat;
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         properties = {
                 "spring.sql.init.mode=never",
-                "spring.jpa.hibernate.ddl-auto=create-drop"
+            "spring.jpa.hibernate.ddl-auto=create-drop",
+            "app.security.admin.username=testadmin",
+            "app.security.admin.password=testadminpass",
+            "app.security.user.username=testuser",
+            "app.security.user.password=testpass",
+            "app.security.test.username=testviewer",
+            "app.security.test.password=testviewerpass",
+            "logging.level.com.xpeho.spring_boot_java_random_user.presentation.handlers=OFF",
+            "logging.level.com.zaxxer.hikari.pool.PoolBase=ERROR"
         }
 )
 class UserGetByIdContainerTest {
+
+    private static final String TEST_USERNAME = "testuser";
+    private static final String TEST_PASSWORD = "testpass";
 
     @Container
     @ServiceConnection
@@ -61,8 +72,8 @@ class UserGetByIdContainerTest {
 
         User saved = userRepository.saveAndFlush(user);
 
-        ResponseEntity<UserEntity> response = restTemplate.getForEntity(
-            "/random-users/{id}",
+        ResponseEntity<UserEntity> response = restTemplate.withBasicAuth(TEST_USERNAME, TEST_PASSWORD).getForEntity(
+                "/random-users/{id}",
                 UserEntity.class,
                 saved.getId()
         );
@@ -77,10 +88,10 @@ class UserGetByIdContainerTest {
     @Test
     @DisplayName("GET /random-users/{id} should return 404 when user does not exist")
     void shouldReturnNotFoundWhenUserDoesNotExist() {
-        ResponseEntity<UserEntity> response = restTemplate.getForEntity(
-            "/random-users/{id}",
+        ResponseEntity<UserEntity> response = restTemplate.withBasicAuth(TEST_USERNAME, TEST_PASSWORD).getForEntity(
+                "/random-users/{id}",
                 UserEntity.class,
-            -1
+                -1
         );
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);

@@ -7,6 +7,7 @@ import org.springframework.boot.resttestclient.TestRestTemplate;
 import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -27,6 +28,12 @@ import org.springframework.test.context.ActiveProfiles;
 )
 public class SpringIntegrationTest {
 
+    @Value("${app.security.admin.username}")
+    private String testUsername;
+
+    @Value("${app.security.admin.password}")
+    private String testPassword;
+
     @Autowired
     protected TestRestTemplate restTemplate;
 
@@ -37,7 +44,9 @@ public class SpringIntegrationTest {
 
     protected void executeGet(String path) {
         String url = "http://localhost:" + port + path;
-        latestResponse = restTemplate.getForEntity(url, String.class);
+        latestResponse = restTemplate
+            .withBasicAuth(testUsername, testPassword)
+            .getForEntity(url, String.class);
     }
 
     protected void executePost(String path, Object payload) {
@@ -45,19 +54,25 @@ public class SpringIntegrationTest {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<Object> request = new HttpEntity<>(payload, headers);
-        latestResponse = restTemplate.postForEntity(url, request, String.class);
+        latestResponse = restTemplate
+            .withBasicAuth(testUsername, testPassword)
+            .postForEntity(url, request, String.class);
     }
 
     protected void executeDelete(String path) {
         String url = "http://localhost:" + port + path;
-        latestResponse = restTemplate.exchange(url, HttpMethod.DELETE, HttpEntity.EMPTY, String.class);
+        latestResponse = restTemplate
+            .withBasicAuth(testUsername, testPassword)
+            .exchange(url, HttpMethod.DELETE, HttpEntity.EMPTY, String.class);
     }
 
-    protected void executePut(String path, Object payload) {
-        String url = "http://localhost:" + port + path;
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<Object> request = new HttpEntity<>(payload, headers);
-        latestResponse = restTemplate.exchange(url, HttpMethod.PUT, request, String.class);
-    }
+     protected void executePut(String path, Object payload) {
+         String url = "http://localhost:" + port + path;
+         HttpHeaders headers = new HttpHeaders();
+         headers.setContentType(MediaType.APPLICATION_JSON);
+         HttpEntity<Object> request = new HttpEntity<>(payload, headers);
+         latestResponse = restTemplate
+             .withBasicAuth(testUsername, testPassword)
+             .exchange(url, HttpMethod.PUT, request, String.class);
+     }
 }

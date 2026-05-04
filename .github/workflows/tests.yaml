@@ -31,18 +31,18 @@ jobs:
 
       - name: Prepare test properties
         run: |
-          mkdir -p src/test/resources
-          echo ${{ secrets.APPLICATION_TEST_PROPERTIES }} | base64 -d > src/test/resources/application-test.properties
+          if [ -n "${{ secrets.APPLICATION_TEST_PROPERTIES }}" ]; then
+            printf '%s' "${{ secrets.APPLICATION_TEST_PROPERTIES }}" | base64 -d >> src/test/resources/application-test.properties
+          fi
           echo "spring.sql.init.mode=never" >> src/test/resources/application-test.properties
 
       - name: Prepare Docker .env for CI tests
         run: |
-          cat > .env <<EOF
-          POSTGRES_USER=${{ secrets.POSTGRES_USER }}
-          POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
-          POSTGRES_DB=${{ secrets.POSTGRES_DB }}
-          POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}
-          EOF
+          printf '%s\n' \
+            "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" \
+            "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" \
+            "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" \
+            "POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}" > .env
 
       - name: Install Docker Compose
         run: |

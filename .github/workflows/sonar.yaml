@@ -39,7 +39,8 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         run: |
-          mkdir -p src/test/resources
-          echo ${{ secrets.APPLICATION_TEST_PROPERTIES }} | base64 -d > src/test/resources/application-test.properties
+          if [ -n "${{ secrets.APPLICATION_TEST_PROPERTIES }}" ]; then
+            printf '%s' "${{ secrets.APPLICATION_TEST_PROPERTIES }}" | base64 -d >> src/test/resources/application-test.properties
+          fi
           echo "spring.sql.init.mode=never" >> src/test/resources/application-test.properties
-          mvn clean verify sonar:sonar -DskipDocker=true -Dsonar.qualitygate.wait=true -Dit.test="!CucumberIntegrationTest"
+          mvn clean verify sonar:sonar -DskipDocker=true -Dsonar.qualitygate.wait=true "-Dit.test=!CucumberIntegrationTest"

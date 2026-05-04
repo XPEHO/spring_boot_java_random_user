@@ -27,7 +27,7 @@ import java.util.List;
 public class UserHandler implements UserController {
 
     private static final Logger logger = LoggerFactory.getLogger(UserHandler.class);
-    private static final String USER_NOT_FOUND_LOG = "warning: the requested user does not exist : {}";
+    private static final String USER_NOT_FOUND_LOG = "warning: the requested user does not exist: {}";
 
     private final FetchAndSaveRandomUsersUseCase fetchAndSaveRandomUsersUseCase;
     private final UpdateRandomUserUseCase updateRandomUserUseCase;
@@ -119,6 +119,6 @@ public class UserHandler implements UserController {
     }
 
     private void logUserNotFound(UserNotFoundException e) {
-        logger.warn(USER_NOT_FOUND_LOG, e);
+        logger.warn(USER_NOT_FOUND_LOG, e.getMessage());
     }
 }

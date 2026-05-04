@@ -15,7 +15,7 @@ A REST API built with Spring Boot that fetches users from [DummyJSON Users API](
 
 ---
 
-## 📦 Prerequisites
+## 📦 Prerequisites 
 
 - Java 25+
 - Docker Desktop

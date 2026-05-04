@@ -4,3 +4,5 @@ spring.datasource.username=myusername
 spring.datasource.password=mypassword
 spring.sql.init.mode=never
 spring.docker.compose.enabled=false
+logging.level.com.xpeho.spring_boot_java_random_user.presentation.handlers=OFF
+logging.level.com.zaxxer.hikari.pool.PoolBase=ERROR

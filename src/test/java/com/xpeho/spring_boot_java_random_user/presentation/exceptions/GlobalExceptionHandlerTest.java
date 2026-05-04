@@ -79,9 +79,9 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
-    @DisplayName("Should return 500 INTERNAL_SERVER_ERROR for generic exceptions")
-    void shouldReturnInternalServerErrorForGenericException() {
-        Exception ex = new Exception("Something went wrong");
+    @DisplayName("Should return 500 INTERNAL_SERVER_ERROR for runtime exceptions")
+    void shouldReturnInternalServerErrorForRuntimeException() {
+        RuntimeException ex = new RuntimeException("Something went wrong");
         ResponseEntity<ErrorResponse> response = handler.handleGenericException(ex);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
