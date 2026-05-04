@@ -1,0 +1,27 @@
+name: commit
+
+on:
+    push:
+        branches:
+        - '**'
+    pull_request:
+        types: [opened, synchronize, reopened]
+
+permissions:
+  id-token: write
+
+jobs:
+  test-vault:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: commit
+#        id: {{ job id }}
+        uses: hashicorp/vault-action@v3
+        with:
+          url: ${{ secrets.VAULT_URL }}
+          method: jwt
+          role: ${{ secrets.VAULT_ROLE }}
+          jwtGithubAudience: ${{ secrets.JWT_GIT_AUDIENCE }}
+          secrets: >-
+            ${{ secrets.VAULT_SECRET_PATH }} | VAULT_SECRET_PATH;
