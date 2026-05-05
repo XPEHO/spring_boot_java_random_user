@@ -1,6 +1,6 @@
 package com.xpeho.spring_boot_java_random_user.data.sources.database;
 
-import com.xpeho.spring_boot_java_random_user.data.models.database.User;
+import com.xpeho.spring_boot_java_random_user.data.models.database.UserDAO;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserFilter;
 import jakarta.persistence.criteria.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,8 +10,8 @@ import org.springframework.data.jpa.domain.Specification;
 
 import static org.mockito.Mockito.*;
 
-class UserSpecificationsTest {
-    private Root<User> user;
+class UserDAOSpecificationsTest {
+    private Root<UserDAO> user;
     private CriteriaQuery<?> query;
     private CriteriaBuilder cb;
     private Expression<String> lowerExpr;
@@ -38,7 +38,7 @@ class UserSpecificationsTest {
     void shouldAddLikePredicatesForAllTextFields() {
         UserFilter filter = new UserFilter(null, "John", "Doe", "Mr", "john@doe.com", "1234", "FR");
 
-        Specification<User> spec = UserSpecifications.byFilter(filter);
+        Specification<UserDAO> spec = UserSpecifications.byFilter(filter);
         spec.toPredicate(user, query, cb);
 
         verify(user).get("firstname");

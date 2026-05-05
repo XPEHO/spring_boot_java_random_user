@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
-class DummyUserResponseTest {
+class DummyUserDAOResponseTest {
     @Test
     @DisplayName("Should store and return users list")
     void shouldStoreAndReturnUsersList() {

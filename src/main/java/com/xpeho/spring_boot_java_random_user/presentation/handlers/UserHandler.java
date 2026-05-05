@@ -3,15 +3,17 @@ package com.xpeho.spring_boot_java_random_user.presentation.handlers;
 import com.xpeho.spring_boot_java_random_user.domain.entities.PaginatedUsers;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserEntity;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserFilter;
-import com.xpeho.spring_boot_java_random_user.domain.entities.UserRequest;
 import com.xpeho.spring_boot_java_random_user.domain.enums.Gender;
 import com.xpeho.spring_boot_java_random_user.domain.enums.UserSource;
 import com.xpeho.spring_boot_java_random_user.domain.exceptions.UserNotFoundException;
 import com.xpeho.spring_boot_java_random_user.domain.usecases.*;
 import com.xpeho.spring_boot_java_random_user.presentation.controllers.UserController;
+import com.xpeho.spring_boot_java_random_user.presentation.dto.PaginatedRequest;
+import com.xpeho.spring_boot_java_random_user.presentation.dto.UserRequest;
 import com.xpeho.spring_boot_java_random_user.presentation.dto.UserResponseDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -19,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
-import java.util.List;
 
 
 @Validated
@@ -73,7 +74,8 @@ public class UserHandler implements UserController {
     @Override
     public ResponseEntity<UserEntity> updateRandomUser(int id, UserRequest user) {
         try {
-            UserEntity savedUser = updateRandomUserUseCase.execute(id, user);
+            UserEntity userEntity = toEntity(user);
+            UserEntity savedUser = updateRandomUserUseCase.execute(id, userEntity);
             return ResponseEntity.ok(savedUser);
         } catch (UserNotFoundException e) {
             logUserNotFound(e);
@@ -95,17 +97,20 @@ public class UserHandler implements UserController {
 
     @Override
     public ResponseEntity<UserEntity> createUser(@RequestBody UserRequest user) {
-        UserEntity createdUser = createUserUseCase.execute(user);
+        UserEntity userEntity = toEntity(user);
+        UserEntity createdUser = createUserUseCase.execute(userEntity);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
     @Override
-    public ResponseEntity<List<UserEntity>> filterUsers(
+    public ResponseEntity<Page<UserEntity>> filterUsers(
             Gender gender, String firstname, String lastname,
-            String civility, String email, String phone, String nat
+            String civility, String email, String phone, String nat,
+            int page, int size
     ) {
         UserFilter filter = new UserFilter(gender, firstname, lastname, civility, email, phone, nat);
-        List<UserEntity> users = filterUsersUseCase.execute(filter);
+        PaginatedRequest pagination = new PaginatedRequest(page, size);
+        Page<UserEntity> users = filterUsersUseCase.execute(filter, pagination.toPageable());
         return ResponseEntity.ok(users);
     }
 
@@ -116,6 +121,20 @@ public class UserHandler implements UserController {
         } catch (UserNotFoundException e) {
             logUserNotFound(e);
         }
+    }
+
+    private UserEntity toEntity(UserRequest user) {
+        return new UserEntity(
+                null,
+                user.gender(),
+                user.firstname(),
+                user.lastname(),
+                user.civility(),
+                user.email(),
+                user.phone(),
+                user.picture(),
+                user.nat()
+        );
     }
 
     private void logUserNotFound(UserNotFoundException e) {

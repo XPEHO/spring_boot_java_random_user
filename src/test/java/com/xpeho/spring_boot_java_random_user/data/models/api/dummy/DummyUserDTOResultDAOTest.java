@@ -4,7 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-class DummyUserResultDTOTest {
+class DummyUserDTOResultDAOTest {
     @Test
     @DisplayName("Should store and return all user fields")
     void shouldStoreAndReturnAllUserFields() {

@@ -1,4 +1,4 @@
-package com.xpeho.spring_boot_java_random_user.domain.services;
+package com.xpeho.spring_boot_java_random_user.data.sources.api;
 
 import com.xpeho.spring_boot_java_random_user.domain.entities.PaginatedUsers;
 import com.xpeho.spring_boot_java_random_user.domain.enums.UserSource;

@@ -1,6 +1,6 @@
 package com.xpeho.spring_boot_java_random_user.data.sources.database;
 
-import com.xpeho.spring_boot_java_random_user.data.models.database.User;
+import com.xpeho.spring_boot_java_random_user.data.models.database.UserDAO;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserFilter;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Path;
@@ -15,7 +15,7 @@ public final class UserSpecifications {
     private UserSpecifications() {
     }
 
-    public static Specification<User> byFilter(UserFilter filter) {
+    public static Specification<UserDAO> byFilter(UserFilter filter) {
         return (user, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 

@@ -1,25 +1,25 @@
-package feature;
+package features;
 
-import com.xpeho.spring_boot_java_random_user.domain.entities.UserRequest;
+import com.xpeho.spring_boot_java_random_user.presentation.dto.UserRequest;
 import io.cucumber.java.DataTableType;
 
 import java.util.List;
 import java.util.Map;
 
 /**
- * Cucumber converters — transforment automatiquement les données
- * des fichiers .feature en objets Java typés.
+ * Cucumber converters — automatically transform data
+ * from .feature files into typed Java objects.
  */
 public class CucumberTypeConfig {
 
     /**
-     * Représente une ligne de vérification field/expected dans une DataTable.
+     * Represents a field/expected verification row in a DataTable.
      */
     public record FieldAssertion(String field, String expected) {}
 
     /**
-     * Convertit chaque ligne de la DataTable (2 colonnes sans en-tête)
-     * en un objet FieldAssertion.
+     * Converts each DataTable row (2 columns without header)
+     * into a FieldAssertion object.
      */
     @DataTableType
     public FieldAssertion fieldAssertion(List<String> row) {
@@ -33,8 +33,8 @@ public class CucumberTypeConfig {
     }
 
     /**
-     * Convertit une ligne de DataTable (Map<String,String>) en UserRequest.
-     * Utilisable dans les .feature avec des tables à en-têtes.
+     * Converts a DataTable row (Map<String,String>) into a UserRequest.
+     * Usable in .feature files with header-based tables.
      */
     @DataTableType
     public UserRequest userRequest(Map<String, String> row) {

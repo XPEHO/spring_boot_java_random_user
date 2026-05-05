@@ -6,7 +6,7 @@ import com.xpeho.spring_boot_java_random_user.data.models.api.dummy.DummyUserRes
 import com.xpeho.spring_boot_java_random_user.domain.entities.PaginatedUsers;
 import com.xpeho.spring_boot_java_random_user.domain.enums.UserSource;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserEntity;
-import com.xpeho.spring_boot_java_random_user.domain.services.RemoteUserService;
+import com.xpeho.spring_boot_java_random_user.data.sources.api.RemoteUserService;
 import org.springframework.stereotype.Service;
 import retrofit2.Response;
 

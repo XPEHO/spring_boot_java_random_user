@@ -2,7 +2,7 @@ package com.xpeho.spring_boot_java_random_user.domain.usecases;
 
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserEntity;
 import com.xpeho.spring_boot_java_random_user.domain.exceptions.UserNotFoundException;
-import com.xpeho.spring_boot_java_random_user.domain.services.LocalUserService;
+import com.xpeho.spring_boot_java_random_user.domain.services.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,13 +12,13 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class GetUserByIdUseCaseTest {
-    private LocalUserService userService;
+class GetUserDAOByIdUseCaseTest {
+    private UserService userService;
     private GetUserByIdUseCase useCase;
 
     @BeforeEach
     void setUp() {
-        userService = mock(LocalUserService.class);
+        userService = mock(UserService.class);
         useCase = new GetUserByIdUseCase(userService);
     }
 
