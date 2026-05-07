@@ -2,7 +2,7 @@ package com.xpeho.spring_boot_java_random_user.data.converters;
 
 import com.xpeho.spring_boot_java_random_user.data.models.api.dummy.DummyUserResultDTO;
 import com.xpeho.spring_boot_java_random_user.data.models.api.randomuser.RandomUserResultDTO;
-import com.xpeho.spring_boot_java_random_user.data.models.database.User;
+import com.xpeho.spring_boot_java_random_user.data.models.database.UserDAO;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserEntity;
 import org.springframework.stereotype.Service;
 
@@ -10,32 +10,32 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserConverter {
     // Domain -> DAO
-    public User toDao(UserEntity entity) {
-        User user = new User();
-        user.setId(entity.id());
-        user.setGender(entity.gender());
-        user.setFirstname(entity.firstname());
-        user.setLastname(entity.lastname());
-        user.setCivility(entity.civility());
-        user.setEmail(entity.email());
-        user.setPhone(entity.phone());
-        user.setPicture(entity.picture());
-        user.setNationality(entity.nat());
-        return user;
+    public UserDAO toDao(UserEntity entity) {
+        UserDAO userDAO = new UserDAO();
+        userDAO.setId(entity.id());
+        userDAO.setGender(entity.gender());
+        userDAO.setFirstname(entity.firstname());
+        userDAO.setLastname(entity.lastname());
+        userDAO.setCivility(entity.civility());
+        userDAO.setEmail(entity.email());
+        userDAO.setPhone(entity.phone());
+        userDAO.setPicture(entity.picture());
+        userDAO.setNationality(entity.nat());
+        return userDAO;
     }
 
     // DAO -> Domain
-    public UserEntity toDomain(User user) {
+    public UserEntity toDomain(UserDAO userDAO) {
         return new UserEntity(
-                user.getId(),
-                user.getGender(),
-                user.getFirstname(),
-                user.getLastname(),
-                user.getCivility(),
-                user.getEmail(),
-                user.getPhone(),
-                user.getPicture(),
-                user.getNationality()
+                userDAO.getId(),
+                userDAO.getGender(),
+                userDAO.getFirstname(),
+                userDAO.getLastname(),
+                userDAO.getCivility(),
+                userDAO.getEmail(),
+                userDAO.getPhone(),
+                userDAO.getPicture(),
+                userDAO.getNationality()
         );
     }
 

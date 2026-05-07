@@ -1,7 +1,7 @@
 package com.xpeho.spring_boot_java_random_user.data.services;
 
 import com.xpeho.spring_boot_java_random_user.data.converters.UserConverter;
-import com.xpeho.spring_boot_java_random_user.data.models.database.User;
+import com.xpeho.spring_boot_java_random_user.data.models.database.UserDAO;
 import com.xpeho.spring_boot_java_random_user.data.sources.database.UserRepository;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserEntity;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserFilter;
@@ -9,6 +9,10 @@ import com.xpeho.spring_boot_java_random_user.domain.enums.Gender;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.Collections;
@@ -17,11 +21,13 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-class UserServiceImplTest {
+class UserDAOServiceImplTest {
     private UserRepository userRepository;
     private UserConverter userConverter;
     private UserServiceImpl userService;
@@ -30,13 +36,13 @@ class UserServiceImplTest {
     void setUp() {
         userRepository = mock(UserRepository.class);
         userConverter = mock(UserConverter.class);
-        userService = new UserServiceImpl(userRepository, userConverter);
+        userService = new UserServiceImpl(userRepository, userConverter, List.of());
     }
 
     @Test
     @DisplayName("Should return mapped user when id exists")
     void shouldReturnMappedUserWhenIdExists() {
-        User dao = new User();
+        UserDAO dao = new UserDAO();
         dao.setId(1L);
         dao.setFirstname("John");
 
@@ -69,10 +75,10 @@ class UserServiceImplTest {
     void shouldSaveMappedUserAndReturnMappedDomainEntity() {
         UserEntity input = new UserEntity(3L, "female", "Alice", "Smith", "Mrs", "alice@smith.com", "5678", "new-pic.jpg", "US");
 
-        User daoToSave = new User();
+        UserDAO daoToSave = new UserDAO();
         daoToSave.setFirstname("Alice");
 
-        User savedDao = new User();
+        UserDAO savedDao = new UserDAO();
         savedDao.setId(3L);
         savedDao.setFirstname("Alice");
 
@@ -94,22 +100,23 @@ class UserServiceImplTest {
     @DisplayName("Should build a specification and call repository for filtered users")
     void shouldFilterUsersWithGender() {
         UserFilter filter = new UserFilter(Gender.MALE, "John", null, null, null, null, null);
+        Pageable pageable = PageRequest.of(0, 20);
 
-        User dao = new User();
+        UserDAO dao = new UserDAO();
         dao.setId(1L);
         dao.setFirstname("John");
 
         UserEntity expected = new UserEntity(1L, "male", "John", "Doe", "Mr", "john@doe.com", "1234", "pic.jpg", "FR");
+        Page<UserDAO> daoPage = new PageImpl<>(List.of(dao), pageable, 1);
 
-        when(userRepository.findAll(org.mockito.ArgumentMatchers.<Specification<User>>any()))
-                .thenReturn(List.of(dao));
+        when(userRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(daoPage);
         when(userConverter.toDomain(dao)).thenReturn(expected);
 
-        List<UserEntity> result = userService.filterUsers(filter);
+        Page<UserEntity> result = userService.filterUsers(filter, pageable);
 
-        assertEquals(1, result.size());
-        assertEquals(expected, result.get(0));
-        verify(userRepository).findAll(org.mockito.ArgumentMatchers.<Specification<User>>any());
+        assertEquals(1, result.getTotalElements());
+        assertEquals(expected, result.getContent().get(0));
+        verify(userRepository).findAll(any(Specification.class), eq(pageable));
         verify(userConverter).toDomain(dao);
     }
 
@@ -117,35 +124,37 @@ class UserServiceImplTest {
     @DisplayName("Should call repository when gender filter is null")
     void shouldFilterUsersWithNullGender() {
         UserFilter filter = new UserFilter(null, null, "Smith", null, null, null, null);
+        Pageable pageable = PageRequest.of(0, 20);
 
-        User dao = new User();
+        UserDAO dao = new UserDAO();
         dao.setId(2L);
         dao.setLastname("Smith");
 
         UserEntity expected = new UserEntity(2L, "female", "Alice", "Smith", "Ms", "alice@smith.com", "5678", "pic2.jpg", "US");
+        Page<UserDAO> daoPage = new PageImpl<>(List.of(dao), pageable, 1);
 
-        when(userRepository.findAll(org.mockito.ArgumentMatchers.<Specification<User>>any()))
-                .thenReturn(List.of(dao));
+        when(userRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(daoPage);
         when(userConverter.toDomain(dao)).thenReturn(expected);
 
-        List<UserEntity> result = userService.filterUsers(filter);
+        Page<UserEntity> result = userService.filterUsers(filter, pageable);
 
-        assertEquals(1, result.size());
-        assertEquals(expected, result.get(0));
-        verify(userRepository).findAll(org.mockito.ArgumentMatchers.<Specification<User>>any());
+        assertEquals(1, result.getTotalElements());
+        assertEquals(expected, result.getContent().get(0));
+        verify(userRepository).findAll(any(Specification.class), eq(pageable));
     }
 
     @Test
-    @DisplayName("Should return empty list when no users match filter")
+    @DisplayName("Should return empty page when no users match filter")
     void shouldReturnEmptyListWhenNoUsersMatchFilter() {
         UserFilter filter = new UserFilter(Gender.FEMALE, "Unknown", null, null, null, null, null);
+        Pageable pageable = PageRequest.of(0, 20);
+        Page<UserDAO> emptyPage = new PageImpl<>(Collections.emptyList(), pageable, 0);
 
-        when(userRepository.findAll(org.mockito.ArgumentMatchers.<Specification<User>>any()))
-                .thenReturn(Collections.emptyList());
+        when(userRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(emptyPage);
 
-        List<UserEntity> result = userService.filterUsers(filter);
+        Page<UserEntity> result = userService.filterUsers(filter, pageable);
 
         assertTrue(result.isEmpty());
-        verify(userRepository).findAll(org.mockito.ArgumentMatchers.<Specification<User>>any());
+        verify(userRepository).findAll(any(Specification.class), eq(pageable));
     }
 }

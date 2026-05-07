@@ -1,9 +1,9 @@
 package com.xpeho.spring_boot_java_random_user.presentation.controllers;
 
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserEntity;
-import com.xpeho.spring_boot_java_random_user.domain.entities.UserRequest;
 import com.xpeho.spring_boot_java_random_user.domain.enums.Gender;
 import com.xpeho.spring_boot_java_random_user.domain.enums.UserSource;
+import com.xpeho.spring_boot_java_random_user.presentation.dto.UserRequest;
 import com.xpeho.spring_boot_java_random_user.presentation.dto.UserResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -11,15 +11,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
-
 
 @RequestMapping("/random-users")
-@Tag(name = "User", description = "Endpoints for random user generation")
+@Tag(name = "UserDAO", description = "Endpoints for random user generation")
 public interface UserController {
 
     @GetMapping("")
@@ -55,7 +53,7 @@ public interface UserController {
                     @Parameter(name = "id", description = "id of the requested user")
             }
     )
-    @ApiResponse(responseCode = "200", description = "User successfully found and returned")
+    @ApiResponse(responseCode = "200", description = "UserDAO successfully found and returned")
     @ApiResponse(responseCode = "404", description = "The requested user does not exist")
     @ApiResponse(responseCode = "500", description = "Internal server error")
     ResponseEntity<UserEntity> getUserById(
@@ -69,10 +67,10 @@ public interface UserController {
             description = "Giving a random user id, modify the content of the user",
             parameters = {
                     @Parameter(name = "id", description = "id of the requested user"),
-                    @Parameter(name = "UserEntity", description = "changeable parameters")
+                    @Parameter(name = "UserRequest", description = "changeable parameters")
             }
     )
-    @ApiResponse(responseCode = "200", description = "User successfully modified and saved")
+    @ApiResponse(responseCode = "200", description = "UserDAO successfully modified and saved")
     @ApiResponse(responseCode = "404", description = "The requested user does not exist")
     @ApiResponse(responseCode = "500", description = "Internal server error")
     ResponseEntity<UserEntity> updateRandomUser(
@@ -87,10 +85,10 @@ public interface UserController {
             summary = "Create a user",
             description = "Creates a new user in the database.",
             parameters = {
-                    @Parameter(name = "UserRequest", description = "User data to persist")
+                    @Parameter(name = "UserRequest", description = "UserDAO data to persist")
             }
     )
-    @ApiResponse(responseCode = "201", description = "User successfully created")
+    @ApiResponse(responseCode = "201", description = "UserDAO successfully created")
     @ApiResponse(responseCode = "500", description = "Internal server error")
     ResponseEntity<UserEntity> createUser(@RequestBody UserRequest user);
 
@@ -98,7 +96,7 @@ public interface UserController {
     @GetMapping("/filter")
     @Operation(
             summary = "Filter users",
-            description = "Search users by optional filters on gender, firstname, lastname, civility, email, phone and nationality. All filters are case-insensitive and support partial matching.",
+            description = "Search users by optional filters on gender, firstname, lastname, civility, email, phone and nationality. All filters are case-insensitive and support partial matching. Supports pagination via page and size parameters.",
             parameters = {
                     @Parameter(name = "gender", description = "Filter by gender (MALE or FEMALE)"),
                     @Parameter(name = "firstname", description = "Filter by firstname"),
@@ -106,19 +104,23 @@ public interface UserController {
                     @Parameter(name = "civility", description = "Filter by civility"),
                     @Parameter(name = "email", description = "Filter by email"),
                     @Parameter(name = "phone", description = "Filter by phone"),
-                    @Parameter(name = "nat", description = "Filter by nationality")
+                    @Parameter(name = "nat", description = "Filter by nationality"),
+                    @Parameter(name = "page", description = "Page index (0-based)", example = "0"),
+                    @Parameter(name = "size", description = "Page size", example = "20")
             }
     )
-    @ApiResponse(responseCode = "200", description = "Filtered list of users")
+    @ApiResponse(responseCode = "200", description = "Paginated filtered list of users")
     @ApiResponse(responseCode = "500", description = "Internal server error")
-    ResponseEntity<List<UserEntity>> filterUsers(
+    ResponseEntity<Page<UserEntity>> filterUsers(
             @RequestParam(required = false) Gender gender,
             @RequestParam(required = false) String firstname,
             @RequestParam(required = false) String lastname,
             @RequestParam(required = false) String civility,
             @RequestParam(required = false) String email,
             @RequestParam(required = false) String phone,
-            @RequestParam(required = false) String nat
+            @RequestParam(required = false) String nat,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size
     );
 
     @DeleteMapping("/{id}")
@@ -129,7 +131,7 @@ public interface UserController {
                     @Parameter(name = "id", description = "id of the requested user")
             }
     )
-    @ApiResponse(responseCode = "204", description = "User successfully deleted")
+    @ApiResponse(responseCode = "204", description = "UserDAO successfully deleted")
     @ApiResponse(responseCode = "404", description = "The requested user does not exist")
     @ApiResponse(responseCode = "500", description = "Internal server error")
     void deleteUserById(

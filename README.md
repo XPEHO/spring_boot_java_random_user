@@ -254,10 +254,10 @@ curl -X PUT "http://localhost:8080/random-users/1" \
          PostgreSQL
 ```
 
-### Domain Service Ports
+### Service Architecture
 
-- `LocalUserService`: local persistence operations (save, read, delete) backed by PostgreSQL.
-- `RemoteUserService`: external user source contract used by use cases.
+- `UserService`: domain port for local persistence operations (save, read, delete) backed by PostgreSQL. Implemented by `UserServiceImpl` in the data layer.
+- `RemoteUserService`: data-layer interface for external API adapters. Implemented by `DummyUserServiceImpl` and `RandomUserServiceImpl`.
 
 ### External Source Adapter
 

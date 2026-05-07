@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class RandomUserServiceImplTest {
+class RandomUserDAOServiceImplTest {
     private RandomUserApi randomUserApi;
     private UserConverter userConverter;
     private RandomUserServiceImpl service;

@@ -1,4 +1,4 @@
-package com.xpeho.spring_boot_java_random_user.domain.entities;
+package com.xpeho.spring_boot_java_random_user.presentation.dto;
 
 public record UserRequest(
         String gender,
@@ -11,3 +11,4 @@ public record UserRequest(
         String nat
 ) {
 }
+

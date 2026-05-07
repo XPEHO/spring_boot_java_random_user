@@ -20,7 +20,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class DummyUserServiceImplTest {
+class DummyUserDAOServiceImplTest {
     private DummyUserApi dummyUserApi;
     private UserConverter userConverter;
     private DummyUserServiceImpl service;

@@ -1,6 +1,6 @@
 package com.xpeho.spring_boot_java_random_user.presentation;
 
-import com.xpeho.spring_boot_java_random_user.data.models.database.User;
+import com.xpeho.spring_boot_java_random_user.data.models.database.UserDAO;
 import com.xpeho.spring_boot_java_random_user.data.sources.database.UserRepository;
 import com.xpeho.spring_boot_java_random_user.domain.entities.UserEntity;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,7 +37,7 @@ import static org.assertj.core.api.Assertions.assertThat;
             "logging.level.com.zaxxer.hikari.pool.PoolBase=ERROR"
         }
 )
-class UserGetByIdContainerTest {
+class UserDAOGetByIdContainerTest {
 
     private static final String TEST_USERNAME = "testuser";
     private static final String TEST_PASSWORD = "testpass";
@@ -60,17 +60,17 @@ class UserGetByIdContainerTest {
     @Test
     @DisplayName("GET /random-users/{id} should return 200 with persisted user")
     void shouldReturnUserByIdWhenUserExists() {
-        User user = new User();
-        user.setGender("female");
-        user.setFirstname("Jane");
-        user.setLastname("Doe");
-        user.setCivility("Ms");
-        user.setEmail("jane.doe@example.com");
-        user.setPhone("0600000000");
-        user.setPicture("https://example.com/jane.jpg");
-        user.setNationality("FR");
+        UserDAO userDAO = new UserDAO();
+        userDAO.setGender("female");
+        userDAO.setFirstname("Jane");
+        userDAO.setLastname("Doe");
+        userDAO.setCivility("Ms");
+        userDAO.setEmail("jane.doe@example.com");
+        userDAO.setPhone("0600000000");
+        userDAO.setPicture("https://example.com/jane.jpg");
+        userDAO.setNationality("FR");
 
-        User saved = userRepository.saveAndFlush(user);
+        UserDAO saved = userRepository.saveAndFlush(userDAO);
 
         ResponseEntity<UserEntity> response = restTemplate.withBasicAuth(TEST_USERNAME, TEST_PASSWORD).getForEntity(
                 "/random-users/{id}",

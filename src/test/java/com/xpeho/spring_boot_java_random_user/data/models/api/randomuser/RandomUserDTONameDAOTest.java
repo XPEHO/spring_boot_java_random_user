@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-class RandomUserNameDTOTest {
+class RandomUserDTONameDAOTest {
     @Test
     @DisplayName("Should store and return all name fields")
     void shouldStoreAndReturnAllNameFields() {
